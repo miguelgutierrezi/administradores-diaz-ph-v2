@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,6 +12,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authService = AuthService();
 
   bool _isButtonEnabled = false;
 
@@ -64,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Ingresa tu email para reestablecer tu contraseña.'),
+              const Text('Ingresa tu email para restablecer tu contraseña.'),
               TextField(
                 controller: forgotPasswordEmailController,
                 decoration: const InputDecoration(
@@ -79,13 +81,26 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                // Acción para restablecer contraseña
-                // String email = _forgotPasswordEmailController.text;
-                Navigator.of(context).pop();
+              onPressed: () async {
+                try {
+                  await _authService.sendPasswordResetEmail(
+                      forgotPasswordEmailController.text);
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text(
+                            'Correo de restablecimiento de contraseña enviado')),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text(
+                            'Error al enviar el correo de restablecimiento')),
+                  );
+                }
               },
               child: const Text('Confirmar'),
             ),
