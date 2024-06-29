@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "289910440888",
+    "firebase_url": "https://administradores-diaz-ph-sass.firebaseio.com",
+    "project_id": "administradores-diaz-ph-sass",
+    "storage_bucket": "administradores-diaz-ph-sass.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289910440888:android:f3708b95e3d1a89d2d854d",
+        "android_client_info": {
+          "package_name": "com.example.administradores_diaz_ph"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289910440888-liom26da9dmu7ptk10c0cfihkkqp79up.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAODiIXKgra6yySh_f8MEqm39VJ8JZfM5w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289910440888-liom26da9dmu7ptk10c0cfihkkqp79up.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
