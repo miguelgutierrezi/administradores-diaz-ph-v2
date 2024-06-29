@@ -1,4 +1,5 @@
 import 'package:administradores_diaz_ph/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -54,6 +55,26 @@ class _LoginPageState extends State<LoginPage> {
       return 'Por favor ingrese su contraseña';
     }
     return null;
+  }
+
+  Future<void> _signIn() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        User? user = await _authService.signInWithEmailAndPassword(
+          _emailController.text,
+          _passwordController.text,
+        );
+        if (user != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Inicio de sesión exitoso')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al iniciar sesión')),
+        );
+      }
+    }
   }
 
   void _showForgotPasswordDialog() {
@@ -167,13 +188,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
-                onPressed: _isButtonEnabled
-                    ? () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          // Acción de inicio de sesión
-                        }
-                      }
-                    : null,
+                onPressed: _isButtonEnabled ? _signIn : null,
                 icon: const Icon(Icons.login),
                 label: const Text('Entrar'),
                 style: ElevatedButton.styleFrom(

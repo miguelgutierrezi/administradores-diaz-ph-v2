@@ -11,4 +11,25 @@ class AuthService {
       rethrow;
     }
   }
+
+  Future<User?> signInWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
+      return userCredential.user;
+    } catch (e) {
+      print('Error signing in: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await _firebaseAuth.signOut();
+    } catch (e) {
+      print('Error signing out: $e');
+      rethrow;
+    }
+  }
 }
