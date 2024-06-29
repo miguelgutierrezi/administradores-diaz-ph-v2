@@ -1,7 +1,7 @@
 import 'package:administradores_diaz_ph/firebase_options.dart';
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
+import 'welcome_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: const WelcomePage(),
     );
   }
 }

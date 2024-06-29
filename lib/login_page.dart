@@ -1,6 +1,10 @@
 import 'package:administradores_diaz_ph/services/auth_service.dart';
+import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
+  final _firestoreService = FirestoreService();
 
   bool _isButtonEnabled = false;
 
@@ -65,14 +70,32 @@ class _LoginPageState extends State<LoginPage> {
           _passwordController.text,
         );
         if (user != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Inicio de sesión exitoso')),
-          );
+          await _storeUserData(user);
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => HomePage()));
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Error al iniciar sesión')),
         );
+      }
+    }
+  }
+
+  Future<void> _storeUserData(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('correo', user.email ?? '');
+    prefs.setString('id', _authService.getCurrentUserId());
+
+    List<Map<String, dynamic>> users =
+        await _firestoreService.getCollection('users');
+    for (var userData in users) {
+      if (userData['id'] == _authService.getCurrentUserId()) {
+        prefs.setString('edificio', userData['edificio']);
+        prefs.setString('rol', userData['rol']);
+        prefs.setString('nombre', userData['nombre']);
+        prefs.setString('numeroApto', userData['numeroApto']);
+        break;
       }
     }
   }
