@@ -27,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          'Home Page',
+          'Administradores Diaz PH SAS',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
@@ -73,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No data found'));
                 } else {
-                  print('Data retrieved: ${snapshot.data}');
                   return CarouselSlider(
                     options: CarouselOptions(
                       height: 400.0,
