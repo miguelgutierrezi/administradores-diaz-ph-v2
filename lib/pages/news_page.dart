@@ -1,6 +1,7 @@
 import 'package:administradores_diaz_ph/models/news.dart';
 import 'package:administradores_diaz_ph/models/user_role.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,8 +24,10 @@ class _NewsPageState extends State<NewsPage> {
 
   List<News> _noticias = [];
   List<News> _filterNews = [];
-  String? _searchTerm;
+  String _searchTerm = '';
   UserRole? _role;
+  String? _userBuilding;
+  List<String>? _adminBuildings;
 
   @override
   void initState() {
@@ -34,7 +37,39 @@ class _NewsPageState extends State<NewsPage> {
 
   Future<void> _initializePage() async {
     _role = await _authService.getCurrentUserRole();
-    _getNews();
+    final prefs = await SharedPreferences.getInstance();
+    if (_role == UserRole.user) {
+      _userBuilding = prefs.getString("edificio");
+    } else if (_role == UserRole.admin) {
+      _adminBuildings =
+          await _sharedPreferencesService.getDynamicList('edificio');
+    }
+    setState(() {});
+  }
+
+  Stream<List<News>> _newsStream() {
+    Query query = FirebaseFirestore.instance.collection('news');
+    if (_role == UserRole.user && _userBuilding != null) {
+      query = query.where('edificio', isEqualTo: _userBuilding);
+    } else if (_role == UserRole.admin &&
+        _adminBuildings != null &&
+        _adminBuildings!.isNotEmpty) {
+      query = query.where('edificio', whereIn: _adminBuildings);
+    }
+    return query.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        var data = doc.data() as Map<String, dynamic>;
+        return News(
+          id: doc.id,
+          descripcion: data['descripcion'] ?? '',
+          edificio: data['edificio'] ?? '',
+          fecha: data['fecha'] ?? '',
+          filesLinks: List<String>.from(data['filesLinks'] ?? []),
+          filesNames: List<String>.from(data['filesNames'] ?? []),
+          noticia: data['noticia'] ?? '',
+        );
+      }).toList();
+    });
   }
 
   Future<void> _getNews() async {
@@ -113,7 +148,6 @@ class _NewsPageState extends State<NewsPage> {
               child: const Text('Aceptar'),
               onPressed: () {
                 Navigator.of(context).pop();
-                _getNews();
               },
             ),
           ],
@@ -134,6 +168,7 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -150,42 +185,67 @@ class _NewsPageState extends State<NewsPage> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _searchTerm = value;
                     _setFilteredNews(value);
                   });
                 },
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: _filterNews.length,
-                itemBuilder: (context, index) {
-                  final noticia = _filterNews[index];
-                  return _role == UserRole.admin || _role == UserRole.superadmin
-                      ? Dismissible(
-                          key: Key(noticia.id),
-                          direction: DismissDirection.endToStart,
-                          onDismissed: (direction) {
-                            _deleteNews(noticia.id);
-                            setState(() {
-                              _filterNews.removeAt(index);
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Noticia eliminada')),
-                            );
-                          },
-                          background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child:
-                                const Icon(Icons.delete, color: Colors.white),
-                          ),
-                          child: _buildNewsCard(noticia),
-                        )
-                      : _buildNewsCard(noticia);
+              child: StreamBuilder<List<News>>(
+                stream: _newsStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                        child: Text('No hay noticias disponibles.'));
+                  }
+
+                  _noticias = snapshot.data!;
+                  _filterNews = _searchTerm.isEmpty
+                      ? _noticias
+                      : _noticias
+                          .where((noticia) => noticia.noticia
+                              .toLowerCase()
+                              .contains(_searchTerm.toLowerCase()))
+                          .toList();
+
+                  return ListView.builder(
+                    itemCount: _filterNews.length,
+                    itemBuilder: (context, index) {
+                      final noticia = _filterNews[index];
+                      return _role == UserRole.admin ||
+                              _role == UserRole.superadmin
+                          ? Dismissible(
+                              key: Key(noticia.id),
+                              direction: DismissDirection.endToStart,
+                              onDismissed: (direction) {
+                                _deleteNews(noticia.id);
+                                setState(() {
+                                  _filterNews.removeAt(index);
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Noticia eliminada')),
+                                );
+                              },
+                              background: Container(
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: const Icon(Icons.delete,
+                                    color: Colors.white),
+                              ),
+                              child: _buildNewsCard(noticia),
+                            )
+                          : _buildNewsCard(noticia);
+                    },
+                  );
                 },
               ),
             ),
@@ -197,7 +257,10 @@ class _NewsPageState extends State<NewsPage> {
           // Lógica para agregar una nueva noticia
         },
         backgroundColor: Colors.black,
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
