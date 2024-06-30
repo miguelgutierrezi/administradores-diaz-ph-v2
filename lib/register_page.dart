@@ -1,6 +1,8 @@
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
+import 'package:administradores_diaz_ph/services/platform_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -88,6 +90,9 @@ class _RegisterPageState extends State<RegisterPage> {
           prefs.setString('rol', 'CLIENTE');
           prefs.setString('nombre', _nameController.text);
           prefs.setString('numeroApto', _apartmentController.text);
+          if (PlatformService.isMobile()) {
+            await _subscribeToNotifications(_selectedBuilding);
+          }
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const HomePage()));
         } // Dismiss the loader
@@ -99,6 +104,13 @@ class _RegisterPageState extends State<RegisterPage> {
         showErrorDialog(context, 'Error', _errorMessage);
       }
     }
+  }
+
+  Future<void> _subscribeToNotifications(String edificio) async {
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    String topic = 'news_${edificio.replaceAll(' ', '_').toLowerCase()}';
+    await firebaseMessaging.subscribeToTopic(topic);
+    print('Subscribed to $topic');
   }
 
   Future<void> showErrorDialog(

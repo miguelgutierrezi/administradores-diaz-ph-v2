@@ -1,8 +1,10 @@
 import 'package:administradores_diaz_ph/register_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
+import 'package:administradores_diaz_ph/services/platform_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -92,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
     prefs.setString('id', _authService.getCurrentUserId());
 
     List<Map<String, dynamic>> users =
-        await _firestoreService.getCollection('users');
+    await _firestoreService.getCollection('users');
 
     for (var userData in users) {
       if (userData['id'] == _authService.getCurrentUserId()) {
@@ -105,10 +107,36 @@ class _LoginPageState extends State<LoginPage> {
         prefs.setString('rol', userData['rol'] ?? '');
         prefs.setString('nombre', userData['nombre'] ?? '');
         prefs.setString('numeroApto', userData['numeroApto'] ?? '');
+        if (PlatformService.isMobile()) {
+          await _subscribeToNotifications(userData['rol'], userData['edificio']);
+        }
         break;
       }
     }
     // _sharedPreferencesService.printAllPrefs();
+  }
+
+  Future<void> _subscribeToNotifications(String role, dynamic edificio) async {
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
+    if (role == 'CLIENTE') {
+      if (edificio != null && edificio is String) {
+        String topic = 'news_${edificio.replaceAll(' ', '_').toLowerCase()}';
+        await firebaseMessaging.subscribeToTopic(topic);
+        print('Subscribed to $topic');
+      }
+    } else if (role == 'ADMINISTRADOR') {
+      if (edificio != null && edificio is List<String>) {
+        for (String building in edificio) {
+          String topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
+          await firebaseMessaging.subscribeToTopic(topic);
+          print('Subscribed to $topic');
+        }
+      }
+    } else if (role == 'SUPERADMINISTRADOR') {
+      await firebaseMessaging.subscribeToTopic('news');
+      print('Subscribed to news');
+    }
   }
 
   void _showForgotPasswordDialog() {
