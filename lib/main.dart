@@ -1,9 +1,8 @@
 import 'package:administradores_diaz_ph/firebase_options.dart';
+import 'package:administradores_diaz_ph/splash_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'welcome_page.dart';
-
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
   runApp(const MyApp());
@@ -19,9 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const WelcomePage(),
+      home: const SplashScreen(),
     );
   }
 }
-
-
