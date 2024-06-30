@@ -1,5 +1,6 @@
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
+import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   final _authService = AuthService();
   final _firestoreService = FirestoreService();
+  final _sharedPreferencesService = SharedPreferencesService();
 
   bool _isButtonEnabled = false;
 
@@ -72,9 +74,10 @@ class _LoginPageState extends State<LoginPage> {
         if (user != null) {
           await _storeUserData(user);
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => HomePage()));
+              MaterialPageRoute(builder: (context) => const HomePage()));
         }
       } catch (e) {
+        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Error al iniciar sesión')),
         );
@@ -89,15 +92,18 @@ class _LoginPageState extends State<LoginPage> {
 
     List<Map<String, dynamic>> users =
         await _firestoreService.getCollection('users');
+
     for (var userData in users) {
       if (userData['id'] == _authService.getCurrentUserId()) {
-        prefs.setString('edificio', userData['edificio']);
-        prefs.setString('rol', userData['rol']);
-        prefs.setString('nombre', userData['nombre']);
-        prefs.setString('numeroApto', userData['numeroApto']);
+        _sharedPreferencesService.storeDynamicList(
+            'edificio', userData['edificio']);
+        prefs.setString('rol', userData['rol'] ?? '');
+        prefs.setString('nombre', userData['nombre'] ?? '');
+        prefs.setString('numeroApto', userData['numeroApto'] ?? '');
         break;
       }
     }
+    // _sharedPreferencesService.printAllPrefs();
   }
 
   void _showForgotPasswordDialog() {

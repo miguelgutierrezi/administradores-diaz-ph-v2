@@ -37,7 +37,7 @@ class _WelcomePageState extends State<WelcomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
+                MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             },
           ),
@@ -78,7 +78,8 @@ class _WelcomePageState extends State<WelcomePage> {
                       height: 400.0,
                       autoPlay: true,
                       autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                      autoPlayAnimationDuration:
+                          const Duration(milliseconds: 800),
                       autoPlayCurve: Curves.fastOutSlowIn,
                       pauseAutoPlayOnTouch: true,
                     ),
@@ -88,7 +89,8 @@ class _WelcomePageState extends State<WelcomePage> {
                           return Column(
                             children: [
                               Image.network(
-                                doc['imageUrl'] ?? 'https://cdn-icons-png.flaticon.com/512/85/85488.png',
+                                doc['imageUrl'] ??
+                                    'https://cdn-icons-png.flaticon.com/512/85/85488.png',
                                 height: 200,
                                 width: 200,
                                 errorBuilder: (context, error, stackTrace) {
@@ -102,7 +104,8 @@ class _WelcomePageState extends State<WelcomePage> {
                               const SizedBox(height: 10),
                               Text(
                                 doc['nombre'] ?? 'No title',
-                                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
                               ),
                               Text(
                                 doc['direccion'] ?? 'No subtitle',

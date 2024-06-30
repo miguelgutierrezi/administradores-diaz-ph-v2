@@ -1,8 +1,12 @@
+import 'package:administradores_diaz_ph/models/user_role.dart';
+import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final SharedPreferencesService _sharedPreferencesService =
+      SharedPreferencesService();
 
   Future<void> sendPasswordResetEmail(String email) async {
     try {
@@ -44,8 +48,7 @@ class AuthService {
   }
 
   Future<void> _clearUserSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('userId');
+    await _sharedPreferencesService.clearPrefs();
   }
 
   Future<String?> getUserSession() async {
@@ -55,6 +58,22 @@ class AuthService {
 
   User? getCurrentUser() {
     return _firebaseAuth.currentUser;
+  }
+
+  Future<UserRole?> getCurrentUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? roleString = prefs.getString('rol');
+    if (roleString != null) {
+      switch (roleString) {
+        case 'ADMINISTRADOR':
+          return UserRole.admin;
+        case 'SUPERADMINISTRADOR':
+          return UserRole.superadmin;
+        case 'CLIENTE':
+          return UserRole.user;
+      }
+    }
+    return null;
   }
 
   Stream<User?> authStateChanges() {

@@ -16,7 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Administradores Diaz PH',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Colors.black,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey,
+        ),
       ),
       home: const SplashScreen(),
     );
