@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/register_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
@@ -170,6 +171,15 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -229,7 +239,8 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  // Acción de registrar
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const RegisterPage()));
                 },
                 child: const Text('¿No tienes cuenta? Regístrate'),
               ),

@@ -31,4 +31,8 @@ class FirestoreService {
       return null;
     }
   }
+
+  Future<void> addData(String uid, Map<String, dynamic> data) async {
+    await _db.collection('users').doc(uid).set(data);
+  }
 }
