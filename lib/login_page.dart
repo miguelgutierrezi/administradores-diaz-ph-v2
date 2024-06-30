@@ -96,8 +96,12 @@ class _LoginPageState extends State<LoginPage> {
 
     for (var userData in users) {
       if (userData['id'] == _authService.getCurrentUserId()) {
-        _sharedPreferencesService.storeDynamicList(
-            'edificio', userData['edificio']);
+        if (userData['rol'] == 'CLIENTE') {
+          prefs.setString('edificio', userData['edificio'] ?? '');
+        } else {
+          _sharedPreferencesService.storeDynamicList(
+              'edificio', userData['edificio']);
+        }
         prefs.setString('rol', userData['rol'] ?? '');
         prefs.setString('nombre', userData['nombre'] ?? '');
         prefs.setString('numeroApto', userData['numeroApto'] ?? '');

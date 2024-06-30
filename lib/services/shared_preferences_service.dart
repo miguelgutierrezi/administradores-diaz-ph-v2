@@ -10,11 +10,13 @@ class SharedPreferencesService {
     await prefs.setStringList(name, jsonList);
   }
 
-  Future<List<dynamic>> getDynamicList() async {
+  Future<List<String>> getDynamicList(String name) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String>? jsonList = prefs.getStringList('dynamicList');
+    List<String>? jsonList = prefs.getStringList(name);
     if (jsonList != null) {
-      return jsonList.map((jsonString) => jsonDecode(jsonString)).toList();
+      return jsonList
+          .map((jsonString) => jsonEncode(jsonDecode(jsonString)))
+          .toList();
     } else {
       return [];
     }

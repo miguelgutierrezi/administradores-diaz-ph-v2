@@ -35,4 +35,13 @@ class FirestoreService {
   Future<void> addData(String uid, Map<String, dynamic> data) async {
     await _db.collection('users').doc(uid).set(data);
   }
+
+  Future<void> deleteObject(String collectionPath, String documentId) async {
+    try {
+      await _db.collection(collectionPath).doc(documentId).delete();
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

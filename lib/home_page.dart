@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
           Positioned(
             right: 0,
             child: Container(
-              padding: EdgeInsets.all(1),
+              padding: const EdgeInsets.all(1),
               decoration: BoxDecoration(
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(6),
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: const Text(
-            'Home',
+            'Administradores Diaz PH',
             style: TextStyle(color: Colors.white),
           ),
           actions: [
