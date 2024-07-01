@@ -19,7 +19,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
-  final TextEditingController _buildingController = TextEditingController();
   final TextEditingController _apartmentController = TextEditingController();
   final FirestoreService _firestoreService = FirestoreService();
   final AuthService _authService = AuthService();

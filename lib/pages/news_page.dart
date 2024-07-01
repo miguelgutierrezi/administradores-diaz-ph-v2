@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/modals/add_news.dart';
 import 'package:administradores_diaz_ph/models/news.dart';
 import 'package:administradores_diaz_ph/models/user_role.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
@@ -70,51 +71,6 @@ class _NewsPageState extends State<NewsPage> {
         );
       }).toList();
     });
-  }
-
-  Future<void> _getNews() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      List<Map<String, dynamic>> newsData =
-          await _firestoreService.getCollection('news');
-      List<News> noticias = newsData
-          .map((data) => News(
-                id: data['id'],
-                descripcion: data['descripcion'] ?? '',
-                edificio: data['edificio'] ?? '',
-                fecha: data['fecha'] ?? '',
-                filesLinks: List<String>.from(data['filesLinks'] ?? []),
-                filesNames: List<String>.from(data['filesNames'] ?? []),
-                noticia: data['noticia'] ?? '',
-              ))
-          .toList();
-
-      if (_role == UserRole.user) {
-        String? edificioLocal = prefs.getString("edificio");
-        setState(() {
-          _noticias = noticias
-              .where((noticia) => noticia.edificio == edificioLocal)
-              .toList();
-          _filterNews = _noticias;
-        });
-      } else if (_role == UserRole.admin) {
-        List<String> edificioLocal =
-            await _sharedPreferencesService.getDynamicList('edificio');
-        setState(() {
-          _noticias = noticias
-              .where((noticia) => edificioLocal.contains(noticia.edificio))
-              .toList();
-          _filterNews = _noticias;
-        });
-      } else {
-        setState(() {
-          _noticias = noticias;
-          _filterNews = noticias;
-        });
-      }
-    } catch (e) {
-      print('Error fetching news: $e');
-    }
   }
 
   Future<void> _downloadFile(News noticia, int index) async {
@@ -252,16 +208,22 @@ class _NewsPageState extends State<NewsPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Lógica para agregar una nueva noticia
-        },
-        backgroundColor: Colors.black,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: (_role == UserRole.admin ||
+              _role == UserRole.superadmin)
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddNewsPage()),
+                );
+              },
+              backgroundColor: Colors.black,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            )
+          : null,
     );
   }
 
