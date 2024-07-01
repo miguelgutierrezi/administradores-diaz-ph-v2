@@ -1,8 +1,16 @@
+import 'package:administradores_diaz_ph/home_page.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
+import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
+
+import '../models/user_role.dart';
+import '../services/auth_service.dart';
 
 class AddNewsPage extends StatefulWidget {
   const AddNewsPage({super.key});
@@ -16,10 +24,15 @@ class _AddNewsPageState extends State<AddNewsPage> {
   final _noticiaController = TextEditingController();
   final _descripcionController = TextEditingController();
   final _firestoreService = FirestoreService();
+  final AuthService _authService = AuthService();
+  final SharedPreferencesService _sharedPreferencesService =
+      SharedPreferencesService();
 
+  UserRole? _role;
   List<String> _buildings = [];
   String _selectedBuilding = '';
   PlatformFile? _pickedFile;
+  DateTime? _selectedDate;
 
   @override
   void initState() {
@@ -35,12 +48,21 @@ class _AddNewsPageState extends State<AddNewsPage> {
   }
 
   Future<void> _loadBuildings() async {
-    List<Map<String, dynamic>> buildingsData =
-        await _firestoreService.getCollection('buildings');
-    setState(() {
-      _buildings =
-          buildingsData.map((data) => data['nombre'].toString()).toList();
-    });
+    _role = await _authService.getCurrentUserRole();
+    if (_role == UserRole.admin) {
+      List<String>? adminBuildings =
+          await _sharedPreferencesService.getDynamicList('edificio');
+      setState(() {
+        _buildings = adminBuildings;
+      });
+    } else {
+      List<Map<String, dynamic>> buildingsData =
+          await _firestoreService.getCollection('buildings');
+      setState(() {
+        _buildings =
+            buildingsData.map((data) => data['nombre'].toString()).toList();
+      });
+    }
   }
 
   Future<void> _pickFile() async {
@@ -62,10 +84,102 @@ class _AddNewsPageState extends State<AddNewsPage> {
     }
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Lógica para enviar los datos a Firestore
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
     }
+  }
+
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      List<String> filesLinks = [];
+      List<String> filesNames = [];
+      _formKey.currentState!.save();
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Center(child: SpinKitCircle(color: Colors.white));
+        },
+      );
+
+      try {
+        final data = {
+          'noticia': _noticiaController.text,
+          'descripcion': _descripcionController.text,
+          'edificio': _selectedBuilding,
+          'fecha': _selectedDate?.toIso8601String() ??
+              DateTime.now().toIso8601String(),
+        };
+
+        DocumentReference newsRef =
+            await _firestoreService.createDocument('news', data);
+
+        if (_pickedFile != null) {
+          String imageUrl = await _firestoreService.uploadFile(
+              newsRef.id, _pickedFile!.path!);
+          filesLinks = [imageUrl];
+          filesNames = [_pickedFile!.name];
+        }
+
+        final dataUp = {
+          'noticia': _noticiaController.text,
+          'descripcion': _descripcionController.text,
+          'edificio': _selectedBuilding,
+          'fecha': _selectedDate?.toIso8601String() ??
+              DateTime.now().toIso8601String(),
+          'filesLinks': filesLinks,
+          'filesNames': filesNames,
+        };
+
+        await _firestoreService.updateDocument('news', newsRef.id, dataUp);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        ); // Dismiss the loader
+        _showAlert(
+            context, 'Noticia agregada', 'Se ha creado una nueva noticia');
+      } catch (e) {
+        Navigator.of(context).pop(); // Dismiss the loader
+        print("Error: $e");
+      }
+    }
+  }
+
+  void _showAlert(BuildContext context, String title, String message) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Aceptar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -113,12 +227,12 @@ class _AddNewsPageState extends State<AddNewsPage> {
                   labelText: 'Edificio',
                   icon: Icon(Icons.location_city),
                 ),
-                items: _buildings
-                    .map((building) => DropdownMenuItem(
-                          value: building,
-                          child: Text(building),
-                        ))
-                    .toList(),
+                items: _buildings.map((building) {
+                  return DropdownMenuItem<String>(
+                    value: building,
+                    child: Text(building, overflow: TextOverflow.ellipsis),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   setState(() {
                     _selectedBuilding = value!;
@@ -144,6 +258,25 @@ class _AddNewsPageState extends State<AddNewsPage> {
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton.icon(
+                onPressed: () => _selectDate(context),
+                icon: const Icon(Icons.calendar_today),
+                label: const Text('Seleccionar fecha'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Text(
+                _selectedDate != null
+                    ? "Fecha seleccionada: ${DateFormat('dd-MM-yyyy').format(_selectedDate!)}"
+                    : 'Ninguna fecha seleccionada',
+                style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton.icon(

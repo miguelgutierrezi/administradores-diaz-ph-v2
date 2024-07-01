@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Método para recuperar una colección completa
   Future<List<Map<String, dynamic>>> getCollection(
@@ -32,6 +36,16 @@ class FirestoreService {
     }
   }
 
+  Future<DocumentReference> createDocument(
+      String collectionName, Map<String, dynamic> data) async {
+    return await _db.collection(collectionName).add(data);
+  }
+
+  Future<void> updateDocument(
+      String collectionName, String id, Map<String, dynamic> data) async {
+    await _db.collection(collectionName).doc(id).update(data);
+  }
+
   Future<void> addData(String uid, Map<String, dynamic> data) async {
     await _db.collection('users').doc(uid).set(data);
   }
@@ -43,5 +57,13 @@ class FirestoreService {
       print(e);
       rethrow;
     }
+  }
+
+  Future<String> uploadFile(String newsId, String filePath) async {
+    File file = File(filePath);
+    TaskSnapshot taskSnapshot = await _storage
+        .ref('news/$newsId/${file.uri.pathSegments.last}')
+        .putFile(file);
+    return await taskSnapshot.ref.getDownloadURL();
   }
 }

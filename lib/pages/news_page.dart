@@ -1,6 +1,7 @@
 import 'package:administradores_diaz_ph/modals/add_news.dart';
 import 'package:administradores_diaz_ph/models/news.dart';
 import 'package:administradores_diaz_ph/models/user_role.dart';
+import 'package:administradores_diaz_ph/services/platform_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -208,8 +209,9 @@ class _NewsPageState extends State<NewsPage> {
           ],
         ),
       ),
-      floatingActionButton: (_role == UserRole.admin ||
-              _role == UserRole.superadmin)
+      floatingActionButton: ((_role == UserRole.admin ||
+                  _role == UserRole.superadmin) &&
+              PlatformService.isMobile())
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.push(
