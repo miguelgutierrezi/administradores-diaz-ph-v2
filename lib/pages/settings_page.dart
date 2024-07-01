@@ -1,14 +1,201 @@
 import 'package:flutter/material.dart';
 
-class SettingsPage extends StatelessWidget {
+import '../models/user_role.dart';
+import '../services/auth_service.dart';
+
+class SettingsPage extends StatefulWidget {
   final String title;
 
   const SettingsPage({required this.title});
 
   @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final AuthService _authService = AuthService();
+  UserRole? _userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserRole();
+  }
+
+  Future<void> _loadUserRole() async {
+    UserRole? role = await _authService.getCurrentUserRole();
+    setState(() {
+      _userRole = role;
+    });
+  }
+
+  bool isSuperAdmin() {
+    var superAdmin = _userRole == UserRole.superadmin;
+    return superAdmin;
+  }
+
+  bool isNotClient() {
+    return _userRole != UserRole.user;
+  }
+
+  void logout() async {
+    await _authService.signOut();
+    Navigator.of(context).pushReplacementNamed('/welcome');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('$title Page'),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: ListView(
+        children: [
+          if (isNotClient()) ...[
+            ListTile(
+              leading: const Icon(Icons.person_outline),
+              title: const Text('Agregar cliente'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/register/add-client');
+              },
+            ),
+            const Divider(),
+          ],
+          if (isSuperAdmin()) ...[
+            ListTile(
+              leading: const Icon(Icons.person_outline),
+              title: const Text('Agregar administrador'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/register/add-admin');
+              },
+            ),
+            const Divider(),
+          ],
+          if (isSuperAdmin()) ...[
+            ListTile(
+              leading: const Icon(Icons.business_outlined),
+              title: const Text('Agregar edificio'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/buildings/add-building');
+              },
+            ),
+            const Divider(),
+          ],
+          if (isNotClient()) ...[
+            ListTile(
+              leading: const Icon(Icons.navigation_outlined),
+              title: const Text('Agregar zona común'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/home/zones-list/add-zone');
+              },
+            ),
+            const Divider(),
+          ],
+          if (isNotClient()) ...[
+            ListTile(
+              leading: const Icon(Icons.add_alert_outlined),
+              title: const Text('Ver quejas y reclamos'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/complaints');
+              },
+            ),
+            const Divider(),
+          ],
+          if (!isNotClient()) ...[
+            ListTile(
+              leading: const Icon(Icons.add_alert_outlined),
+              title: const Text('Enviar queja o reclamo'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/complaints/add-complaint');
+              },
+            ),
+            const Divider(),
+          ],
+          ListTile(
+            leading: const Icon(Icons.archive_outlined),
+            title: const Text('Ver votaciones'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.pushNamed(context, '/votings');
+            },
+          ),
+          const Divider(),
+          if (isNotClient()) ...[
+            ListTile(
+              leading: isSuperAdmin()
+                  ? const Icon(Icons.people_outlined)
+                  : const Icon(Icons.groups_outlined),
+              title: isSuperAdmin()
+                  ? const Text('Ver visitas')
+                  : const Text('Mis visitas'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/visits');
+              },
+            ),
+            const Divider(),
+          ],
+          if (isSuperAdmin()) ...[
+            ListTile(
+              leading: const Icon(Icons.business_outlined),
+              title: const Text('Mis edificios'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/buildings');
+              },
+            ),
+            const Divider(),
+          ],
+          if (isSuperAdmin()) ...[
+            ListTile(
+              leading: const Icon(Icons.people_outlined),
+              title: const Text('Ver administradores'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/users/admins');
+              },
+            ),
+            const Divider(),
+          ],
+          if (isNotClient()) ...[
+            ListTile(
+              leading: const Icon(Icons.people_outlined),
+              title: const Text('Ver clientes'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/users/clients');
+              },
+            ),
+            const Divider(),
+          ],
+          if (isNotClient()) ...[
+            ListTile(
+              leading: const Icon(Icons.wallet_outlined),
+              title: const Text('Ingresar factura'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/add-bill');
+              },
+            ),
+            const Divider(),
+          ],
+          if (!isNotClient()) ...[
+            ListTile(
+              leading: const Icon(Icons.wallet_outlined),
+              title: const Text('Consultar factura'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.pushNamed(context, '/bills-list');
+              },
+            ),
+            const Divider(),
+          ],
+        ],
+      ),
     );
   }
 }

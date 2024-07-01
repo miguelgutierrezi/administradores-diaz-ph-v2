@@ -38,15 +38,17 @@ class _NewsPageState extends State<NewsPage> {
   }
 
   Future<void> _initializePage() async {
-    _role = await _authService.getCurrentUserRole();
+    UserRole? userRole = await _authService.getCurrentUserRole();
     final prefs = await SharedPreferences.getInstance();
-    if (_role == UserRole.user) {
+    if (userRole == UserRole.user) {
       _userBuilding = prefs.getString("edificio");
-    } else if (_role == UserRole.admin) {
+    } else if (userRole == UserRole.admin) {
       _adminBuildings =
           await _sharedPreferencesService.getDynamicList('edificio');
     }
-    setState(() {});
+    setState(() {
+      _role = userRole;
+    });
   }
 
   Stream<List<News>> _newsStream() {

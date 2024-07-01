@@ -48,8 +48,8 @@ class _AddNewsPageState extends State<AddNewsPage> {
   }
 
   Future<void> _loadBuildings() async {
-    _role = await _authService.getCurrentUserRole();
-    if (_role == UserRole.admin) {
+    UserRole? userRole = await _authService.getCurrentUserRole();
+    if (userRole == UserRole.admin) {
       List<String>? adminBuildings =
           await _sharedPreferencesService.getDynamicList('edificio');
       setState(() {
@@ -63,6 +63,9 @@ class _AddNewsPageState extends State<AddNewsPage> {
             buildingsData.map((data) => data['nombre'].toString()).toList();
       });
     }
+    setState(() {
+      _role = userRole;
+    });
   }
 
   Future<void> _pickFile() async {
