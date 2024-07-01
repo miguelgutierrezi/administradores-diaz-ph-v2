@@ -5,6 +5,7 @@ import 'package:administradores_diaz_ph/pages/settings_page.dart';
 import 'package:administradores_diaz_ph/pages/zones_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/welcome_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'models/user_role.dart';
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   late List<Widget> _children;
   late List<BottomNavigationBarItem> _items;
   UserRole? _userRole;
-  int _unreadMessagesCount = 1;
+  int _unreadMessagesCount = 0;
 
   @override
   void initState() {
@@ -65,41 +66,62 @@ class _HomePageState extends State<HomePage> {
       ),
       BottomNavigationBarItem(
         icon: const Icon(Icons.admin_panel_settings),
-        label: _userRole == 'admin' || _userRole == 'superadmin'
+        label: _userRole == UserRole.admin || _userRole == UserRole.superadmin
             ? 'Admon'
             : 'Más opciones',
       ),
     ];
   }
 
+  Stream<int> _unreadMessagesCountStream() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_authService.getCurrentUserId())
+        .snapshots()
+        .map((snapshot) {
+      var data = snapshot.data() as Map<String, dynamic>;
+      List<Map<String, dynamic>> receivedMessages =
+          List<Map<String, dynamic>>.from(data['recibidos'] ?? []);
+      int unreadCount =
+          receivedMessages.where((message) => !message['read']).length;
+      return unreadCount;
+    });
+  }
+
   Widget _buildMessagesIcon() {
-    return Stack(
-      children: <Widget>[
-        const Icon(Icons.message),
-        if (_unreadMessagesCount > 0)
-          Positioned(
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              constraints: const BoxConstraints(
-                minWidth: 12,
-                minHeight: 12,
-              ),
-              child: Text(
-                '$_unreadMessagesCount',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 8,
+    return StreamBuilder<int>(
+      stream: _unreadMessagesCountStream(),
+      builder: (context, snapshot) {
+        _unreadMessagesCount = snapshot.data ?? 0;
+        return Stack(
+          children: <Widget>[
+            const Icon(Icons.message),
+            if (_unreadMessagesCount > 0)
+              Positioned(
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 12,
+                    minHeight: 12,
+                  ),
+                  child: Text(
+                    '$_unreadMessagesCount',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 8,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          )
-      ],
+              )
+          ],
+        );
+      },
     );
   }
 
