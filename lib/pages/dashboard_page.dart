@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/modals/add_announce.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../services/platform_service.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -217,10 +219,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                         children: [
                                           if (item['whatsapp'] == true)
                                             IconButton(
-                                              icon: const Icon(FontAwesomeIcons.whatsapp,
+                                              icon: const Icon(
+                                                  FontAwesomeIcons.whatsapp,
                                                   color: Colors.green),
                                               onPressed: () => _sendMessage(
-                                                  'https://api.whatsapp.com/send?phone=+57',
+                                                  'https://api.whatsapp.com/send/?phone=57',
                                                   item['celular']),
                                             ),
                                           GestureDetector(
@@ -253,13 +256,21 @@ class _DashboardPageState extends State<DashboardPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/home/dashboard/add-announce');
-        },
-        backgroundColor: Colors.black,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      floatingActionButton: (PlatformService.isMobile())
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddAnnounce()),
+                );
+              },
+              backgroundColor: Colors.black,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            )
+          : null,
     );
   }
 }

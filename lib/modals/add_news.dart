@@ -128,7 +128,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
 
         if (_pickedFile != null) {
           String imageUrl = await _firestoreService.uploadFile(
-              newsRef.id, _pickedFile!.path!);
+              'news', newsRef.id, _pickedFile!.path!);
           filesLinks = [imageUrl];
           filesNames = [_pickedFile!.name];
         }

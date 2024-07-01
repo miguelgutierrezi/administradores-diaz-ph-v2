@@ -59,10 +59,11 @@ class FirestoreService {
     }
   }
 
-  Future<String> uploadFile(String newsId, String filePath) async {
+  Future<String> uploadFile(
+      String collectionName, String objectId, String filePath) async {
     File file = File(filePath);
     TaskSnapshot taskSnapshot = await _storage
-        .ref('news/$newsId/${file.uri.pathSegments.last}')
+        .ref('$collectionName/$objectId/${file.uri.pathSegments.last}')
         .putFile(file);
     return await taskSnapshot.ref.getDownloadURL();
   }
