@@ -4,9 +4,12 @@ import 'package:administradores_diaz_ph/pages/news_page.dart';
 import 'package:administradores_diaz_ph/pages/settings_page.dart';
 import 'package:administradores_diaz_ph/pages/zones_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
+import 'package:administradores_diaz_ph/services/platform_service.dart';
 import 'package:administradores_diaz_ph/welcome_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/user_role.dart';
 
@@ -29,6 +32,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _initializeRoleAndTabs();
+    if (PlatformService.isMobile()) {
+      _setupPushNotifications();
+    }
   }
 
   Future<void> _initializeRoleAndTabs() async {
@@ -37,6 +43,34 @@ class _HomePageState extends State<HomePage> {
       _userRole = role;
       _initializeTabs();
     });
+  }
+
+  void _setupPushNotifications() async {
+    final fcm = FirebaseMessaging.instance;
+    await fcm.requestPermission();
+    final prefs = await SharedPreferences.getInstance();
+    UserRole? _role = await _authService.getCurrentUserRole();
+
+    if (_role == UserRole.user) {
+      String? building = prefs.getString('edificio');
+      if (building != null) {
+        String topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
+        await fcm.subscribeToTopic(topic);
+        print('Subscribed to $topic');
+      }
+    } else if (_role == UserRole.admin) {
+      List<String>? buildings = prefs.getStringList('edificio');
+      if (buildings != null) {
+        for (String building in buildings) {
+          String topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
+          await fcm.subscribeToTopic(topic);
+          print('Subscribed to $topic');
+        }
+      }
+    } else if (_role == UserRole.superadmin) {
+      await fcm.subscribeToTopic('news');
+      print('Subscribed to news');
+    }
   }
 
   void _initializeTabs() {
