@@ -7,6 +7,7 @@ import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/platform_service.dart';
 import 'package:administradores_diaz_ph/welcome_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,6 +51,7 @@ class _HomePageState extends State<HomePage> {
     await fcm.requestPermission();
     final prefs = await SharedPreferences.getInstance();
     UserRole? _role = await _authService.getCurrentUserRole();
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
 
     if (_role == UserRole.user) {
       String? building = prefs.getString('edificio');
@@ -71,6 +73,9 @@ class _HomePageState extends State<HomePage> {
       await fcm.subscribeToTopic('news');
       print('Subscribed to news');
     }
+    String userMessagesTopic = 'messages_$userId';
+    await fcm.subscribeToTopic(userMessagesTopic);
+    print('Subscribed to $userMessagesTopic');
   }
 
   void _initializeTabs() {
