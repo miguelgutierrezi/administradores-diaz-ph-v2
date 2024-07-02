@@ -52,11 +52,12 @@ class _HomePageState extends State<HomePage> {
     final prefs = await SharedPreferences.getInstance();
     UserRole? _role = await _authService.getCurrentUserRole();
     String? userId = FirebaseAuth.instance.currentUser?.uid;
+    String topic = '';
 
     if (_role == UserRole.user) {
       String? building = prefs.getString('edificio');
       if (building != null) {
-        String topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
+        topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
         await fcm.subscribeToTopic(topic);
         print('Subscribed to $topic');
       }
@@ -64,18 +65,21 @@ class _HomePageState extends State<HomePage> {
       List<String>? buildings = prefs.getStringList('edificio');
       if (buildings != null) {
         for (String building in buildings) {
-          String topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
+          topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
           await fcm.subscribeToTopic(topic);
           print('Subscribed to $topic');
         }
       }
     } else if (_role == UserRole.superadmin) {
-      await fcm.subscribeToTopic('news');
+      topic = 'news';
+      await fcm.subscribeToTopic(topic);
       print('Subscribed to news');
     }
     String userMessagesTopic = 'messages_$userId';
     await fcm.subscribeToTopic(userMessagesTopic);
     print('Subscribed to $userMessagesTopic');
+    prefs.setString('newsTopic', topic);
+    prefs.setString('messagesTopic', userMessagesTopic);
   }
 
   void _initializeTabs() {

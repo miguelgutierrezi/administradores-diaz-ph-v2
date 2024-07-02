@@ -49,6 +49,15 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: Colors.white,
       body: ListView(
         children: [
+          ListTile(
+            leading: const Icon(Icons.person_outline),
+            title: const Text('Mi perfil'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.pushNamed(context, '/register/add-client');
+            },
+          ),
+          const Divider(),
           if (isNotClient()) ...[
             ListTile(
               leading: const Icon(Icons.person_outline),

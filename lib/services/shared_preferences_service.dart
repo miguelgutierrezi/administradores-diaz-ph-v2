@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesService {
@@ -23,7 +24,19 @@ class SharedPreferencesService {
   }
 
   Future<void> clearPrefs() async {
+    final fcm = FirebaseMessaging.instance;
     final prefs = await SharedPreferences.getInstance();
+    String? newsTopic = prefs.getString('newsTopic');
+    String? messagesTopic = prefs.getString('messagesTopic');
+
+    if (newsTopic != null && newsTopic.isNotEmpty) {
+      await fcm.unsubscribeFromTopic(newsTopic);
+    }
+
+    if (messagesTopic != null && messagesTopic.isNotEmpty) {
+      await fcm.unsubscribeFromTopic(messagesTopic);
+    }
+
     await prefs.clear();
   }
 
