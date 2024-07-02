@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:289910440888:android:f3708b95e3d1a89d2d854d",
+        "mobilesdk_app_id": "1:289910440888:android:d576a20da4d84e9d2d854d",
         "android_client_info": {
-          "package_name": "com.example.administradores_diaz_ph"
+          "package_name": "com.gutierrez.administradores_diaz_ph"
         }
       },
       "oauth_client": [

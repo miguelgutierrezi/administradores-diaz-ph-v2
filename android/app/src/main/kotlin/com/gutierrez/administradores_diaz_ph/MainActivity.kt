@@ -1,4 +1,4 @@
-package com.example.administradores_diaz_ph
+package com.gutierrez.administradores_diaz_ph
 
 import io.flutter.embedding.android.FlutterActivity
 

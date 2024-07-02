@@ -66,13 +66,6 @@ class _MessagesPageState extends State<MessagesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text(
-          'Mis mensajes',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
       body: Column(
         children: [
           Padding(
