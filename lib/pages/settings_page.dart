@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/modals/add_complaint.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user_role.dart';
@@ -119,7 +120,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Enviar queja o reclamo'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/complaints/add-complaint');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddComplaintPage()),
+                );
               },
             ),
             const Divider(),
