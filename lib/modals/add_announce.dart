@@ -274,7 +274,7 @@ class _AddAnnounceState extends State<AddAnnounce> {
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _descriptionController,
-                maxLines: 3,
+                maxLines: 5,
                 decoration: const InputDecoration(
                   labelText: 'Descripción',
                   icon: Icon(Icons.description),

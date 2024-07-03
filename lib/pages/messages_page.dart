@@ -1,4 +1,4 @@
-import 'package:administradores_diaz_ph/modals/add_news.dart';
+import 'package:administradores_diaz_ph/modals/send_message.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -266,7 +266,7 @@ class _MessagesPageState extends State<MessagesPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddNewsPage()),
+                  MaterialPageRoute(builder: (context) => SendMessagePage()),
                 );
               },
               backgroundColor: Colors.black,
