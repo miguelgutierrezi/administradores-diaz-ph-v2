@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../modals/message_detail.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 
@@ -50,15 +51,38 @@ class _MessagesPageState extends State<MessagesPage> {
     });
   }
 
-  void _setFilteredMessages(String searchTerm) {
-    setState(() {
-      _searchTerm = searchTerm;
-      _filteredMessages = _messages.where((message) {
-        return message['titulo']
-            .toLowerCase()
-            .contains(searchTerm.toLowerCase());
-      }).toList();
-    });
+  void _updateReadStatusAndNavigate(BuildContext context,
+      Map<String, dynamic> mensaje, int index, bool isSent) async {
+    // Realiza la navegación primero
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MessageDetailPage(
+          mensaje: mensaje,
+          isSent: isSent,
+        ),
+      ),
+    );
+
+    // Luego, actualiza el estado de lectura en Firestore
+    if (!isSent) {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      final userDoc =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+      final snapshot = await userDoc.get();
+      final List recibidos = snapshot.data()?['recibidos'] ?? [];
+
+      recibidos[index]['read'] = true;
+
+      try {
+        await userDoc.update({
+          'recibidos': recibidos,
+        });
+      } catch (e) {
+        // Maneja el error de actualización si es necesario
+        print('Error actualizando el estado de lectura: $e');
+      }
+    }
   }
 
   @override
@@ -142,6 +166,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       children: receivedMessages
                           .where((message) => !message['read'])
                           .map((message) {
+                        int index = receivedMessages.indexOf(message);
                         return ListTile(
                           title: Text(
                             message['asunto'],
@@ -162,7 +187,8 @@ class _MessagesPageState extends State<MessagesPage> {
                             ],
                           ),
                           onTap: () {
-                            // Implementa la lógica para navegar al mensaje
+                            _updateReadStatusAndNavigate(
+                                context, message, index, false);
                           },
                         );
                       }).toList(),
@@ -185,6 +211,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       children: receivedMessages
                           .where((message) => message['read'])
                           .map((message) {
+                        int index = receivedMessages.indexOf(message);
                         return ListTile(
                           title: Text(
                             message['asunto'],
@@ -205,7 +232,8 @@ class _MessagesPageState extends State<MessagesPage> {
                             ],
                           ),
                           onTap: () {
-                            // Implementa la lógica para navegar al mensaje
+                            _updateReadStatusAndNavigate(
+                                context, message, index, false);
                           },
                         );
                       }).toList(),
@@ -227,6 +255,7 @@ class _MessagesPageState extends State<MessagesPage> {
                           });
                         },
                         children: sentMessages.map((message) {
+                          int index = sentMessages.indexOf(message);
                           return ListTile(
                             title: Text(
                               message['asunto'],
@@ -247,7 +276,8 @@ class _MessagesPageState extends State<MessagesPage> {
                               ],
                             ),
                             onTap: () {
-                              // Implementa la lógica para navegar al mensaje
+                              _updateReadStatusAndNavigate(
+                                  context, message, index, true);
                             },
                           );
                         }).toList(),
