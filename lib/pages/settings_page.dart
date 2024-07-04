@@ -7,6 +7,7 @@ import 'package:administradores_diaz_ph/modals/bills_page.dart';
 import 'package:administradores_diaz_ph/modals/clients_page.dart';
 import 'package:administradores_diaz_ph/modals/complaints_page.dart';
 import 'package:administradores_diaz_ph/modals/profile_page.dart';
+import 'package:administradores_diaz_ph/modals/visits_page.dart';
 import 'package:administradores_diaz_ph/modals/votings_page.dart';
 import 'package:flutter/material.dart';
 
@@ -173,7 +174,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   : const Text('Mis visitas'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/visits');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const VisitsListPage()),
+                );
               },
             ),
             const Divider(),
