@@ -1,10 +1,10 @@
+import 'package:administradores_diaz_ph/modals/add_zone.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../modals/add_news.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
@@ -238,7 +238,7 @@ class _ZonesPageState extends State<ZonesPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AddNewsPage()),
+                  MaterialPageRoute(builder: (context) => const AddZonePage()),
                 );
               },
               backgroundColor: Colors.black,

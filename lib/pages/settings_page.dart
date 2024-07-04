@@ -1,6 +1,7 @@
 import 'package:administradores_diaz_ph/modals/add_admin.dart';
 import 'package:administradores_diaz_ph/modals/add_client.dart';
 import 'package:administradores_diaz_ph/modals/add_complaint.dart';
+import 'package:administradores_diaz_ph/modals/add_zone.dart';
 import 'package:administradores_diaz_ph/modals/bills_page.dart';
 import 'package:administradores_diaz_ph/modals/complaints_page.dart';
 import 'package:administradores_diaz_ph/modals/profile_page.dart';
@@ -109,7 +110,10 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Agregar zona común'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/home/zones-list/add-zone');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddZonePage()),
+                );
               },
             ),
             const Divider(),
