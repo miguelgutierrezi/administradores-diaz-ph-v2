@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/modals/visit_detail.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,10 +27,18 @@ class _VisitsListPageState extends State<VisitsListPage> {
   List<String>? _adminBuildings;
   String? _userBuilding;
 
+  List<DocumentSnapshot> _visits = [];
+  bool _isLoading = false;
+  bool _hasMore = true;
+  int _documentLimit = 10;
+  DocumentSnapshot? _lastDocument;
+
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    _loadUserData().then((_) {
+      _getVisits();
+    });
   }
 
   Future<void> _loadUserData() async {
@@ -41,20 +50,42 @@ class _VisitsListPageState extends State<VisitsListPage> {
       _adminBuildings =
           await _sharedPreferencesService.getDynamicList('edificio');
     }
-    setState(() {});
   }
 
-  Stream<List<Map<String, dynamic>>> _visitsStream() {
+  Future<void> _getVisits() async {
+    if (!_hasMore) {
+      print('No More Visits');
+      return;
+    }
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
     Query query = FirebaseFirestore.instance.collection('visits');
     if (_userRole == UserRole.admin) {
       query = query.where('edificio', arrayContainsAny: _adminBuildings);
     }
-    return query.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        var data = doc.data() as Map<String, dynamic>;
-        data['id'] = doc.id;
-        return data;
-      }).toList();
+    query = query.orderBy('date', descending: true).limit(_documentLimit);
+
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+
+    QuerySnapshot querySnapshot = await query.get();
+    if (querySnapshot.docs.isNotEmpty) {
+      _lastDocument = querySnapshot.docs.last;
+      _visits.addAll(querySnapshot.docs);
+      if (querySnapshot.docs.length < _documentLimit) {
+        _hasMore = false;
+      }
+    } else {
+      _hasMore = false;
+    }
+
+    setState(() {
+      _isLoading = false;
     });
   }
 
@@ -66,6 +97,15 @@ class _VisitsListPageState extends State<VisitsListPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<DocumentSnapshot> filteredVisits = _visits;
+    if (_searchTerm.isNotEmpty) {
+      filteredVisits = _visits.where((visit) {
+        return (visit.data() as Map<String, dynamic>)['edificio']
+            .toLowerCase()
+            .contains(_searchTerm.toLowerCase());
+      }).toList();
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -97,53 +137,47 @@ class _VisitsListPageState extends State<VisitsListPage> {
               ),
             ),
           Expanded(
-            child: StreamBuilder<List<Map<String, dynamic>>>(
-              stream: _visitsStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(
-                      child: Text('Error al cargar las visitas'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No hay visitas disponibles'));
-                } else {
-                  var visits = snapshot.data!;
-                  if (_searchTerm.isNotEmpty) {
-                    visits = visits.where((visit) {
-                      return visit['edificio']
-                          .toLowerCase()
-                          .contains(_searchTerm.toLowerCase());
-                    }).toList();
-                  }
-                  return ListView.builder(
-                    itemCount: visits.length,
-                    itemBuilder: (context, index) {
-                      var visit = visits[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 16),
-                        child: ListTile(
-                          title: Text(visit['edificio']),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                  'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}'),
-                              Text(
-                                  'Autor: ${_userRole == UserRole.superadmin ? visit['name'] : _userName}'),
-                            ],
+            child: ListView.builder(
+              itemCount: filteredVisits.length + 1,
+              itemBuilder: (context, index) {
+                if (index == filteredVisits.length) {
+                  return _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : _hasMore
+                          ? TextButton(
+                              onPressed: _getVisits,
+                              child: const Text('Cargar más visitas'),
+                            )
+                          : const Center(child: Text('No hay más visitas'));
+                }
+                var visit = filteredVisits[index];
+                var data = visit.data() as Map<String, dynamic>;
+                return Card(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  child: ListTile(
+                    title: Text(data['edificio']),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                            'Fecha: ${DateTime.fromMillisecondsSinceEpoch(data['date'].seconds * 1000)}'),
+                        Text(
+                            'Autor: ${_userRole == UserRole.superadmin ? data['name'] : _userName}'),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VisitDetailPage(
+                            visitId: data['id'],
                           ),
-                          onTap: () {
-                            Navigator.pushNamed(context, '/visits/detail',
-                                arguments: visit['id']);
-                          },
                         ),
                       );
                     },
-                  );
-                }
+                  ),
+                );
               },
             ),
           ),
