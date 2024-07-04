@@ -1,10 +1,12 @@
 import 'package:administradores_diaz_ph/models/user_role.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   final SharedPreferencesService _sharedPreferencesService =
       SharedPreferencesService();
 
@@ -46,10 +48,26 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
-      await _firebaseAuth.signOut();
       await _clearUserSession();
+      await _firebaseAuth.signOut();
     } catch (e) {
       print('Error signing out: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+
+      if (user != null) {
+        await _db.collection('users').doc(user.uid).delete();
+        await user.delete();
+        await _clearUserSession();
+        await _firebaseAuth.signOut();
+      }
+    } catch (e) {
+      print('Error al eliminar la cuenta: $e');
       rethrow;
     }
   }
