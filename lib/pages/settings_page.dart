@@ -1,6 +1,8 @@
 import 'package:administradores_diaz_ph/modals/add_admin.dart';
+import 'package:administradores_diaz_ph/modals/add_client.dart';
 import 'package:administradores_diaz_ph/modals/add_complaint.dart';
 import 'package:administradores_diaz_ph/modals/bills_page.dart';
+import 'package:administradores_diaz_ph/modals/complaints_page.dart';
 import 'package:administradores_diaz_ph/modals/profile_page.dart';
 import 'package:administradores_diaz_ph/modals/votings_page.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +69,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Agregar cliente'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/register/add-client');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddClientPage()),
+                );
               },
             ),
             const Divider(),
@@ -114,7 +120,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Ver quejas y reclamos'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/complaints');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ComplaintsListPage()),
+                );
               },
             ),
             const Divider(),

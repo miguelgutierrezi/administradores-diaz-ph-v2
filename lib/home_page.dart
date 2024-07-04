@@ -5,6 +5,7 @@ import 'package:administradores_diaz_ph/pages/settings_page.dart';
 import 'package:administradores_diaz_ph/pages/zones_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/platform_service.dart';
+import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:administradores_diaz_ph/welcome_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +24,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AuthService _authService = AuthService();
+  final SharedPreferencesService _sharedPreferencesService =
+      SharedPreferencesService();
   int _currentIndex = 0;
   late List<Widget> _children;
   late List<BottomNavigationBarItem> _items;
@@ -62,13 +65,12 @@ class _HomePageState extends State<HomePage> {
         print('Subscribed to $topic');
       }
     } else if (_role == UserRole.admin) {
-      List<String>? buildings = prefs.getStringList('edificio');
-      if (buildings != null) {
-        for (String building in buildings) {
-          topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
-          await fcm.subscribeToTopic(topic);
-          print('Subscribed to $topic');
-        }
+      List<String>? buildings =
+          await _sharedPreferencesService.getDynamicList("edificio");
+      for (String building in buildings) {
+        topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
+        await fcm.subscribeToTopic(topic);
+        print('Subscribed to $topic');
       }
     } else if (_role == UserRole.superadmin) {
       topic = 'news';

@@ -4,9 +4,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesService {
-  Future<void> storeDynamicList(String name, List<String> values) async {
+  Future<void> storeDynamicList(String name, List<dynamic> dynamicList) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(name, values);
+    List<String> jsonList =
+        dynamicList.map((item) => jsonEncode(item)).toList();
+    await prefs.setStringList(name, jsonList);
   }
 
   Future<List<String>> getDynamicList(String name) async {
@@ -14,7 +16,9 @@ class SharedPreferencesService {
     List<String>? jsonList = prefs.getStringList(name);
     if (jsonList != null) {
       // Procesar cada elemento para quitar las comillas adicionales
-      return jsonList.map((jsonString) => jsonString.replaceAll('"', '')).toList();
+      return jsonList
+          .map((jsonString) => jsonString.replaceAll('"', ''))
+          .toList();
     } else {
       return [];
     }

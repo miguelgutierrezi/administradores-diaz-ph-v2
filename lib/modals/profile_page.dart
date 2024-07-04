@@ -180,11 +180,12 @@ class _ProfilePageState extends State<ProfilePage> {
               title: const Text('Nombre'),
               subtitle: Text(_nombre ?? ''),
             ),
-            ListTile(
-              leading: const Icon(Icons.apartment),
-              title: const Text('Número de Apartamento'),
-              subtitle: Text(_numeroApto ?? ''),
-            ),
+            if (_rol == 'CLIENTE')
+              ListTile(
+                leading: const Icon(Icons.apartment),
+                title: const Text('Número de Apartamento'),
+                subtitle: Text(_numeroApto ?? ''),
+              ),
             ListTile(
               leading: const Icon(Icons.admin_panel_settings),
               title: const Text('Rol'),
