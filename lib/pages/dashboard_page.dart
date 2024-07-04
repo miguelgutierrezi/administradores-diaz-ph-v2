@@ -59,10 +59,6 @@ class _DashboardPageState extends State<DashboardPage> {
     Query query = FirebaseFirestore.instance.collection('dashboard');
     if (_userRole == UserRole.user && _userBuilding != null) {
       query = query.where('edificio', isEqualTo: _userBuilding);
-    } else if (_userRole == UserRole.admin &&
-        _adminBuildings != null &&
-        _adminBuildings!.isNotEmpty) {
-      query = query.where('edificio', whereIn: _adminBuildings);
     }
     return query.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {

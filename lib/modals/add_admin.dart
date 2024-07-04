@@ -1,30 +1,26 @@
+import 'package:administradores_diaz_ph/home_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'home_page.dart';
-
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class AddAdminPage extends StatefulWidget {
+  const AddAdminPage({super.key});
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _AddAdminPageState createState() => _AddAdminPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _AddAdminPageState extends State<AddAdminPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _idController = TextEditingController();
-  final TextEditingController _apartmentController = TextEditingController();
   final FirestoreService _firestoreService = FirestoreService();
   final AuthService _authService = AuthService();
-
-  List<String> _buildings = [];
-  String _selectedBuilding = '';
+  final List<String> _edificios = [];
+  final List<String> _selectedEdificios = [];
+  String _selectedEdificio = '';
   bool _isButtonDisabled = true;
   String _errorMessage = '';
 
@@ -38,8 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
     List<Map<String, dynamic>> buildingsData =
         await _firestoreService.getCollection('buildings');
     setState(() {
-      _buildings =
-          buildingsData.map((data) => data['nombre'].toString()).toList();
+      _edificios.addAll(buildingsData.map((data) => data['nombre'].toString()));
     });
   }
 
@@ -53,10 +48,9 @@ class _RegisterPageState extends State<RegisterPage> {
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese su email';
     }
-    // Validación simple de correo electrónico
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
     if (!emailRegex.hasMatch(value)) {
-      return 'Por favor ingrese un email valido';
+      return 'Por favor ingrese un email válido';
     }
     return null;
   }
@@ -73,33 +67,57 @@ class _RegisterPageState extends State<RegisterPage> {
         if (user != null) {
           Map<String, dynamic> userData = {
             'nombre': _nameController.text,
-            'edificio': _selectedBuilding,
-            'rol': 'CLIENTE',
+            'edificio': _selectedEdificios,
+            'rol': 'ADMINISTRADOR',
             'email': _emailController.text,
-            'numeroApto': _apartmentController.text,
           };
           await _firestoreService.addData(user.uid, userData);
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('correo', _emailController.text);
-          prefs.setString('id', user.uid);
-          prefs.setString('edificio', _selectedBuilding);
-          prefs.setString('rol', 'CLIENTE');
-          prefs.setString('nombre', _nameController.text);
-          prefs.setString('numeroApto', _apartmentController.text);
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const HomePage()));
-        } // Dismiss the loader
+          Navigator.pop(context); // Close loader
+          _showAlert(context, 'Administrador agregado',
+              'Se ha añadido al administrador ${_emailController.text}');
+        }
       } catch (e) {
-        Navigator.of(context).pop(); // Dismiss the loader in case of an error
+        Navigator.pop(context); // Close loader in case of an error
         setState(() {
           _errorMessage = e.toString();
         });
-        showErrorDialog(context, 'Error', _errorMessage);
+        _showErrorDialog(context, 'Error', _errorMessage);
       }
     }
   }
 
-  Future<void> showErrorDialog(
+  Future<void> _showAlert(
+      BuildContext context, String title, String message) async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Aceptar'),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showErrorDialog(
       BuildContext context, String title, String message) async {
     await showDialog<void>(
       context: context,
@@ -158,7 +176,7 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: const Text(
-          'Registrarse',
+          'Crear administrador',
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -218,15 +236,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   labelText: 'Edificio',
                   icon: Icon(Icons.location_city),
                 ),
-                items: _buildings
-                    .map((building) => DropdownMenuItem(
-                          value: building,
-                          child: Text(building),
-                        ))
-                    .toList(),
+                items: _edificios.map((building) {
+                  return DropdownMenuItem<String>(
+                    value: building,
+                    child: Text(building),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    _selectedBuilding = value!;
+                    _selectedEdificio = value!;
                   });
                 },
                 validator: (value) {
@@ -236,29 +254,44 @@ class _RegisterPageState extends State<RegisterPage> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _apartmentController,
-                decoration: const InputDecoration(
-                  labelText: 'Número apartamento',
-                  icon: Icon(Icons.home),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
+              Wrap(
+                spacing: 8.0,
+                children: _selectedEdificios.map((edificio) {
+                  return Chip(
+                    label: Text(edificio),
+                    onDeleted: () {
+                      setState(() {
+                        _selectedEdificios.remove(edificio);
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (_selectedEdificio.isNotEmpty &&
+                      !_selectedEdificios.contains(_selectedEdificio)) {
+                    setState(() {
+                      _selectedEdificios.add(_selectedEdificio);
+                    });
                   }
-                  return null;
                 },
+                child: const Text('Añadir edificio'),
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _isButtonDisabled ? null : _register,
                 icon: const Icon(Icons.login),
-                label: const Text('Registrar cliente'),
+                label: const Text('Registrar administrador'),
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontSize: 18),
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
               ),
             ],
           ),
