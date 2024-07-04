@@ -1,8 +1,10 @@
 import 'package:administradores_diaz_ph/modals/add_admin.dart';
+import 'package:administradores_diaz_ph/modals/add_bill.dart';
 import 'package:administradores_diaz_ph/modals/add_client.dart';
 import 'package:administradores_diaz_ph/modals/add_complaint.dart';
 import 'package:administradores_diaz_ph/modals/add_zone.dart';
 import 'package:administradores_diaz_ph/modals/bills_page.dart';
+import 'package:administradores_diaz_ph/modals/clients_page.dart';
 import 'package:administradores_diaz_ph/modals/complaints_page.dart';
 import 'package:administradores_diaz_ph/modals/profile_page.dart';
 import 'package:administradores_diaz_ph/modals/votings_page.dart';
@@ -204,7 +206,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Ver clientes'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/users/clients');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ClientsListPage()),
+                );
               },
             ),
             const Divider(),
@@ -215,7 +221,10 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Ingresar factura'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/add-bill');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddBillPage()),
+                );
               },
             ),
             const Divider(),

@@ -1,14 +1,8 @@
-import 'package:administradores_diaz_ph/home_page.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 

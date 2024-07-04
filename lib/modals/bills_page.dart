@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../services/firestore_service.dart';
 
@@ -59,6 +60,8 @@ class _BillsListPageState extends State<BillsListPage> {
 
     final List<Map<String, dynamic>> bills =
         await _firestoreService.getCollection('bills');
+    print('Building');
+    print(_building!['id']);
     setState(() {
       _bills = bills
           .where((bill) => bill['buildingId'] == _building!['id'])
@@ -69,6 +72,8 @@ class _BillsListPageState extends State<BillsListPage> {
   void _getBill() async {
     final prefs = await SharedPreferences.getInstance();
     final numeroApto = prefs.getString('numeroApto');
+    print(_bills);
+
     setState(() {
       _bill = _bills.firstWhere(
         (bill) =>
@@ -193,11 +198,32 @@ class _BillsListPageState extends State<BillsListPage> {
                       children: <Widget>[
                         if (_bill!['fileUrl'] != null &&
                             _bill!['fileUrl']!.isNotEmpty)
-                          Text('Ver factura: ${_bill!['fileName']}'),
+                          GestureDetector(
+                            onTap: () {
+                              launchUrl(Uri.parse(_bill!['fileUrl']));
+                            },
+                            child: Text(
+                              'Ver factura: ${_bill!['fileName']}',
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
                         if (_bill!['statusUrl'] != null &&
                             _bill!['statusUrl']!.isNotEmpty)
-                          Text(
-                              'Ver estado de cuenta: ${_bill!['accountStatusName']}'),
+                          GestureDetector(
+                            onTap: () {
+                              launchUrl(Uri.parse(_bill!['statusUrl']));
+                            },
+                            child: Text(
+                              'Ver estado de cuenta: ${_bill!['accountStatusName']}',
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
             ],
