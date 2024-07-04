@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/modals/add_voting.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -190,7 +191,13 @@ class _VotingsListPageState extends State<VotingsListPage> {
                             vertical: 10, horizontal: 15),
                         child: ListTile(
                           title: Text(item['titulo']),
-                          subtitle: Text(item['edificio']),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item['edificio']),
+                              Text(item['descripcion']),
+                            ],
+                          ),
                           onTap: () => _downloadFile(item['link']),
                         ),
                       ),
@@ -207,7 +214,8 @@ class _VotingsListPageState extends State<VotingsListPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(
+                      builder: (context) => const AddVotingPage()),
                 );
               },
               backgroundColor: Colors.black,
