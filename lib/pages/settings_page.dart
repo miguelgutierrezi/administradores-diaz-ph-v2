@@ -1,4 +1,6 @@
 import 'package:administradores_diaz_ph/modals/add_complaint.dart';
+import 'package:administradores_diaz_ph/modals/bills_page.dart';
+import 'package:administradores_diaz_ph/modals/votings_page.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user_role.dart';
@@ -134,7 +136,11 @@ class _SettingsPageState extends State<SettingsPage> {
             title: const Text('Ver votaciones'),
             trailing: const Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator.pushNamed(context, '/votings');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const VotingsListPage()),
+              );
             },
           ),
           const Divider(),
@@ -203,7 +209,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Consultar factura'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/bills-list');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BillsListPage()),
+                );
               },
             ),
             const Divider(),
