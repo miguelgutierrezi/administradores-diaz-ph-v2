@@ -6,6 +6,7 @@ import 'package:administradores_diaz_ph/services/shared_preferences_service.dart
 import 'package:rxdart/rxdart.dart';
 
 import '../models/user_role.dart';
+import 'edit_client.dart';
 
 class ClientsListPage extends StatefulWidget {
   const ClientsListPage({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class _ClientsListPageState extends State<ClientsListPage> {
   final AuthService _authService = AuthService();
   final SharedPreferencesService _sharedPreferencesService =
       SharedPreferencesService();
-  
+
   String _searchTerm = '';
   UserRole? _userRole;
   List<String>? _adminBuildings;
@@ -115,7 +116,13 @@ class _ClientsListPageState extends State<ClientsListPage> {
   }
 
   void _editClient(Map<String, dynamic> client) {
-    // Navigate to the edit client page with the client data
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            EditClientPage(client: client, clientId: client['id']),
+      ),
+    );
   }
 
   @override
