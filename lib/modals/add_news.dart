@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
+import '../home_page.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 
@@ -118,8 +119,9 @@ class _AddNewsPageState extends State<AddNewsPage> {
           'noticia': _noticiaController.text,
           'descripcion': _descripcionController.text,
           'edificio': _selectedBuilding,
-          'fecha': _selectedDate?.toIso8601String() ??
-              DateTime.now().toIso8601String(),
+          'fecha': _selectedDate != null
+              ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
+              : DateFormat('yyyy-MM-dd').format(DateTime.now()),
         };
 
         DocumentReference newsRef =
@@ -136,15 +138,19 @@ class _AddNewsPageState extends State<AddNewsPage> {
           'noticia': _noticiaController.text,
           'descripcion': _descripcionController.text,
           'edificio': _selectedBuilding,
-          'fecha': _selectedDate?.toIso8601String() ??
-              DateTime.now().toIso8601String(),
+          'fecha': _selectedDate != null
+              ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
+              : DateFormat('yyyy-MM-dd').format(DateTime.now()),
           'filesLinks': filesLinks,
           'filesNames': filesNames,
         };
 
         await _firestoreService.updateDocument('news', newsRef.id, dataUp);
 
-        Navigator.of(context).pop(); // Dismiss the loader
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        ); // Dismiss the loader
         _showAlert(
             context, 'Noticia agregada', 'Se ha creado una nueva noticia');
       } catch (e) {

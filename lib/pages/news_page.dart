@@ -117,9 +117,10 @@ class _NewsPageState extends State<NewsPage> {
 
   void _setFilteredNews(String searchTerm) {
     setState(() {
+      _searchTerm = searchTerm.toLowerCase();
       _filterNews = _noticias
-          .where((noticia) =>
-              noticia.noticia.toLowerCase().contains(searchTerm.toLowerCase()))
+          .where(
+              (noticia) => noticia.noticia.toLowerCase().contains(_searchTerm))
           .toList();
     });
   }
@@ -143,9 +144,7 @@ class _NewsPageState extends State<NewsPage> {
                   prefixIcon: const Icon(Icons.search),
                 ),
                 onChanged: (value) {
-                  setState(() {
-                    _setFilteredNews(value);
-                  });
+                  _setFilteredNews(value);
                 },
               ),
             ),
@@ -170,8 +169,21 @@ class _NewsPageState extends State<NewsPage> {
                       : _noticias
                           .where((noticia) => noticia.noticia
                               .toLowerCase()
-                              .contains(_searchTerm.toLowerCase()))
+                              .contains(_searchTerm))
                           .toList();
+
+                  _filterNews.sort((a, b) {
+                    if (a.fecha.isEmpty && b.fecha.isEmpty) {
+                      return 0;
+                    } else if (a.fecha.isEmpty) {
+                      return -1;
+                    } else if (b.fecha.isEmpty) {
+                      return 1;
+                    } else {
+                      return DateTime.parse(b.fecha)
+                          .compareTo(DateTime.parse(a.fecha));
+                    }
+                  });
 
                   return ListView.builder(
                     itemCount: _filterNews.length,
