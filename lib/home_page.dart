@@ -7,10 +7,13 @@ import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/platform_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:administradores_diaz_ph/welcome_page.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/user_role.dart';
@@ -38,6 +41,9 @@ class _HomePageState extends State<HomePage> {
     _initializeRoleAndTabs();
     if (PlatformService.isMobile()) {
       _setupPushNotifications();
+    }
+    if (PlatformService.isIOS()) {
+      _checkAndRequestTrackingPermission();
     }
   }
 
@@ -86,6 +92,56 @@ class _HomePageState extends State<HomePage> {
     print('Subscribed to $userMessagesTopic');
     prefs.setString('newsTopic', topic);
     prefs.setString('messagesTopic', userMessagesTopic);
+  }
+
+  Future<void> _checkAndRequestTrackingPermission() async {
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    try {
+      final IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
+      final int version = int.parse(iosInfo.systemVersion!.split('.').first);
+      if (version >= 14) {
+        _requestTrackingPermission();
+      }
+    } on PlatformException {
+      print('Failed to get platform version');
+    }
+  }
+
+  Future<void> _requestTrackingPermission() async {
+    final TrackingStatus status =
+        await AppTrackingTransparency.trackingAuthorizationStatus;
+
+    if (status == TrackingStatus.notDetermined) {
+      // Muestra un diálogo explicativo
+      _showTrackingExplanationDialog();
+    } else {
+      print('Current Tracking Status: $status');
+    }
+  }
+
+  Future<void> _showTrackingExplanationDialog() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Permiso de seguimiento'),
+          content: const Text(
+              'Esta aplicación usa notificaciones y seguimiento para enviarle información importante y personalizada sobre su edificio, noticias relevantes, y mensajes importantes.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Aceptar'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final TrackingStatus newStatus = await AppTrackingTransparency
+                    .requestTrackingAuthorization();
+                print('New Tracking Status: $newStatus');
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _initializeTabs() {
