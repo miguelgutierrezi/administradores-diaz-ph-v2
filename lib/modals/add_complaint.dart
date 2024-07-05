@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../home_page.dart';
-
 class AddComplaintPage extends StatefulWidget {
   const AddComplaintPage({super.key});
 
@@ -87,10 +85,7 @@ class _AddComplaintPageState extends State<AddComplaintPage> {
             TextButton(
               child: const Text('Aceptar'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                Navigator.of(context).pop();
               },
             ),
           ],

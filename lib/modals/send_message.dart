@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../home_page.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 
@@ -139,10 +138,7 @@ class _SendMessagePageState extends State<SendMessagePage> {
         await _firestoreService.updateDocument('users',
             _selectedRecipient['id']!, {'recibidos': receivedMessages});
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
+        Navigator.of(context).pop();
         _showAlert(context, 'Mensaje enviado',
             'El mensaje ha sido enviado exitosamente');
       } catch (e) {

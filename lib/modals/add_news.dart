@@ -1,4 +1,3 @@
-import 'package:administradores_diaz_ph/home_page.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -145,10 +144,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
 
         await _firestoreService.updateDocument('news', newsRef.id, dataUp);
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        ); // Dismiss the loader
+        Navigator.of(context).pop(); // Dismiss the loader
         _showAlert(
             context, 'Noticia agregada', 'Se ha creado una nueva noticia');
       } catch (e) {

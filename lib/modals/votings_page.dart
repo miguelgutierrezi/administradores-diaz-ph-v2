@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../home_page.dart';
 import '../models/user_role.dart';
 import '../services/shared_preferences_service.dart';
 
@@ -88,10 +87,7 @@ class _VotingsListPageState extends State<VotingsListPage> {
             TextButton(
               child: const Text('Aceptar'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                Navigator.of(context).pop();
               },
             ),
           ],

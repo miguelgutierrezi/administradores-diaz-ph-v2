@@ -1,4 +1,3 @@
-import 'package:administradores_diaz_ph/home_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -105,10 +104,7 @@ class _AddAdminPageState extends State<AddAdminPage> {
             TextButton(
               child: const Text('Aceptar'),
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                Navigator.of(context).pop();
               },
             ),
           ],

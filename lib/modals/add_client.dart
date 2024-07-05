@@ -2,7 +2,6 @@ import 'package:administradores_diaz_ph/services/shared_preferences_service.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../home_page.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
@@ -124,10 +123,7 @@ class _AddClientPageState extends State<AddClientPage> {
             TextButton(
               child: const Text('Aceptar'),
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                Navigator.of(context).pop();
               },
             ),
           ],
