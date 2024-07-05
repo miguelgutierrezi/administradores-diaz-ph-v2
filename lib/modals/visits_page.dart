@@ -51,11 +51,9 @@ class _VisitsListPageState extends State<VisitsListPage> {
     if (_userRole == UserRole.admin) {
       _adminBuildings =
           await _sharedPreferencesService.getDynamicList('edificio');
-    }
-    setState(() {});
-    if (_userRole == UserRole.admin) {
       _loadVisits();
     }
+    setState(() {});
   }
 
   Future<void> _loadVisits() async {
@@ -85,11 +83,19 @@ class _VisitsListPageState extends State<VisitsListPage> {
 
       final newSnapshot = await query.get();
 
-      final newItems = newSnapshot.docs.map((doc) {
+      var newItems = newSnapshot.docs.map((doc) {
         var data = doc.data() as Map<String, dynamic>;
         data['id'] = doc.id;
         return data;
       }).toList();
+
+      if (_searchTerm.isNotEmpty) {
+        newItems = newItems.where((visit) {
+          return visit['edificio']
+              .toLowerCase()
+              .contains(_searchTerm.toLowerCase());
+        }).toList();
+      }
 
       final isLastPage = newItems.length < pageSize;
       if (isLastPage) {
@@ -160,6 +166,7 @@ class _VisitsListPageState extends State<VisitsListPage> {
                 onChanged: (value) {
                   setState(() {
                     _searchTerm = value;
+                    _pagingController.refresh();
                   });
                 },
               ),
