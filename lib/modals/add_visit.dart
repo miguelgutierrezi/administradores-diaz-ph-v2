@@ -3,10 +3,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../services/pdf_service.dart';
 import '../services/shared_preferences_service.dart';
 import '../utils/utils.dart';
 
@@ -129,13 +131,27 @@ class _AddVisitPageState extends State<AddVisitPage> {
 
       try {
         final visitData = await _prepareVisitData();
-        final visitRef = await _firestoreService.createDocument('visits', visitData);
+        final visitRef =
+            await _firestoreService.createDocument('visits', visitData);
 
         final updatedZones = await _uploadZoneFilesAndUpdateZones(visitRef.id);
         await _updateVisitDocument(visitRef.id, visitData, updatedZones);
 
+        final updatedVisitData = {
+          ...visitData,
+          'zones': updatedZones,
+        };
+
+        // Generar y subir el PDF
+        await _generateAndUploadPdf(visitRef.id, updatedVisitData);
+
         Navigator.of(context).pop(); // Dismiss the loader
-        _showSuccessDialog();
+
+        // Navigate back to the visits list page before showing the dialog
+        Navigator.pop(context);
+
+        // Show the dialog for downloading the PDF
+        _showPdfDownloadDialog(visitRef.id);
       } catch (e) {
         Navigator.of(context).pop(); // Dismiss the loader
         Utils.debugPrint("Error: $e");
@@ -168,7 +184,7 @@ class _AddVisitPageState extends State<AddVisitPage> {
     }).toList();
 
     return {
-      'date': visitDate,
+      'date': Timestamp.fromDate(visitDate), // Convertir a Timestamp
       'edificio': selectedBuilding,
       'user': userId,
       'name': userName,
@@ -176,12 +192,14 @@ class _AddVisitPageState extends State<AddVisitPage> {
     };
   }
 
-  Future<List<Map<String, dynamic>>> _uploadZoneFilesAndUpdateZones(String visitId) async {
+  Future<List<Map<String, dynamic>>> _uploadZoneFilesAndUpdateZones(
+      String visitId) async {
     return await Future.wait(_zones.map((zone) async {
       final newZone = Map<String, dynamic>.from(zone);
       List<String> fileLinks = [];
       for (var file in zone['files']) {
-        String imageUrl = await _firestoreService.uploadFile('visits', visitId, file.path!);
+        String imageUrl =
+            await _firestoreService.uploadFile('visits', visitId, file.path!);
         fileLinks.add(imageUrl);
       }
       newZone['filesLinks'] = fileLinks;
@@ -191,29 +209,54 @@ class _AddVisitPageState extends State<AddVisitPage> {
     }).toList());
   }
 
-  Future<void> _updateVisitDocument(String visitId, Map<String, dynamic> visitData, List<Map<String, dynamic>> updatedZones) async {
+  Future<void> _updateVisitDocument(
+      String visitId,
+      Map<String, dynamic> visitData,
+      List<Map<String, dynamic>> updatedZones) async {
     final dataUp = {
       ...visitData,
       'zones': updatedZones,
     };
 
-    await FirebaseFirestore.instance.collection('visits').doc(visitId).update(dataUp);
+    await FirebaseFirestore.instance
+        .collection('visits')
+        .doc(visitId)
+        .update(dataUp);
   }
 
-  void _showSuccessDialog() {
+  Future<void> _generateAndUploadPdf(
+      String visitId, Map<String, dynamic> visitData) async {
+    final PdfService pdfService = PdfService();
+    await pdfService.generateAndUploadPdf(visitId, visitData);
+  }
+
+  void _showPdfDownloadDialog(String visitId) {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Visita añadida'),
-          content: const Text('La visita se ha registrado correctamente.'),
+          content: const Text(
+            '¿Quiere descargar el PDF generado? Lo podrá ver luego en el detalle de la visita.',
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Aceptar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text('Aceptar'),
+              onPressed: () async {
+                DocumentSnapshot visitDoc = await FirebaseFirestore.instance
+                    .collection('visits')
+                    .doc(visitId)
+                    .get();
+                String pdfUrl = visitDoc['pdfUrl'];
+                launchUrl(Uri.parse(pdfUrl));
+                Navigator.of(context).pop();
               },
             ),
           ],
