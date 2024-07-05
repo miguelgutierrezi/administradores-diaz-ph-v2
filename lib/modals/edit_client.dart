@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../models/user_role.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/shared_preferences_service.dart';
-import '../models/user_role.dart';
 
 class EditClientPage extends StatefulWidget {
   final Map<String, dynamic> client;

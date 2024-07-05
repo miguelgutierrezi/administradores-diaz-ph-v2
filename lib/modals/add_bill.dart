@@ -2,9 +2,8 @@ import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 import '../models/user_role.dart';
 

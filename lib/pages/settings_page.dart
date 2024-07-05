@@ -5,6 +5,7 @@ import 'package:administradores_diaz_ph/modals/add_client.dart';
 import 'package:administradores_diaz_ph/modals/add_complaint.dart';
 import 'package:administradores_diaz_ph/modals/add_zone.dart';
 import 'package:administradores_diaz_ph/modals/bills_page.dart';
+import 'package:administradores_diaz_ph/modals/buildings_page.dart';
 import 'package:administradores_diaz_ph/modals/clients_page.dart';
 import 'package:administradores_diaz_ph/modals/complaints_page.dart';
 import 'package:administradores_diaz_ph/modals/profile_page.dart';
@@ -194,7 +195,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Mis edificios'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/buildings');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BuildingsListPage()),
+                );
               },
             ),
             const Divider(),

@@ -1,9 +1,9 @@
 import 'package:administradores_diaz_ph/models/user_role.dart';
+import 'package:administradores_diaz_ph/services/auth_service.dart';
+import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:administradores_diaz_ph/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:administradores_diaz_ph/services/auth_service.dart';
-import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

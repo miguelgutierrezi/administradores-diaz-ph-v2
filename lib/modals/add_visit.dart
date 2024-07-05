@@ -15,7 +15,7 @@ import '../services/firestore_service.dart';
 import '../services/shared_preferences_service.dart';
 
 class AddVisitPage extends StatefulWidget {
-  const AddVisitPage({Key? key}) : super(key: key);
+  const AddVisitPage({super.key});
 
   @override
   _AddVisitPageState createState() => _AddVisitPageState();

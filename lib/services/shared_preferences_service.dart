@@ -29,6 +29,7 @@ class SharedPreferencesService {
     final prefs = await SharedPreferences.getInstance();
     String? newsTopic = prefs.getString('newsTopic');
     String? messagesTopic = prefs.getString('messagesTopic');
+    String? visitsTopic = prefs.getString('visitsTopic');
 
     if (newsTopic != null && newsTopic.isNotEmpty) {
       await fcm.unsubscribeFromTopic(newsTopic);
@@ -36,6 +37,10 @@ class SharedPreferencesService {
 
     if (messagesTopic != null && messagesTopic.isNotEmpty) {
       await fcm.unsubscribeFromTopic(messagesTopic);
+    }
+
+    if (visitsTopic != null && visitsTopic.isNotEmpty) {
+      await fcm.unsubscribeFromTopic(visitsTopic);
     }
 
     await prefs.clear();

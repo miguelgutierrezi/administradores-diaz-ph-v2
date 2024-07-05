@@ -76,6 +76,10 @@ class _HomePageState extends State<HomePage> {
       topic = 'news';
       await fcm.subscribeToTopic(topic);
       print('Subscribed to news');
+      String visitsTopic = 'visits';
+      await fcm.subscribeToTopic(visitsTopic);
+      prefs.setString('visitsTopic', visitsTopic);
+      print('Subscribed to visits');
     }
     String userMessagesTopic = 'messages_$userId';
     await fcm.subscribeToTopic(userMessagesTopic);

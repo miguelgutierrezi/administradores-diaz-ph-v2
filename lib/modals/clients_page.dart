@@ -1,15 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../models/user_role.dart';
 import 'edit_client.dart';
 
 class ClientsListPage extends StatefulWidget {
-  const ClientsListPage({Key? key}) : super(key: key);
+  const ClientsListPage({super.key});
 
   @override
   _ClientsListPageState createState() => _ClientsListPageState();

@@ -1,12 +1,13 @@
 import 'package:administradores_diaz_ph/modals/add_visit.dart';
 import 'package:administradores_diaz_ph/modals/visit_detail.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/user_role.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
-import '../models/user_role.dart';
 
 class VisitsListPage extends StatefulWidget {
   const VisitsListPage({super.key});
