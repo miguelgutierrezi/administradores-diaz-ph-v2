@@ -4,6 +4,7 @@ import 'package:administradores_diaz_ph/services/shared_preferences_service.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
@@ -22,17 +23,24 @@ class _VisitsListPageState extends State<VisitsListPage> {
       SharedPreferencesService();
   final AuthService _authService = AuthService();
 
+  static const int pageSize = 10;
+  final PagingController<DocumentSnapshot?, Map<String, dynamic>>
+      _pagingController = PagingController(firstPageKey: null);
+
   String _searchTerm = '';
   UserRole? _userRole;
   String? _userName;
   String? _userId;
   List<String>? _adminBuildings;
-  String? _userBuilding;
+  List<Map<String, dynamic>> _allVisits = [];
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
   }
 
   Future<void> _loadUserData() async {
@@ -45,29 +53,79 @@ class _VisitsListPageState extends State<VisitsListPage> {
           await _sharedPreferencesService.getDynamicList('edificio');
     }
     setState(() {});
+    if (_userRole == UserRole.admin) {
+      _loadVisits();
+    }
   }
 
-  Stream<List<Map<String, dynamic>>> _visitsStream() {
-    Query query = FirebaseFirestore.instance.collection('visits');
-    if (_userRole == UserRole.admin) {
-      query = query.where('edificio', arrayContainsAny: _adminBuildings);
-    }
-    // Añadimos el ordenamiento descendente por fecha
-    query = query.orderBy('date', descending: true);
+  Future<void> _loadVisits() async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('visits').get();
+    List<Map<String, dynamic>> visits = snapshot.docs.map((doc) {
+      var data = doc.data() as Map<String, dynamic>;
+      data['id'] = doc.id;
+      return data;
+    }).toList();
 
-    return query.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
+    setState(() {
+      _allVisits = visits;
+    });
+  }
+
+  Future<void> _fetchPage(DocumentSnapshot? pageKey) async {
+    try {
+      Query query = FirebaseFirestore.instance
+          .collection('visits')
+          .orderBy('date', descending: true)
+          .limit(pageSize);
+
+      if (pageKey != null) {
+        query = query.startAfterDocument(pageKey);
+      }
+
+      final newSnapshot = await query.get();
+
+      final newItems = newSnapshot.docs.map((doc) {
         var data = doc.data() as Map<String, dynamic>;
         data['id'] = doc.id;
         return data;
       }).toList();
-    });
+
+      final isLastPage = newItems.length < pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = newSnapshot.docs.last;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
   }
 
-  void _filterVisits(String searchTerm) {
-    setState(() {
-      _searchTerm = searchTerm;
+  List<Map<String, dynamic>> _filterVisits() {
+    List<Map<String, dynamic>> filteredVisits = _allVisits;
+
+    if (_userRole == UserRole.admin && _adminBuildings != null) {
+      filteredVisits = filteredVisits.where((visit) {
+        return _adminBuildings!.contains(visit['edificio']) &&
+            visit['user'] == _userId;
+      }).toList();
+    }
+
+    filteredVisits.sort((a, b) {
+      return (b['date'] as Timestamp).compareTo(a['date'] as Timestamp);
     });
+
+    if (_searchTerm.isNotEmpty) {
+      filteredVisits = filteredVisits.where((visit) {
+        return visit['edificio']
+            .toLowerCase()
+            .contains(_searchTerm.toLowerCase());
+      }).toList();
+    }
+
+    return filteredVisits;
   }
 
   @override
@@ -99,34 +157,50 @@ class _VisitsListPageState extends State<VisitsListPage> {
                   ),
                   prefixIcon: const Icon(Icons.search),
                 ),
-                onChanged: _filterVisits,
+                onChanged: (value) {
+                  setState(() {
+                    _searchTerm = value;
+                  });
+                },
               ),
             ),
           Expanded(
-            child: StreamBuilder<List<Map<String, dynamic>>>(
-              stream: _visitsStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(
-                      child: Text('Error al cargar las visitas'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No hay visitas disponibles'));
-                } else {
-                  var visits = snapshot.data!;
-                  if (_searchTerm.isNotEmpty) {
-                    visits = visits.where((visit) {
-                      return visit['edificio']
-                          .toLowerCase()
-                          .contains(_searchTerm.toLowerCase());
-                    }).toList();
-                  }
-                  return ListView.builder(
-                    itemCount: visits.length,
+            child: _userRole == UserRole.superadmin
+                ? PagedListView<DocumentSnapshot?, Map<String, dynamic>>(
+                    pagingController: _pagingController,
+                    builderDelegate:
+                        PagedChildBuilderDelegate<Map<String, dynamic>>(
+                      itemBuilder: (context, visit, index) => Card(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 16),
+                        child: ListTile(
+                          title: Text(visit['edificio']),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                  'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}'),
+                              Text('Autor: ${visit['name']}'),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VisitDetailPage(
+                                  visitId: visit['id'],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _filterVisits().length,
                     itemBuilder: (context, index) {
-                      var visit = visits[index];
+                      var visit = _filterVisits()[index];
                       return Card(
                         margin: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 16),
@@ -154,10 +228,7 @@ class _VisitsListPageState extends State<VisitsListPage> {
                         ),
                       );
                     },
-                  );
-                }
-              },
-            ),
+                  ),
           ),
         ],
       ),

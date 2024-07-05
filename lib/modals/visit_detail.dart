@@ -37,10 +37,7 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
         title: const Text('Detalle de Visita',
             style: TextStyle(color: Colors.white)),
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -79,7 +76,13 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Zona: ${zone['nombre']}'),
+                        Text(
+                          'Zona: ${zone['nombre']}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         if (filesLinks.isNotEmpty)
                           CarouselSlider(
@@ -116,6 +119,7 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
                           ),
                         const SizedBox(height: 8),
                         Text('Observaciones: ${zone['observacion'] ?? ''}'),
+                        const Divider(),
                         const SizedBox(height: 16),
                       ],
                     );
