@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
-// import 'edit_admin_page.dart';
+import 'edit_admin.dart';
 
 class AdminsListPage extends StatefulWidget {
   const AdminsListPage({super.key});
@@ -80,14 +80,14 @@ class _AdminsListPageState extends State<AdminsListPage> {
   }
 
   void _editAdmin(Map<String, dynamic> admin) {
-    /* Navigator.push(
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditAdminPage(admin: admin, adminId: admin['id']),
       ),
     ).then((_) {
       _loadAdmins(); // Refresh list after edit
-    }); */
+    });
   }
 
   Future<void> _doRefresh() async {
