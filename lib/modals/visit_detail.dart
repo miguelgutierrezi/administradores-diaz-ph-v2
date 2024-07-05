@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/services/pdf_service.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,8 @@ class VisitDetailPage extends StatefulWidget {
 
 class _VisitDetailPageState extends State<VisitDetailPage> {
   late Future<DocumentSnapshot> _visitFuture;
+  final PdfService _pdfService = PdfService();
+  bool _isGeneratingPdf = false;
 
   @override
   void initState() {
@@ -21,8 +24,32 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
     _visitFuture = _fetchVisit(widget.visitId);
   }
 
-  Future<DocumentSnapshot> _fetchVisit(String visitId) {
-    return FirebaseFirestore.instance.collection('visits').doc(visitId).get();
+  Future<DocumentSnapshot> _fetchVisit(String visitId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('visits')
+        .doc(visitId)
+        .get();
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    if (!data.containsKey('pdfUrl') || !data.containsKey('pdfName')) {
+      await _generateAndUploadPdfIfNeeded(data);
+    }
+
+    return snapshot;
+  }
+
+  Future<void> _generateAndUploadPdfIfNeeded(
+      Map<String, dynamic> visitData) async {
+    setState(() {
+      _isGeneratingPdf = true;
+    });
+
+    await _pdfService.generateAndUploadPdf(widget.visitId, visitData);
+
+    setState(() {
+      _isGeneratingPdf = false;
+      _visitFuture = _fetchVisit(widget.visitId); // Refresh the visit data
+    });
   }
 
   void _displayImage(String url) {
@@ -46,7 +73,8 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
       body: FutureBuilder<DocumentSnapshot>(
         future: _visitFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              _isGeneratingPdf) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return const Center(child: Text('Error al cargar la visita'));
@@ -55,6 +83,7 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
           } else {
             var data = snapshot.data!.data() as Map<String, dynamic>;
             List<dynamic> zones = data['zones'] ?? [];
+
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
@@ -67,6 +96,20 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
                   ListTile(
                     title: Text('Autor: ${data['name']}'),
                   ),
+                  if (data.containsKey('pdfName') && data.containsKey('pdfUrl'))
+                    ListTile(
+                      title: const Text('Reporte:'),
+                      subtitle: GestureDetector(
+                        onTap: () => launchUrl(Uri.parse(data['pdfUrl'])),
+                        child: Text(
+                          data['pdfName'],
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 16),
                   Text('Zonas:',
                       style: Theme.of(context).textTheme.headlineSmall),

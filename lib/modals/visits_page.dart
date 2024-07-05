@@ -3,8 +3,8 @@ import 'package:administradores_diaz_ph/modals/visit_detail.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
