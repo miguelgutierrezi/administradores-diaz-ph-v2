@@ -137,7 +137,7 @@ class _AddVisitPageState extends State<AddVisitPage> {
         _showSuccessDialog();
       } catch (e) {
         Navigator.of(context).pop(); // Dismiss the loader
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

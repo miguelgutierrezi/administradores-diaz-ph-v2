@@ -57,7 +57,6 @@ class _CalendarUiPageState extends State<CalendarUiPage> {
   }
 
   Future<void> _getZone() async {
-    print(widget.zoneId);
     List<Map<String, dynamic>> zones =
         await _firestoreService.getCollection('zonas');
     setState(() {

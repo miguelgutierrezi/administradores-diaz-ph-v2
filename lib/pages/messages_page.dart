@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../modals/message_detail.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
+import '../utils/utils.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -80,7 +81,7 @@ class _MessagesPageState extends State<MessagesPage> {
         });
       } catch (e) {
         // Maneja el error de actualización si es necesario
-        print('Error actualizando el estado de lectura: $e');
+        Utils.debugPrint('Error actualizando el estado de lectura: $e');
       }
     }
   }

@@ -4,6 +4,7 @@ import 'package:administradores_diaz_ph/services/shared_preferences_service.dart
 import 'package:flutter/material.dart';
 
 import '../models/user_role.dart';
+import '../utils/utils.dart';
 
 class AddVotingPage extends StatefulWidget {
   const AddVotingPage({super.key});
@@ -79,7 +80,7 @@ class _AddVotingPageState extends State<AddVotingPage> {
             context, 'Votación agregada', 'Se ha creado una nueva votación');
       } catch (e) {
         Navigator.of(context).pop(); // Ocultar loader
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

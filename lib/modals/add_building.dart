@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/shared_preferences_service.dart';
+import '../utils/utils.dart';
 
 class AddBuildingPage extends StatefulWidget {
   const AddBuildingPage({super.key});
@@ -40,13 +41,13 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
         _selectedFile = result.files.first;
         _selectedFileName = _selectedFile!.name;
       });
-      print('Archivo seleccionado: $_selectedFileName');
+      Utils.debugPrint('Archivo seleccionado: $_selectedFileName');
     } else {
       setState(() {
         _selectedFile = null;
         _selectedFileName = null;
       });
-      print('No se seleccionó ningún archivo');
+      Utils.debugPrint('No se seleccionó ningún archivo');
     }
   }
 
@@ -95,7 +96,7 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
         _showAlert('Edificio agregado', 'Se ha creado un nuevo edificio');
       } catch (e) {
         Navigator.of(context).pop(); // Dismiss the loader
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

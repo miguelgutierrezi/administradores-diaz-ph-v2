@@ -2,6 +2,7 @@ import 'package:administradores_diaz_ph/register_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
+import 'package:administradores_diaz_ph/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
               MaterialPageRoute(builder: (context) => const HomePage()));
         }
       } catch (e) {
-        print(e);
+        Utils.debugPrint(e.toString());
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Error al iniciar sesión')),
         );
@@ -108,7 +109,6 @@ class _LoginPageState extends State<LoginPage> {
         break;
       }
     }
-    // _sharedPreferencesService.printAllPrefs();
   }
 
   void _showForgotPasswordDialog() {

@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user_role.dart';
+import '../utils/utils.dart';
 
 class AddBillPage extends StatefulWidget {
   const AddBillPage({super.key});
@@ -150,7 +151,7 @@ class _AddBillPageState extends State<AddBillPage> {
             context, 'Factura agregada', 'Se ha agregado una nueva factura');
       } catch (e) {
         Navigator.of(context).pop(); // Dismiss the loader
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

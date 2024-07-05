@@ -6,6 +6,7 @@ import 'package:administradores_diaz_ph/pages/zones_page.dart';
 import 'package:administradores_diaz_ph/services/auth_service.dart';
 import 'package:administradores_diaz_ph/services/platform_service.dart';
 import 'package:administradores_diaz_ph/services/shared_preferences_service.dart';
+import 'package:administradores_diaz_ph/utils/utils.dart';
 import 'package:administradores_diaz_ph/welcome_page.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -68,7 +69,7 @@ class _HomePageState extends State<HomePage> {
       if (building != null) {
         topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
         await fcm.subscribeToTopic(topic);
-        print('Subscribed to $topic');
+        Utils.debugPrint('Subscribed to $topic');
       }
     } else if (_role == UserRole.admin) {
       List<String>? buildings =
@@ -76,20 +77,20 @@ class _HomePageState extends State<HomePage> {
       for (String building in buildings) {
         topic = 'news_${building.replaceAll(' ', '_').toLowerCase()}';
         await fcm.subscribeToTopic(topic);
-        print('Subscribed to $topic');
+        Utils.debugPrint('Subscribed to $topic');
       }
     } else if (_role == UserRole.superadmin) {
       topic = 'news';
       await fcm.subscribeToTopic(topic);
-      print('Subscribed to news');
+      Utils.debugPrint('Subscribed to news');
       String visitsTopic = 'visits';
       await fcm.subscribeToTopic(visitsTopic);
       prefs.setString('visitsTopic', visitsTopic);
-      print('Subscribed to visits');
+      Utils.debugPrint('Subscribed to visits');
     }
     String userMessagesTopic = 'messages_$userId';
     await fcm.subscribeToTopic(userMessagesTopic);
-    print('Subscribed to $userMessagesTopic');
+    Utils.debugPrint('Subscribed to $userMessagesTopic');
     prefs.setString('newsTopic', topic);
     prefs.setString('messagesTopic', userMessagesTopic);
   }
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage> {
         _requestTrackingPermission();
       }
     } on PlatformException {
-      print('Failed to get platform version');
+      Utils.debugPrint('Failed to get platform version');
     }
   }
 
@@ -115,7 +116,7 @@ class _HomePageState extends State<HomePage> {
       // Muestra un diálogo explicativo
       _showTrackingExplanationDialog();
     } else {
-      print('Current Tracking Status: $status');
+      Utils.debugPrint('Current Tracking Status: $status');
     }
   }
 
@@ -135,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
                 final TrackingStatus newStatus = await AppTrackingTransparency
                     .requestTrackingAuthorization();
-                print('New Tracking Status: $newStatus');
+                Utils.debugPrint('New Tracking Status: $newStatus');
               },
             ),
           ],

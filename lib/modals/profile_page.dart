@@ -5,6 +5,8 @@ import 'package:administradores_diaz_ph/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/utils.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -112,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
         MaterialPageRoute(builder: (context) => const WelcomePage()),
       );
     } catch (e) {
-      print('Error al eliminar la cuenta: $e');
+      Utils.debugPrint('Error al eliminar la cuenta: $e');
       Navigator.of(context).pop(); // Cierra el loader
       // Muestra un mensaje de error en caso de que ocurra un problema
       ScaffoldMessenger.of(context).showSnackBar(

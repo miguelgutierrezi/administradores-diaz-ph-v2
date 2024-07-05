@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/utils.dart';
+
 class AddComplaintPage extends StatefulWidget {
   const AddComplaintPage({super.key});
 
@@ -62,7 +64,7 @@ class _AddComplaintPageState extends State<AddComplaintPage> {
         _showAlert(context, 'Queja enviada', 'Se ha enviado la queja');
       } catch (e) {
         Navigator.pop(context); // Dismiss the loading dialog
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

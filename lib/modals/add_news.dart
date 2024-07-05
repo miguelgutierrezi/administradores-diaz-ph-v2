@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import '../home_page.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
+import '../utils/utils.dart';
 
 class AddNewsPage extends StatefulWidget {
   const AddNewsPage({super.key});
@@ -78,11 +79,11 @@ class _AddNewsPageState extends State<AddNewsPage> {
       }
     } on PlatformException catch (e) {
       if (kDebugMode) {
-        print("Unsupported operation: $e");
+        Utils.debugPrint("Unsupported operation: $e");
       }
     } catch (e) {
       if (kDebugMode) {
-        print("Error picking file: $e");
+        Utils.debugPrint("Error picking file: $e");
       }
     }
   }
@@ -155,7 +156,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
             context, 'Noticia agregada', 'Se ha creado una nueva noticia');
       } catch (e) {
         Navigator.of(context).pop(); // Dismiss the loader
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

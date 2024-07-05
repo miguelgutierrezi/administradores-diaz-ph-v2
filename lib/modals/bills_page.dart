@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../services/firestore_service.dart';
+import '../utils/utils.dart';
 
 class BillsListPage extends StatefulWidget {
   const BillsListPage({super.key});
@@ -60,8 +61,8 @@ class _BillsListPageState extends State<BillsListPage> {
 
     final List<Map<String, dynamic>> bills =
         await _firestoreService.getCollection('bills');
-    print('Building');
-    print(_building!['id']);
+    Utils.debugPrint('Building');
+    Utils.debugPrint(_building!['id']);
     setState(() {
       _bills = bills
           .where((bill) => bill['buildingId'] == _building!['id'])
@@ -72,7 +73,6 @@ class _BillsListPageState extends State<BillsListPage> {
   void _getBill() async {
     final prefs = await SharedPreferences.getInstance();
     final numeroApto = prefs.getString('numeroApto');
-    print(_bills);
 
     setState(() {
       _bill = _bills.firstWhere(

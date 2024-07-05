@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../utils/utils.dart';
+
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -19,7 +21,7 @@ class FirestoreService {
         return data;
       }).toList();
     } catch (e) {
-      print(e);
+      Utils.debugPrint(e.toString());
       return [];
     }
   }
@@ -32,7 +34,7 @@ class FirestoreService {
           await _db.collection(collectionPath).doc(documentId).get();
       return snapshot.data() as Map<String, dynamic>?;
     } catch (e) {
-      print(e);
+      Utils.debugPrint(e.toString());
       return null;
     }
   }
@@ -55,7 +57,7 @@ class FirestoreService {
     try {
       await _db.collection(collectionPath).doc(documentId).delete();
     } catch (e) {
-      print(e);
+      Utils.debugPrint(e.toString());
       rethrow;
     }
   }
@@ -83,7 +85,7 @@ class FirestoreService {
       final downloadUrl = await snapshot.ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Error uploading PDF: $e');
+      Utils.debugPrint('Error uploading PDF: $e');
       return '';
     }
   }

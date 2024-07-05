@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/utils.dart';
+
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -14,7 +16,7 @@ class AuthService {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } catch (e) {
-      print('Error sending password reset email: $e');
+      Utils.debugPrint('Error sending password reset email: $e');
       rethrow;
     }
   }
@@ -27,7 +29,7 @@ class AuthService {
       await _saveUserSession(userCredential.user?.uid);
       return userCredential.user;
     } catch (e) {
-      print('Error signing in: $e');
+      Utils.debugPrint('Error signing in: $e');
       rethrow;
     }
   }
@@ -51,7 +53,7 @@ class AuthService {
       await _clearUserSession();
       await _firebaseAuth.signOut();
     } catch (e) {
-      print('Error signing out: $e');
+      Utils.debugPrint('Error signing out: $e');
       rethrow;
     }
   }
@@ -67,7 +69,7 @@ class AuthService {
         await _firebaseAuth.signOut();
       }
     } catch (e) {
-      print('Error al eliminar la cuenta: $e');
+      Utils.debugPrint('Error al eliminar la cuenta: $e');
       rethrow;
     }
   }

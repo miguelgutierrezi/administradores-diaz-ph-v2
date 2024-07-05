@@ -1,7 +1,9 @@
 import 'package:administradores_diaz_ph/services/auth_service.dart';
+import 'package:administradores_diaz_ph/utils/utils.dart';
 import 'package:administradores_diaz_ph/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import 'home_page.dart';
 
@@ -36,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       }
     } catch (e) {
-      print('Error checking authentication: $e');
+      Utils.debugPrint('Error checking authentication: $e');
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const WelcomePage()),
       );

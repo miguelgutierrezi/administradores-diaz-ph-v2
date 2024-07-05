@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/utils.dart';
+
 class AddAnnounce extends StatefulWidget {
   const AddAnnounce({super.key});
 
@@ -131,7 +133,7 @@ class _AddAnnounceState extends State<AddAnnounce> {
         _showAlert('Anuncio agregado', 'Se ha creado un nuevo anuncio');
       } catch (e) {
         Navigator.of(context).pop(); // Dismiss the loader
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../utils/utils.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});
@@ -83,7 +84,7 @@ class _NewsPageState extends State<NewsPage> {
         launchUrl(Uri.parse(url));
       }
     } catch (e) {
-      print("Error downloading: $e");
+      Utils.debugPrint("Error downloading: $e");
     }
   }
 

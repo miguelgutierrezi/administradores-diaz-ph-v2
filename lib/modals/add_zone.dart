@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
+import '../utils/utils.dart';
 
 class AddZonePage extends StatefulWidget {
   const AddZonePage({super.key});
@@ -112,7 +113,7 @@ class _AddZonePageState extends State<AddZonePage> {
         _showAlert('Zona agregada', 'Se ha creado una nueva zona');
       } catch (e) {
         Navigator.of(context).pop(); // Dismiss the loader
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

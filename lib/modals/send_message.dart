@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
+import '../utils/utils.dart';
 
 class SendMessagePage extends StatefulWidget {
   @override
@@ -82,11 +83,11 @@ class _SendMessagePageState extends State<SendMessagePage> {
       }
     } on PlatformException catch (e) {
       if (kDebugMode) {
-        print("Unsupported operation: $e");
+        Utils.debugPrint("Unsupported operation: $e");
       }
     } catch (e) {
       if (kDebugMode) {
-        print("Error picking file: $e");
+        Utils.debugPrint("Error picking file: $e");
       }
     }
   }
@@ -143,7 +144,7 @@ class _SendMessagePageState extends State<SendMessagePage> {
             'El mensaje ha sido enviado exitosamente');
       } catch (e) {
         Navigator.of(context).pop(); // Dismiss the loader
-        print("Error: $e");
+        Utils.debugPrint("Error: $e");
       }
     }
   }

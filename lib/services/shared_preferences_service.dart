@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/utils.dart';
+
 class SharedPreferencesService {
   Future<void> storeDynamicList(String name, List<dynamic> dynamicList) async {
     final prefs = await SharedPreferences.getInstance();
@@ -51,7 +53,7 @@ class SharedPreferencesService {
     final keys = prefs.getKeys();
     for (String key in keys) {
       var value = prefs.get(key);
-      print('$key: $value (Type: ${value.runtimeType})');
+      Utils.debugPrint('$key: $value (Type: ${value.runtimeType})');
     }
   }
 }
