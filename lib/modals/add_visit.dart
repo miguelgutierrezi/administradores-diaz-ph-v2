@@ -1,13 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
@@ -32,11 +27,14 @@ class _AddVisitPageState extends State<AddVisitPage> {
   final List<String> _buildings = [];
   final _formKey = GlobalKey<FormState>();
   String? _selectedBuilding;
-  DateTime _visitDate = DateTime.now();
+  final DateTime _visitDate = DateTime.now();
   UserRole? _userRole;
   String? _userName;
   String? _userId;
   List<String>? _adminBuildings;
+  List<PlatformFile> files = [];
+  List<String> fileNames = [];
+  List<String> fileLinks = [];
 
   @override
   void initState() {
@@ -76,7 +74,15 @@ class _AddVisitPageState extends State<AddVisitPage> {
     Map<String, dynamic> building =
         buildings.firstWhere((b) => b['nombre'] == _selectedBuilding);
     setState(() {
-      _zones = List<Map<String, dynamic>>.from(building['zones']);
+      _zones = List<String>.from(building['zones'])
+          .map((zone) => {
+                'nombre': zone,
+                'novedad': 'sin novedad',
+                'observacion': '',
+                'filesNames': [],
+                'files': []
+              })
+          .toList();
     });
   }
 
@@ -96,7 +102,9 @@ class _AddVisitPageState extends State<AddVisitPage> {
   }
 
   Future<void> _pickFile(int index) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
     if (result != null) {
       setState(() {
         _zones[index]['files'].add(result.files.first);
@@ -112,89 +120,98 @@ class _AddVisitPageState extends State<AddVisitPage> {
     });
   }
 
-  Future<Uint8List> _downloadFile(String url) async {
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      return response.bodyBytes;
-    } else {
-      throw Exception('Failed to download file');
-    }
-  }
+  Future<void> _saveVisit() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
 
-  Future<void> _generateAndUploadPdf(String visitId) async {
-    final pdf = pw.Document();
+      _showLoadingDialog();
 
-    List<pw.Widget> zoneWidgets = [];
+      try {
+        final visitData = await _prepareVisitData();
+        final visitRef = await _firestoreService.createDocument('visits', visitData);
 
-    for (var zone in _zones) {
-      List<pw.Widget> widgets = [
-        pw.Text('Zona: ${zone['nombre']}',
-            style: const pw.TextStyle(fontSize: 18)),
-        pw.Text('Novedad: ${zone['novedad']}'),
-        pw.Text('Observaciones: ${zone['observacion']}'),
-        pw.SizedBox(height: 10),
-      ];
+        final updatedZones = await _uploadZoneFilesAndUpdateZones(visitRef.id);
+        await _updateVisitDocument(visitRef.id, visitData, updatedZones);
 
-      for (var fileLink in zone['filesLinks']) {
-        final imageData = await _downloadFile(fileLink);
-        widgets.add(pw.Image(pw.MemoryImage(imageData)));
+        Navigator.of(context).pop(); // Dismiss the loader
+        _showSuccessDialog();
+      } catch (e) {
+        Navigator.of(context).pop(); // Dismiss the loader
+        print("Error: $e");
       }
-
-      widgets.add(pw.SizedBox(height: 20));
-      zoneWidgets.add(pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start, children: widgets));
     }
-
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) => pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: <pw.Widget>[
-            pw.Text('Reporte de Visita',
-                style: const pw.TextStyle(fontSize: 24)),
-            pw.Text('Edificio: $_selectedBuilding'),
-            pw.Text('Fecha: ${_dateFormat.format(_visitDate)}'),
-            pw.Text('Usuario: $_userName'),
-            pw.SizedBox(height: 20),
-            ...zoneWidgets,
-          ],
-        ),
-      ),
-    );
-
-    final pdfBytes = await pdf.save();
-    String pdfUrl =
-        await _firestoreService.uploadPdf('visits', '$visitId.pdf', pdfBytes);
-    await _firestoreService
-        .updateDocument('visits', visitId, {'fileUrl': pdfUrl});
   }
 
-  void _showPdfAlert(String visitId) {
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> _prepareVisitData() async {
+    String userId = _userId!;
+    String userName = _userName!;
+    String selectedBuilding = _selectedBuilding!;
+    DateTime visitDate = _visitDate;
+
+    final filteredZones = _zones.map((zone) {
+      final newZone = Map<String, dynamic>.from(zone);
+      newZone.remove('files');
+      newZone.remove('filesNames');
+      newZone.remove('filesLinks');
+      return newZone;
+    }).toList();
+
+    return {
+      'date': visitDate,
+      'edificio': selectedBuilding,
+      'user': userId,
+      'name': userName,
+      'zones': filteredZones,
+    };
+  }
+
+  Future<List<Map<String, dynamic>>> _uploadZoneFilesAndUpdateZones(String visitId) async {
+    return await Future.wait(_zones.map((zone) async {
+      final newZone = Map<String, dynamic>.from(zone);
+      List<String> fileLinks = [];
+      for (var file in zone['files']) {
+        String imageUrl = await _firestoreService.uploadFile('visits', visitId, file.path!);
+        fileLinks.add(imageUrl);
+      }
+      newZone['filesLinks'] = fileLinks;
+      newZone['filesNames'] = List<String>.from(zone['filesNames']);
+      newZone.remove('files');
+      return newZone;
+    }).toList());
+  }
+
+  Future<void> _updateVisitDocument(String visitId, Map<String, dynamic> visitData, List<Map<String, dynamic>> updatedZones) async {
+    final dataUp = {
+      ...visitData,
+      'zones': updatedZones,
+    };
+
+    await FirebaseFirestore.instance.collection('visits').doc(visitId).update(dataUp);
+  }
+
+  void _showSuccessDialog() {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Visita añadida'),
-          content: const Text(
-            '¿Quiere visualizar el reporte generado en PDF? Lo podrá consultar luego en la lista de visitas.',
-          ),
+          content: const Text('La visita se ha registrado correctamente.'),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancelar'),
+              child: const Text('Aceptar'),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: const Text('Aceptar'),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                DocumentSnapshot visitDoc = await _firestoreService
-                    .getDocumentSnapshot('visits', visitId);
-                String pdfUrl = visitDoc['fileUrl'];
-                launchUrl(Uri.parse(pdfUrl));
                 Navigator.pop(context);
               },
             ),
@@ -202,29 +219,6 @@ class _AddVisitPageState extends State<AddVisitPage> {
         );
       },
     );
-  }
-
-  Future<void> _saveVisit() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      String userId = _userId!;
-      String userName = _userName!;
-      String selectedBuilding = _selectedBuilding!;
-      DateTime visitDate = _visitDate;
-
-      final data = {
-        'date': visitDate,
-        'edificio': selectedBuilding,
-        'user': userId,
-        'name': userName,
-        'zones': _zones,
-      };
-
-      DocumentReference visitRef =
-          await _firestoreService.createDocument('visits', data);
-      await _generateAndUploadPdf(visitRef.id);
-      _showPdfAlert(visitRef.id);
-    }
   }
 
   @override
@@ -265,6 +259,7 @@ class _AddVisitPageState extends State<AddVisitPage> {
                 onChanged: (value) {
                   setState(() {
                     _selectedBuilding = value;
+                    _findZones();
                   });
                 },
                 validator: (value) {
@@ -280,7 +275,8 @@ class _AddVisitPageState extends State<AddVisitPage> {
                 icon: const Icon(Icons.search),
                 label: const Text('Buscar zonas'),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                   textStyle: const TextStyle(fontSize: 18),
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
@@ -292,8 +288,15 @@ class _AddVisitPageState extends State<AddVisitPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    const Divider(),
                     ListTile(
-                      title: Text(zone['nombre']),
+                      title: Text(
+                        zone['nombre'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                        ),
+                      ),
                       subtitle: Row(
                         children: [
                           Expanded(
@@ -302,12 +305,7 @@ class _AddVisitPageState extends State<AddVisitPage> {
                               value: 'sin novedad',
                               groupValue: zone['novedad'],
                               onChanged: (value) {
-                                setState(() {
-                                  _zones[index]['novedad'] = value;
-                                  if (value == 'sin novedad') {
-                                    _zones[index]['observacion'] = '';
-                                  }
-                                });
+                                _changeValue(value.toString(), index);
                               },
                             ),
                           ),
@@ -317,9 +315,7 @@ class _AddVisitPageState extends State<AddVisitPage> {
                               value: 'con novedad',
                               groupValue: zone['novedad'],
                               onChanged: (value) {
-                                setState(() {
-                                  _zones[index]['novedad'] = value;
-                                });
+                                _changeValue(value.toString(), index);
                               },
                             ),
                           ),
@@ -330,23 +326,24 @@ class _AddVisitPageState extends State<AddVisitPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: TextField(
+                          maxLines: 5,
                           decoration: const InputDecoration(
                             labelText: 'Observaciones',
                             border: OutlineInputBorder(),
                           ),
                           onChanged: (value) {
-                            setState(() {
-                              _zones[index]['observacion'] = value;
-                            });
+                            _addObservation(value, index);
                           },
                         ),
                       ),
+                    const SizedBox(height: 8),
                     ElevatedButton.icon(
                       onPressed: () => _pickFile(index),
                       icon: const Icon(Icons.attach_file),
                       label: const Text('Seleccionar archivo'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 24),
                         textStyle: const TextStyle(fontSize: 18),
                       ),
                     ),
@@ -361,7 +358,7 @@ class _AddVisitPageState extends State<AddVisitPage> {
                           },
                         ),
                       );
-                    }).toList(),
+                    }),
                     const SizedBox(height: 16),
                   ],
                 );
@@ -372,7 +369,8 @@ class _AddVisitPageState extends State<AddVisitPage> {
                 icon: const Icon(Icons.check),
                 label: const Text('Registrar visita'),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                   textStyle: const TextStyle(fontSize: 18),
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
