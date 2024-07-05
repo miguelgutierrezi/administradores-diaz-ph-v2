@@ -81,6 +81,9 @@ class _EditClientPageState extends State<EditClientPage> {
       await _firestoreService.updateDocument(
           'users', widget.clientId, _updatedClient);
       Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cliente actualizado')),
+      );
     }
   }
 

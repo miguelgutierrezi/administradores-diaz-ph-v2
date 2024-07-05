@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import 'edit_building.dart';
 
 class BuildingsListPage extends StatefulWidget {
   const BuildingsListPage({super.key});
@@ -75,8 +76,18 @@ class _BuildingsListPageState extends State<BuildingsListPage> {
   }
 
   Future<void> _onEdit(Map<String, dynamic> building) async {
-    // Implementa la lógica para abrir la página de edición
-    // con el building seleccionado
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditBuildingPage(
+          building: building,
+          buildingId: building['id'],
+        ),
+      ),
+    );
+    if (result == true) {
+      _loadBuildings();
+    }
   }
 
   Future<void> _doRefresh() async {
