@@ -1,5 +1,6 @@
 import 'package:administradores_diaz_ph/modals/add_admin.dart';
 import 'package:administradores_diaz_ph/modals/add_bill.dart';
+import 'package:administradores_diaz_ph/modals/add_building.dart';
 import 'package:administradores_diaz_ph/modals/add_client.dart';
 import 'package:administradores_diaz_ph/modals/add_complaint.dart';
 import 'package:administradores_diaz_ph/modals/add_zone.dart';
@@ -102,7 +103,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Agregar edificio'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/buildings/add-building');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddBuildingPage()),
+                );
               },
             ),
             const Divider(),
