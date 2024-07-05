@@ -4,6 +4,7 @@ import 'package:administradores_diaz_ph/modals/add_building.dart';
 import 'package:administradores_diaz_ph/modals/add_client.dart';
 import 'package:administradores_diaz_ph/modals/add_complaint.dart';
 import 'package:administradores_diaz_ph/modals/add_zone.dart';
+import 'package:administradores_diaz_ph/modals/admins_page.dart';
 import 'package:administradores_diaz_ph/modals/bills_page.dart';
 import 'package:administradores_diaz_ph/modals/buildings_page.dart';
 import 'package:administradores_diaz_ph/modals/clients_page.dart';
@@ -210,7 +211,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Ver administradores'),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
-                Navigator.pushNamed(context, '/users/admins');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AdminsListPage()),
+                );
               },
             ),
             const Divider(),
