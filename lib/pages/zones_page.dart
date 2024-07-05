@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../modals/calendar_page.dart';
 import '../models/user_role.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
@@ -214,7 +215,16 @@ class _ZonesPageState extends State<ZonesPage> {
                                     if (zona['reservasTrue'] == true)
                                       IconButton(
                                         icon: const Icon(Icons.calendar_today),
-                                        onPressed: () => {},
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CalendarUiPage(
+                                                      zoneId: zona['id']),
+                                            ),
+                                          );
+                                        },
                                       ),
                                   ],
                                 ),

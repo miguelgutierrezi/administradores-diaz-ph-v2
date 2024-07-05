@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -66,5 +67,52 @@ class FirestoreService {
         .ref('$collectionName/$objectId/${file.uri.pathSegments.last}')
         .putFile(file);
     return await taskSnapshot.ref.getDownloadURL();
+  }
+
+  Future<DocumentSnapshot> getDocumentSnapshot(
+      String collection, String docId) async {
+    return await _db.collection(collection).doc(docId).get();
+  }
+
+  Future<String> uploadPdf(
+      String folder, String fileName, Uint8List pdfBytes) async {
+    try {
+      final ref = _storage.ref().child('$folder/$fileName');
+      final uploadTask = ref.putData(pdfBytes);
+      final snapshot = await uploadTask.whenComplete(() => null);
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print('Error uploading PDF: $e');
+      return '';
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getBookings(String zoneKey) async {
+    try {
+      QuerySnapshot snapshot =
+          await _db.collection('zonas').doc(zoneKey).collection('events').get();
+
+      return snapshot.docs.map((doc) {
+        var data = doc.data() as Map<String, dynamic>;
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } catch (e) {
+      throw Exception('Error getting bookings: $e');
+    }
+  }
+
+  Future<void> deleteBooking(String zoneKey, String bookKey) async {
+    try {
+      await _db
+          .collection('zonas')
+          .doc(zoneKey)
+          .collection('events')
+          .doc(bookKey)
+          .delete();
+    } catch (e) {
+      throw Exception('Error deleting booking: $e');
+    }
   }
 }
