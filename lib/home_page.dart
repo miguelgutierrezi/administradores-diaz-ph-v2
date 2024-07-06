@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'handlers/alarm_permission_handler.dart';
 import 'models/user_role.dart';
 
 class HomePage extends StatefulWidget {
@@ -45,6 +46,9 @@ class _HomePageState extends State<HomePage> {
     }
     if (PlatformService.isIOS()) {
       _checkAndRequestTrackingPermission();
+    }
+    if (PlatformService.isAndroid()) {
+      _requestExactAlarmPermission();
     }
   }
 
@@ -143,6 +147,20 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  Future<void> _requestExactAlarmPermission() async {
+    try {
+      final bool granted =
+          await AlarmPermissionHandler.requestExactAlarmPermission();
+      if (granted) {
+        Utils.debugPrint('Exact Alarm Permission Granted');
+      } else {
+        Utils.debugPrint('Exact Alarm Permission Denied');
+      }
+    } catch (e) {
+      Utils.debugPrint('Failed to request exact alarm permission: $e');
+    }
   }
 
   void _initializeTabs() {

@@ -13,6 +13,10 @@ class PlatformService {
     return defaultTargetPlatform == TargetPlatform.iOS;
   }
 
+  static bool isAndroid() {
+    return defaultTargetPlatform == TargetPlatform.android;
+  }
+
   static bool isWeb() {
     return kIsWeb;
   }
