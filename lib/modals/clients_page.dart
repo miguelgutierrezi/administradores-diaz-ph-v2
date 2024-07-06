@@ -136,7 +136,11 @@ class _ClientsListPageState extends State<ClientsListPage> {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            semanticLabel: 'Regresar',
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -152,7 +156,10 @@ class _ClientsListPageState extends State<ClientsListPage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  semanticLabel: 'Buscar clientes',
+                ),
               ),
               onChanged: (value) {
                 _filterClients(value);
@@ -164,13 +171,25 @@ class _ClientsListPageState extends State<ClientsListPage> {
               stream: _clientsStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Cargando clientes...',
+                    ),
+                  );
                 } else if (snapshot.hasError) {
                   return const Center(
-                      child: Text('Error al cargar los clientes'));
+                    child: Text(
+                      'Error al cargar los clientes',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                      child: Text('No hay clientes disponibles'));
+                    child: Text(
+                      'No hay clientes disponibles',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
                 } else {
                   var clients = snapshot.data!;
                   if (_searchTerm.isNotEmpty) {
@@ -186,14 +205,26 @@ class _ClientsListPageState extends State<ClientsListPage> {
                       var client = clients[index];
                       return Dismissible(
                         key: Key(client['id']),
-                        background: Container(color: Colors.red),
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            semanticLabel: 'Eliminar cliente',
+                          ),
+                        ),
                         onDismissed: (direction) {
                           _deleteClient(client['id']);
                         },
                         child: ListTile(
-                          leading: const CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/avatar-icon.png'),
+                          leading: Semantics(
+                            label: 'Avatar del cliente',
+                            child: const CircleAvatar(
+                              backgroundImage:
+                                  AssetImage('assets/avatar-icon.png'),
+                            ),
                           ),
                           title: Text(client['nombre']),
                           subtitle: Column(

@@ -110,6 +110,7 @@ class _AddComplaintPageState extends State<AddComplaintPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -133,7 +134,10 @@ class _AddComplaintPageState extends State<AddComplaintPage> {
                 controller: _descripcionController,
                 decoration: const InputDecoration(
                   labelText: 'Descripción',
-                  icon: Icon(Icons.description),
+                  icon: Icon(
+                    Icons.description,
+                    semanticLabel: 'Descripción de la queja',
+                  ),
                 ),
                 maxLines: 5,
                 validator: (value) {
@@ -149,8 +153,9 @@ class _AddComplaintPageState extends State<AddComplaintPage> {
                 icon: const Icon(
                   Icons.add,
                   color: Colors.white,
+                  semanticLabel: 'Añadir queja',
                 ),
-                label: const Text('Añadir Queja'),
+                label: const Text('Añadir queja'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   textStyle: const TextStyle(fontSize: 18),

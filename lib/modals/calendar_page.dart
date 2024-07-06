@@ -146,7 +146,11 @@ class _CalendarUiPageState extends State<CalendarUiPage> {
           style: const TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            semanticLabel: 'Regresar',
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -178,14 +182,13 @@ class _CalendarUiPageState extends State<CalendarUiPage> {
                           style: const TextStyle(fontSize: 24),
                         ),
                         const SizedBox(height: 16),
-                        if (_selectedDateBookings.isEmpty)
-                          const Center(
-                              child: Text(
-                                  'No hay reservas para la fecha seleccionada')),
                         ..._selectedDateBookings.map((booking) {
                           int index = _selectedDateBookings.indexOf(booking);
                           return ListTile(
-                            leading: const Icon(Icons.today),
+                            leading: const Icon(
+                              Icons.today,
+                              semanticLabel: 'Reserva de hoy',
+                            ),
                             title: Text(
                               _isOwner(booking['user'])
                                   ? 'Espacio reservado por ti'
@@ -198,8 +201,11 @@ class _CalendarUiPageState extends State<CalendarUiPage> {
                             ),
                             trailing: _availableDelete(booking['user'])
                                 ? IconButton(
-                                    icon: const Icon(Icons.delete,
-                                        color: Colors.red),
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                      semanticLabel: 'Eliminar reserva',
+                                    ),
                                     onPressed: () =>
                                         _onDeleteEvent(_selectedDateIds[index]),
                                   )
@@ -209,6 +215,14 @@ class _CalendarUiPageState extends State<CalendarUiPage> {
                       ],
                     ),
                   ),
+                if (_selectedDateBookings.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'No hay reservas para la fecha seleccionada',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
                 if (_validDay &&
                     _userRole == UserRole.user &&
                     _selectedDate.isAfter(DateTime.now()))
@@ -216,7 +230,10 @@ class _CalendarUiPageState extends State<CalendarUiPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: ElevatedButton.icon(
                       onPressed: _onAddBooking,
-                      icon: const Icon(Icons.check),
+                      icon: const Icon(
+                        Icons.check,
+                        semanticLabel: 'Añadir reserva',
+                      ),
                       label: const Text('Añadir reserva'),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),

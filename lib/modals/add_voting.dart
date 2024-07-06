@@ -127,6 +127,7 @@ class _AddVotingPageState extends State<AddVotingPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -143,7 +144,10 @@ class _AddVotingPageState extends State<AddVotingPage> {
                 controller: _tituloController,
                 decoration: const InputDecoration(
                   labelText: 'Título',
-                  icon: Icon(Icons.article),
+                  icon: Icon(
+                    Icons.article,
+                    semanticLabel: 'Título de la votación',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -157,7 +161,10 @@ class _AddVotingPageState extends State<AddVotingPage> {
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(
                     labelText: 'Edificio',
-                    icon: Icon(Icons.location_city),
+                    icon: Icon(
+                      Icons.location_city,
+                      semanticLabel: 'Seleccionar edificio',
+                    ),
                   ),
                   items: _buildings.map((building) {
                     return DropdownMenuItem<String>(
@@ -182,7 +189,10 @@ class _AddVotingPageState extends State<AddVotingPage> {
                 controller: _linkController,
                 decoration: const InputDecoration(
                   labelText: 'Enlace',
-                  icon: Icon(Icons.link),
+                  icon: Icon(
+                    Icons.link,
+                    semanticLabel: 'Enlace de la votación',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -196,7 +206,10 @@ class _AddVotingPageState extends State<AddVotingPage> {
                 controller: _descripcionController,
                 decoration: const InputDecoration(
                   labelText: 'Descripción',
-                  icon: Icon(Icons.description),
+                  icon: Icon(
+                    Icons.description,
+                    semanticLabel: 'Descripción de la votación',
+                  ),
                 ),
                 maxLines: 5,
                 validator: (value) {
@@ -212,6 +225,7 @@ class _AddVotingPageState extends State<AddVotingPage> {
                 icon: const Icon(
                   Icons.check,
                   color: Colors.white,
+                  semanticLabel: 'Añadir votación',
                 ),
                 label: const Text('Añadir votación'),
                 style: ElevatedButton.styleFrom(

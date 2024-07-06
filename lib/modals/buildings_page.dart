@@ -104,7 +104,11 @@ class _BuildingsListPageState extends State<BuildingsListPage> {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            semanticLabel: 'Regresar',
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -122,14 +126,22 @@ class _BuildingsListPageState extends State<BuildingsListPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    semanticLabel: 'Buscar edificios',
+                  ),
                 ),
                 onChanged: _setFilteredBuildings,
               ),
             ),
             Expanded(
               child: _filterBuildings.isEmpty
-                  ? const Center(child: Text('No hay edificios disponibles'))
+                  ? const Center(
+                      child: Text(
+                        'No hay edificios disponibles',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
                   : ListView.builder(
                       itemCount: _filterBuildings.length,
                       itemBuilder: (context, index) {
@@ -147,26 +159,32 @@ class _BuildingsListPageState extends State<BuildingsListPage> {
                             alignment: Alignment.centerRight,
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
-                            child:
-                                const Icon(Icons.delete, color: Colors.white),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              semanticLabel: 'Eliminar edificio',
+                            ),
                           ),
                           child: Card(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 16),
                             child: ListTile(
-                              leading: Image.network(
-                                imageUrl,
-                                height: 50,
-                                width: 50,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/Logo_Diaz_Administradores.jpeg',
-                                    height: 50,
-                                    width: 50,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
+                              leading: Semantics(
+                                label: 'Imagen del edificio',
+                                child: Image.network(
+                                  imageUrl,
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/Logo_Diaz_Administradores.jpeg',
+                                      height: 50,
+                                      width: 50,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
                               ),
                               title: Text(building['nombre']),
                               subtitle: Text(building['direccion']),

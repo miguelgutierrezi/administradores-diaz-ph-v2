@@ -59,9 +59,12 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         children: [
           ListTile(
-            leading: const Icon(Icons.person_outline),
-            title: const Text('Mi perfil'),
-            trailing: const Icon(Icons.arrow_forward),
+            leading: const Icon(Icons.person_outline,
+                semanticLabel: 'Icono de perfil'),
+            title: const Text('Mi perfil',
+                semanticsLabel: 'Opción de menú: Mi perfil'),
+            trailing: const Icon(Icons.arrow_forward,
+                semanticLabel: 'Ir a Mi perfil'),
             onTap: () {
               Navigator.push(
                 context,
@@ -72,9 +75,12 @@ class _SettingsPageState extends State<SettingsPage> {
           const Divider(),
           if (isNotClient()) ...[
             ListTile(
-              leading: const Icon(Icons.person_outline),
-              title: const Text('Agregar cliente'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.person_outline,
+                  semanticLabel: 'Icono de agregar cliente'),
+              title: const Text('Agregar cliente',
+                  semanticsLabel: 'Opción de menú: Agregar cliente'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Agregar cliente'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -87,9 +93,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (isSuperAdmin()) ...[
             ListTile(
-              leading: const Icon(Icons.person_outline),
-              title: const Text('Agregar administrador'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.person_outline,
+                  semanticLabel: 'Icono de agregar administrador'),
+              title: const Text('Agregar administrador',
+                  semanticsLabel: 'Opción de menú: Agregar administrador'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Agregar administrador'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -101,9 +110,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (isSuperAdmin()) ...[
             ListTile(
-              leading: const Icon(Icons.business_outlined),
-              title: const Text('Agregar edificio'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.business_outlined,
+                  semanticLabel: 'Icono de agregar edificio'),
+              title: const Text('Agregar edificio',
+                  semanticsLabel: 'Opción de menú: Agregar edificio'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Agregar edificio'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -116,9 +128,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (isNotClient()) ...[
             ListTile(
-              leading: const Icon(Icons.navigation_outlined),
-              title: const Text('Agregar zona común'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.navigation_outlined,
+                  semanticLabel: 'Icono de agregar zona común'),
+              title: const Text('Agregar zona común',
+                  semanticsLabel: 'Opción de menú: Agregar zona común'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Agregar zona común'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -130,9 +145,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (isNotClient()) ...[
             ListTile(
-              leading: const Icon(Icons.add_alert_outlined),
-              title: const Text('Ver quejas y reclamos'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.add_alert_outlined,
+                  semanticLabel: 'Icono de ver quejas y reclamos'),
+              title: const Text('Ver quejas y reclamos',
+                  semanticsLabel: 'Opción de menú: Ver quejas y reclamos'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Ver quejas y reclamos'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -145,9 +163,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (!isNotClient()) ...[
             ListTile(
-              leading: const Icon(Icons.add_alert_outlined),
-              title: const Text('Enviar queja o reclamo'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.add_alert_outlined,
+                  semanticLabel: 'Icono de enviar queja o reclamo'),
+              title: const Text('Enviar queja o reclamo',
+                  semanticsLabel: 'Opción de menú: Enviar queja o reclamo'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Enviar queja o reclamo'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -159,9 +180,12 @@ class _SettingsPageState extends State<SettingsPage> {
             const Divider(),
           ],
           ListTile(
-            leading: const Icon(Icons.archive_outlined),
-            title: const Text('Ver votaciones'),
-            trailing: const Icon(Icons.arrow_forward),
+            leading: const Icon(Icons.archive_outlined,
+                semanticLabel: 'Icono de ver votaciones'),
+            title: const Text('Ver votaciones',
+                semanticsLabel: 'Opción de menú: Ver votaciones'),
+            trailing: const Icon(Icons.arrow_forward,
+                semanticLabel: 'Ir a Ver votaciones'),
             onTap: () {
               Navigator.push(
                 context,
@@ -174,12 +198,17 @@ class _SettingsPageState extends State<SettingsPage> {
           if (isNotClient()) ...[
             ListTile(
               leading: isSuperAdmin()
-                  ? const Icon(Icons.people_outlined)
-                  : const Icon(Icons.groups_outlined),
+                  ? const Icon(Icons.people_outlined,
+                      semanticLabel: 'Icono de ver visitas')
+                  : const Icon(Icons.groups_outlined,
+                      semanticLabel: 'Icono de mis visitas'),
               title: isSuperAdmin()
-                  ? const Text('Ver visitas')
-                  : const Text('Mis visitas'),
-              trailing: const Icon(Icons.arrow_forward),
+                  ? const Text('Ver visitas',
+                      semanticsLabel: 'Opción de menú: Ver visitas')
+                  : const Text('Mis visitas',
+                      semanticsLabel: 'Opción de menú: Mis visitas'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Ver visitas'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -192,9 +221,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (isSuperAdmin()) ...[
             ListTile(
-              leading: const Icon(Icons.business_outlined),
-              title: const Text('Mis edificios'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.business_outlined,
+                  semanticLabel: 'Icono de mis edificios'),
+              title: const Text('Mis edificios',
+                  semanticsLabel: 'Opción de menú: Mis edificios'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Mis edificios'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -207,9 +239,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (isSuperAdmin()) ...[
             ListTile(
-              leading: const Icon(Icons.people_outlined),
-              title: const Text('Ver administradores'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.people_outlined,
+                  semanticLabel: 'Icono de ver administradores'),
+              title: const Text('Ver administradores',
+                  semanticsLabel: 'Opción de menú: Ver administradores'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Ver administradores'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -222,9 +257,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (isNotClient()) ...[
             ListTile(
-              leading: const Icon(Icons.people_outlined),
-              title: const Text('Ver clientes'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.people_outlined,
+                  semanticLabel: 'Icono de ver clientes'),
+              title: const Text('Ver clientes',
+                  semanticsLabel: 'Opción de menú: Ver clientes'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Ver clientes'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -237,9 +275,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (isNotClient()) ...[
             ListTile(
-              leading: const Icon(Icons.wallet_outlined),
-              title: const Text('Ingresar factura'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.wallet_outlined,
+                  semanticLabel: 'Icono de ingresar factura'),
+              title: const Text('Ingresar factura',
+                  semanticsLabel: 'Opción de menú: Ingresar factura'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Ingresar factura'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -251,9 +292,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
           if (!isNotClient()) ...[
             ListTile(
-              leading: const Icon(Icons.wallet_outlined),
-              title: const Text('Consultar factura'),
-              trailing: const Icon(Icons.arrow_forward),
+              leading: const Icon(Icons.wallet_outlined,
+                  semanticLabel: 'Icono de consultar factura'),
+              title: const Text('Consultar factura',
+                  semanticsLabel: 'Opción de menú: Consultar factura'),
+              trailing: const Icon(Icons.arrow_forward,
+                  semanticLabel: 'Ir a Consultar factura'),
               onTap: () {
                 Navigator.push(
                   context,

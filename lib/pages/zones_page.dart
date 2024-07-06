@@ -116,7 +116,11 @@ class _ZonesPageState extends State<ZonesPage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                prefixIcon: const Icon(Icons.search),
+                hintText: 'Buscar zonas',
+                prefixIcon: const Icon(
+                  Icons.search,
+                  semanticLabel: 'Buscar',
+                ),
               ),
               onChanged: (value) {
                 _setFilteredZones(value);
@@ -128,11 +132,25 @@ class _ZonesPageState extends State<ZonesPage> {
               stream: _zonesStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Cargando zonas',
+                    ),
+                  );
                 } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error al cargar las zonas'));
+                  return const Center(
+                    child: Text(
+                      'Error al cargar las zonas',
+                      semanticsLabel: 'Error al cargar las zonas',
+                    ),
+                  );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No hay zonas disponibles'));
+                  return const Center(
+                    child: Text(
+                      'No hay zonas disponibles',
+                      semanticsLabel: 'No hay zonas disponibles',
+                    ),
+                  );
                 } else {
                   List<Map<String, dynamic>> zonas = snapshot.data!;
                   List<Map<String, dynamic>> filteredZonas =
@@ -194,6 +212,17 @@ class _ZonesPageState extends State<ZonesPage> {
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return const Icon(
+                                                      Icons.broken_image,
+                                                      color: Colors.red,
+                                                      semanticLabel:
+                                                          'Imagen no disponible',
+                                                    );
+                                                  },
+                                                  semanticLabel:
+                                                      'Imagen de la zona',
                                                 ),
                                               ),
                                             ))
@@ -201,12 +230,24 @@ class _ZonesPageState extends State<ZonesPage> {
                                   ),
                                 ),
                               ListTile(
-                                title: Text(zona['nombre']),
+                                title: Text(
+                                  zona['nombre'],
+                                  semanticsLabel:
+                                      'Nombre de la zona: ${zona['nombre']}',
+                                ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Edificio: ${zona['edificio']}'),
-                                    Text('Descripción: ${zona['descripcion']}'),
+                                    Text(
+                                      'Edificio: ${zona['edificio']}',
+                                      semanticsLabel:
+                                          'Edificio: ${zona['edificio']}',
+                                    ),
+                                    Text(
+                                      'Descripción: ${zona['descripcion']}',
+                                      semanticsLabel:
+                                          'Descripción: ${zona['descripcion']}',
+                                    ),
                                   ],
                                 ),
                                 trailing: Wrap(
@@ -214,7 +255,11 @@ class _ZonesPageState extends State<ZonesPage> {
                                   children: <Widget>[
                                     if (zona['reservasTrue'] == true)
                                       IconButton(
-                                        icon: const Icon(Icons.calendar_today),
+                                        icon: const Icon(
+                                          Icons.calendar_today,
+                                          semanticLabel:
+                                              'Abrir calendario de reservas',
+                                        ),
                                         onPressed: () {
                                           Navigator.push(
                                             context,
@@ -255,6 +300,7 @@ class _ZonesPageState extends State<ZonesPage> {
               child: const Icon(
                 Icons.add,
                 color: Colors.white,
+                semanticLabel: 'Agregar zona',
               ),
             )
           : null,

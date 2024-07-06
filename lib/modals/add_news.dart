@@ -202,6 +202,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -218,7 +219,10 @@ class _AddNewsPageState extends State<AddNewsPage> {
                 controller: _noticiaController,
                 decoration: const InputDecoration(
                   labelText: 'Noticia',
-                  icon: Icon(Icons.article),
+                  icon: Icon(
+                    Icons.article,
+                    semanticLabel: 'Título de la noticia',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -231,7 +235,10 @@ class _AddNewsPageState extends State<AddNewsPage> {
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Edificio',
-                  icon: Icon(Icons.location_city),
+                  icon: Icon(
+                    Icons.location_city,
+                    semanticLabel: 'Seleccionar edificio',
+                  ),
                 ),
                 items: _buildings.map((building) {
                   return DropdownMenuItem<String>(
@@ -256,7 +263,10 @@ class _AddNewsPageState extends State<AddNewsPage> {
                 controller: _descripcionController,
                 decoration: const InputDecoration(
                   labelText: 'Descripción',
-                  icon: Icon(Icons.description),
+                  icon: Icon(
+                    Icons.description,
+                    semanticLabel: 'Descripción de la noticia',
+                  ),
                 ),
                 maxLines: 5,
                 validator: (value) {
@@ -269,7 +279,10 @@ class _AddNewsPageState extends State<AddNewsPage> {
               const SizedBox(height: 16.0),
               ElevatedButton.icon(
                 onPressed: () => _selectDate(context),
-                icon: const Icon(Icons.calendar_today),
+                icon: const Icon(
+                  Icons.calendar_today,
+                  semanticLabel: 'Seleccionar fecha',
+                ),
                 label: const Text('Seleccionar fecha'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -288,7 +301,10 @@ class _AddNewsPageState extends State<AddNewsPage> {
               const SizedBox(height: 16.0),
               ElevatedButton.icon(
                 onPressed: _pickFile,
-                icon: const Icon(Icons.attach_file),
+                icon: const Icon(
+                  Icons.attach_file,
+                  semanticLabel: 'Seleccionar archivo',
+                ),
                 label: const Text('Seleccionar archivo'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -310,6 +326,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
                 icon: const Icon(
                   Icons.add,
                   color: Colors.white,
+                  semanticLabel: 'Añadir noticia',
                 ),
                 label: const Text('Añadir noticia'),
                 style: ElevatedButton.styleFrom(

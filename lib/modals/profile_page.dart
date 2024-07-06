@@ -138,14 +138,16 @@ class _ProfilePageState extends State<ProfilePage> {
             icon: const Icon(
               Icons.logout,
               color: Colors.white,
+              semanticLabel: 'Cerrar sesión',
             ),
             onPressed: _logout,
-          )
+          ),
         ],
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -173,35 +175,53 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 16.0),
             ListTile(
-              leading: const Icon(Icons.email),
+              leading: const Icon(
+                Icons.email,
+                semanticLabel: 'Correo electrónico',
+              ),
               title: const Text('Correo electrónico'),
               subtitle: Text(_correo ?? ''),
             ),
             ListTile(
-              leading: const Icon(Icons.person),
+              leading: const Icon(
+                Icons.person,
+                semanticLabel: 'Nombre',
+              ),
               title: const Text('Nombre'),
               subtitle: Text(_nombre ?? ''),
             ),
             if (_rol == 'CLIENTE')
               ListTile(
-                leading: const Icon(Icons.apartment),
+                leading: const Icon(
+                  Icons.apartment,
+                  semanticLabel: 'Número de Apartamento',
+                ),
                 title: const Text('Número de Apartamento'),
                 subtitle: Text(_numeroApto ?? ''),
               ),
             ListTile(
-              leading: const Icon(Icons.admin_panel_settings),
+              leading: const Icon(
+                Icons.admin_panel_settings,
+                semanticLabel: 'Rol',
+              ),
               title: const Text('Rol'),
               subtitle: Text(_rol ?? ''),
             ),
             ListTile(
-              leading: const Icon(Icons.location_city),
+              leading: const Icon(
+                Icons.location_city,
+                semanticLabel: 'Edificio(s)',
+              ),
               title: const Text('Edificio(s)'),
               subtitle: Text(_edificios?.join(', ') ?? ''),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: _showDeleteConfirmationDialog,
-              icon: const Icon(Icons.delete),
+              icon: const Icon(
+                Icons.delete,
+                semanticLabel: 'Eliminar cuenta',
+              ),
               label: const Text('Eliminar cuenta'),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),

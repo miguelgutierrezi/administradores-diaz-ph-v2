@@ -101,24 +101,32 @@ class _EditClientPageState extends State<EditClientPage> {
             icon: const Icon(
               Icons.close,
               color: Colors.white,
+              semanticLabel: 'Cerrar',
             ),
             onPressed: _onCancel,
           ),
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(
+                semanticsLabel: 'Cargando...',
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
                 child: ListView(
                   children: <Widget>[
-                    const Center(
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: AssetImage('assets/avatar-icon.png'),
-                        backgroundColor: Colors.transparent,
+                    Center(
+                      child: Semantics(
+                        label: 'Avatar del cliente',
+                        child: const CircleAvatar(
+                          radius: 50,
+                          backgroundImage: AssetImage('assets/avatar-icon.png'),
+                          backgroundColor: Colors.transparent,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -126,7 +134,10 @@ class _EditClientPageState extends State<EditClientPage> {
                       initialValue: _updatedClient['nombre'],
                       decoration: const InputDecoration(
                         labelText: 'Nombre',
-                        icon: Icon(Icons.document_scanner),
+                        icon: Icon(
+                          Icons.document_scanner,
+                          semanticLabel: 'Nombre del cliente',
+                        ),
                       ),
                       onSaved: (value) {
                         _updatedClient['nombre'] = value!;
@@ -142,7 +153,10 @@ class _EditClientPageState extends State<EditClientPage> {
                     DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
                         labelText: 'Edificio',
-                        icon: Icon(Icons.business),
+                        icon: Icon(
+                          Icons.business,
+                          semanticLabel: 'Edificio del cliente',
+                        ),
                       ),
                       items: _buildings.map((building) {
                         return DropdownMenuItem<String>(
@@ -168,7 +182,10 @@ class _EditClientPageState extends State<EditClientPage> {
                       initialValue: _updatedClient['numeroApto'],
                       decoration: const InputDecoration(
                         labelText: 'Número apartamento',
-                        icon: Icon(Icons.home),
+                        icon: Icon(
+                          Icons.home,
+                          semanticLabel: 'Número de apartamento',
+                        ),
                       ),
                       onSaved: (value) {
                         _updatedClient['numeroApto'] = value!;
@@ -183,7 +200,10 @@ class _EditClientPageState extends State<EditClientPage> {
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _onSave,
-                      icon: const Icon(Icons.check),
+                      icon: const Icon(
+                        Icons.check,
+                        semanticLabel: 'Guardar',
+                      ),
                       label: const Text('Guardar cliente'),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),

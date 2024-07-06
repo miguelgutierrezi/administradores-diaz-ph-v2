@@ -190,6 +190,7 @@ class _SendMessagePageState extends State<SendMessagePage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -205,13 +206,18 @@ class _SendMessagePageState extends State<SendMessagePage> {
               DropdownButtonFormField<Map<String, String>>(
                 decoration: const InputDecoration(
                   labelText: 'Para',
-                  icon: Icon(Icons.person_outline),
+                  icon: Icon(
+                    Icons.person_outline,
+                    semanticLabel: 'Seleccionar destinatario',
+                  ),
                 ),
                 items: _recipients.map((recipient) {
                   return DropdownMenuItem<Map<String, String>>(
                     value: recipient,
-                    child: Text(recipient['nombre']!,
-                        overflow: TextOverflow.ellipsis),
+                    child: Text(
+                      recipient['nombre']!,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -231,7 +237,10 @@ class _SendMessagePageState extends State<SendMessagePage> {
                 controller: _asuntoController,
                 decoration: const InputDecoration(
                   labelText: 'Asunto',
-                  icon: Icon(Icons.send),
+                  icon: Icon(
+                    Icons.send,
+                    semanticLabel: 'Asunto del mensaje',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -245,7 +254,10 @@ class _SendMessagePageState extends State<SendMessagePage> {
                 controller: _messageController,
                 decoration: const InputDecoration(
                   labelText: 'Mensaje',
-                  icon: Icon(Icons.message),
+                  icon: Icon(
+                    Icons.message,
+                    semanticLabel: 'Cuerpo del mensaje',
+                  ),
                 ),
                 maxLines: 5, // Aumenta el número de líneas visibles
                 validator: (value) {
@@ -258,7 +270,10 @@ class _SendMessagePageState extends State<SendMessagePage> {
               const SizedBox(height: 16.0),
               ElevatedButton.icon(
                 onPressed: _pickFile,
-                icon: const Icon(Icons.attach_file),
+                icon: const Icon(
+                  Icons.attach_file,
+                  semanticLabel: 'Seleccionar archivo adjunto',
+                ),
                 label: const Text('Seleccionar archivo'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -280,6 +295,7 @@ class _SendMessagePageState extends State<SendMessagePage> {
                 icon: const Icon(
                   Icons.send,
                   color: Colors.white,
+                  semanticLabel: 'Enviar mensaje',
                 ),
                 label: const Text('Enviar mensaje'),
                 style: ElevatedButton.styleFrom(

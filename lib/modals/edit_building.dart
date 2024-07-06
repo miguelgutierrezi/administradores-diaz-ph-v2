@@ -93,40 +93,51 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
             icon: const Icon(
               Icons.close,
               color: Colors.white,
+              semanticLabel: 'Cerrar',
             ),
             onPressed: _onCancel,
           ),
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(
+                semanticsLabel: 'Cargando...',
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
                 child: ListView(
                   children: <Widget>[
-                    Image.network(
-                      _updatedBuilding['imageUrl'] ??
-                          'https://cdn-icons-png.flaticon.com/512/85/85488.png',
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.network(
-                          'https://cdn-icons-png.flaticon.com/512/85/85488.png',
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        );
-                      },
+                    Semantics(
+                      label: 'Imagen del edificio',
+                      child: Image.network(
+                        _updatedBuilding['imageUrl'] ??
+                            'https://cdn-icons-png.flaticon.com/512/85/85488.png',
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.network(
+                            'https://cdn-icons-png.flaticon.com/512/85/85488.png',
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       initialValue: _updatedBuilding['nombre'],
                       decoration: const InputDecoration(
                         labelText: 'Nombre',
-                        icon: Icon(Icons.document_scanner),
+                        icon: Icon(
+                          Icons.document_scanner,
+                          semanticLabel: 'Nombre del edificio',
+                        ),
                       ),
                       onSaved: (value) {
                         _updatedBuilding['nombre'] = value!;
@@ -143,7 +154,10 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                       initialValue: _updatedBuilding['direccion'],
                       decoration: const InputDecoration(
                         labelText: 'Dirección',
-                        icon: Icon(Icons.location_on),
+                        icon: Icon(
+                          Icons.location_on,
+                          semanticLabel: 'Dirección del edificio',
+                        ),
                       ),
                       onSaved: (value) {
                         _updatedBuilding['direccion'] = value!;
@@ -160,7 +174,10 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                       initialValue: _updatedBuilding['descripcion'],
                       decoration: const InputDecoration(
                         labelText: 'Descripción',
-                        icon: Icon(Icons.description),
+                        icon: Icon(
+                          Icons.description,
+                          semanticLabel: 'Descripción del edificio',
+                        ),
                       ),
                       maxLines: 3,
                       onSaved: (value) {
@@ -184,7 +201,11 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                       return ListTile(
                         title: Text(zone),
                         trailing: IconButton(
-                          icon: Icon(Icons.remove_circle, color: Colors.red),
+                          icon: const Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                            semanticLabel: 'Eliminar zona',
+                          ),
                           onPressed: () => _removeZone(index),
                         ),
                       );
@@ -197,13 +218,19 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                             controller: _zoneController,
                             decoration: const InputDecoration(
                               labelText: 'Añadir zona',
-                              icon: Icon(Icons.add),
+                              icon: Icon(
+                                Icons.add,
+                                semanticLabel: 'Añadir zona',
+                              ),
                             ),
                           ),
                         ),
                         IconButton(
-                          icon:
-                              const Icon(Icons.add_circle, color: Colors.black),
+                          icon: const Icon(
+                            Icons.add_circle,
+                            color: Colors.black,
+                            semanticLabel: 'Añadir zona',
+                          ),
                           onPressed: _addZone,
                         ),
                       ],
@@ -211,7 +238,10 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _onSave,
-                      icon: const Icon(Icons.check),
+                      icon: const Icon(
+                        Icons.check,
+                        semanticLabel: 'Guardar',
+                      ),
                       label: const Text('Guardar edificio'),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),

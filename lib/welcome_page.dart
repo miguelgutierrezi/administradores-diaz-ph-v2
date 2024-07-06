@@ -1,7 +1,10 @@
 import 'package:administradores_diaz_ph/services/firestore_service.dart';
+import 'package:administradores_diaz_ph/services/platform_service.dart';
+import 'package:administradores_diaz_ph/utils/utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
+import 'handlers/alarm_permission_handler.dart';
 import 'login_page.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -19,6 +22,23 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     super.initState();
     _buildingsData = _firestoreService.getCollection('buildings');
+    if (PlatformService.isAndroid()) {
+      _requestExactAlarmPermission();
+    }
+  }
+
+  Future<void> _requestExactAlarmPermission() async {
+    try {
+      final bool granted =
+          await AlarmPermissionHandler.requestExactAlarmPermission();
+      if (granted) {
+        Utils.debugPrint('Exact Alarm Permission Granted');
+      } else {
+        Utils.debugPrint('Exact Alarm Permission Denied');
+      }
+    } catch (e) {
+      Utils.debugPrint('Failed to request exact alarm permission: $e');
+    }
   }
 
   @override
@@ -40,6 +60,8 @@ class _WelcomePageState extends State<WelcomePage> {
                 MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             },
+            tooltip:
+                'Iniciar sesión', // Agregar etiqueta de herramienta para accesibilidad
           ),
         ],
       ),
@@ -53,6 +75,8 @@ class _WelcomePageState extends State<WelcomePage> {
                 'assets/Logo_Diaz_Administradores.jpeg',
                 height: 200,
                 width: 200,
+                semanticLabel:
+                    'Logo de Administradores Diaz PH SAS', // Agregar descripción semántica
               ),
             ),
             const SizedBox(height: 20),
@@ -71,7 +95,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No data found'));
+                  return const Center(child: Text('No se encontraron datos'));
                 } else {
                   return CarouselSlider(
                     options: CarouselOptions(
@@ -100,15 +124,17 @@ class _WelcomePageState extends State<WelcomePage> {
                                     width: 200,
                                   );
                                 },
+                                semanticLabel:
+                                    'Imagen del edificio ${doc['nombre'] ?? 'sin título'}', // Agregar descripción semántica
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                doc['nombre'] ?? 'No title',
+                                doc['nombre'] ?? 'Sin título',
                                 style: const TextStyle(
                                     fontSize: 24, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                doc['direccion'] ?? 'No subtitle',
+                                doc['direccion'] ?? 'Sin dirección',
                                 style: const TextStyle(fontSize: 16),
                               ),
                             ],

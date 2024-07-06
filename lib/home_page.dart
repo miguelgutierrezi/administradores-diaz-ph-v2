@@ -265,12 +265,14 @@ class _HomePageState extends State<HomePage> {
           title: const Text(
             'Administradores Diaz PH',
             style: TextStyle(color: Colors.white),
+            semanticsLabel: 'Título de la aplicación, Administradores Diaz PH',
           ),
           actions: [
             IconButton(
               icon: const Icon(
                 Icons.logout,
                 color: Colors.white,
+                semanticLabel: 'Cerrar sesión',
               ),
               onPressed: () async {
                 await _authService.signOut();
@@ -281,7 +283,11 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body: _userRole == null
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(
+                  semanticsLabel: 'Cargando',
+                ),
+              )
             : _children[_currentIndex],
         bottomNavigationBar: _userRole == null
             ? null
@@ -289,7 +295,43 @@ class _HomePageState extends State<HomePage> {
                 type: BottomNavigationBarType.fixed,
                 onTap: onTabTapped,
                 currentIndex: _currentIndex,
-                items: _items,
+                items: [
+                  const BottomNavigationBarItem(
+                    icon: const Icon(
+                      Icons.article,
+                      semanticLabel: 'Noticias',
+                    ),
+                    label: 'Noticias',
+                  ),
+                  const BottomNavigationBarItem(
+                    icon: const Icon(
+                      Icons.view_agenda,
+                      semanticLabel: 'Cartelera',
+                    ),
+                    label: 'Cartelera',
+                  ),
+                  const BottomNavigationBarItem(
+                    icon: const Icon(
+                      Icons.map,
+                      semanticLabel: 'Zonas',
+                    ),
+                    label: 'Zonas',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: _buildMessagesIcon(),
+                    label: 'Mensajes',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: const Icon(
+                      Icons.admin_panel_settings,
+                      semanticLabel: 'Administración',
+                    ),
+                    label: _userRole == UserRole.admin ||
+                            _userRole == UserRole.superadmin
+                        ? 'Admon'
+                        : 'Más opciones',
+                  ),
+                ],
               ),
       ),
     );

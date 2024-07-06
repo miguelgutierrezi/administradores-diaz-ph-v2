@@ -104,7 +104,11 @@ class _AdminsListPageState extends State<AdminsListPage> {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            semanticLabel: 'Regresar',
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -122,7 +126,10 @@ class _AdminsListPageState extends State<AdminsListPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    semanticLabel: 'Buscar administradores',
+                  ),
                 ),
                 onChanged: _setFilteredAdmins,
               ),
@@ -130,7 +137,11 @@ class _AdminsListPageState extends State<AdminsListPage> {
             Expanded(
               child: _filterAdmins.isEmpty
                   ? const Center(
-                      child: Text('No hay administradores disponibles'))
+                      child: Text(
+                        'No hay administradores disponibles',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
                   : ListView.builder(
                       itemCount: _filterAdmins.length,
                       itemBuilder: (context, index) {
@@ -146,16 +157,22 @@ class _AdminsListPageState extends State<AdminsListPage> {
                             alignment: Alignment.centerRight,
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
-                            child:
-                                const Icon(Icons.delete, color: Colors.white),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              semanticLabel: 'Eliminar administrador',
+                            ),
                           ),
                           child: Card(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 16),
                             child: ListTile(
-                              leading: const CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/avatar-icon.png'),
+                              leading: Semantics(
+                                label: 'Avatar del administrador',
+                                child: const CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/avatar-icon.png'),
+                                ),
                               ),
                               title: Text(admin['nombre']),
                               subtitle: Column(

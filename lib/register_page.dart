@@ -165,6 +165,7 @@ class _RegisterPageState extends State<RegisterPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Volver',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -182,7 +183,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  icon: Icon(Icons.email),
+                  icon: Icon(Icons.email, semanticLabel: 'Correo electrónico'),
                 ),
                 validator: _emailValidator,
               ),
@@ -190,7 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: _passwordController,
                 decoration: const InputDecoration(
                   labelText: 'Password',
-                  icon: Icon(Icons.lock),
+                  icon: Icon(Icons.lock, semanticLabel: 'Contraseña'),
                 ),
                 obscureText: true,
                 validator: (value) {
@@ -204,7 +205,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: 'Nombres y apellidos',
-                  icon: Icon(Icons.person),
+                  icon: Icon(Icons.person, semanticLabel: 'Nombre completo'),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -216,7 +217,7 @@ class _RegisterPageState extends State<RegisterPage> {
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Edificio',
-                  icon: Icon(Icons.location_city),
+                  icon: Icon(Icons.location_city, semanticLabel: 'Edificio'),
                 ),
                 items: _buildings
                     .map((building) => DropdownMenuItem(
@@ -240,7 +241,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: _apartmentController,
                 decoration: const InputDecoration(
                   labelText: 'Número apartamento',
-                  icon: Icon(Icons.home),
+                  icon:
+                      Icon(Icons.home, semanticLabel: 'Número de apartamento'),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -252,7 +254,7 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _isButtonDisabled ? null : _register,
-                icon: const Icon(Icons.login),
+                icon: const Icon(Icons.login, semanticLabel: 'Registrar'),
                 label: const Text('Registrar cliente'),
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),

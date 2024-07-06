@@ -136,6 +136,7 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -152,7 +153,10 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  semanticLabel: 'Buscar quejas',
+                ),
               ),
               onChanged: (value) {
                 setState(() {
@@ -165,10 +169,19 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                 stream: _complaintsStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        semanticsLabel: 'Cargando quejas...',
+                      ),
+                    );
                   }
                   if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    );
                   }
 
                   var data = snapshot.data ?? [];
@@ -211,16 +224,22 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                               alignment: Alignment.centerLeft,
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),
-                              child:
-                                  const Icon(Icons.check, color: Colors.white),
+                              child: const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                semanticLabel: 'Marcar como leída',
+                              ),
                             ),
                             secondaryBackground: Container(
                               color: Colors.red,
                               alignment: Alignment.centerRight,
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),
-                              child:
-                                  const Icon(Icons.delete, color: Colors.white),
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                                semanticLabel: 'Eliminar queja',
+                              ),
                             ),
                             confirmDismiss: (direction) async {
                               if (direction == DismissDirection.startToEnd) {
@@ -246,7 +265,11 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                       ),
                       if (filteredUnreadComplaints.isEmpty)
                         const Center(
-                            child: Text('No tienes quejas no respondidas')),
+                          child: Text(
+                            'No tienes quejas no respondidas',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
                       ExpansionTile(
                         title: const Text(
                           'Quejas respondidas',
@@ -266,16 +289,22 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                               alignment: Alignment.centerLeft,
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),
-                              child:
-                                  const Icon(Icons.check, color: Colors.white),
+                              child: const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                semanticLabel: 'Marcar como leída',
+                              ),
                             ),
                             secondaryBackground: Container(
                               color: Colors.red,
                               alignment: Alignment.centerRight,
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),
-                              child:
-                                  const Icon(Icons.delete, color: Colors.white),
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                                semanticLabel: 'Eliminar queja',
+                              ),
                             ),
                             confirmDismiss: (direction) async {
                               if (direction == DismissDirection.startToEnd) {
@@ -301,7 +330,11 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                       ),
                       if (filteredComplaints.isEmpty)
                         const Center(
-                            child: Text('No tienes quejas respondidas')),
+                          child: Text(
+                            'No tienes quejas respondidas',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
                     ],
                   );
                 },

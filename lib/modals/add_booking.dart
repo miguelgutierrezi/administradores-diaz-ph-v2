@@ -176,7 +176,11 @@ class _AddBookingPageState extends State<AddBookingPage> {
           style: const TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white),
+          icon: const Icon(
+            Icons.close,
+            color: Colors.white,
+            semanticLabel: 'Cerrar',
+          ),
           onPressed: () {
             Navigator.pop(context, 'cancel');
           },
@@ -249,7 +253,10 @@ class _AddBookingPageState extends State<AddBookingPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: ElevatedButton.icon(
                         onPressed: _saveBooking,
-                        icon: const Icon(Icons.check),
+                        icon: const Icon(
+                          Icons.check,
+                          semanticLabel: 'Realizar reserva',
+                        ),
                         label: const Text('Realizar reserva'),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(

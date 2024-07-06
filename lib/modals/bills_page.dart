@@ -99,6 +99,7 @@ class _BillsListPageState extends State<BillsListPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -117,7 +118,10 @@ class _BillsListPageState extends State<BillsListPage> {
                     child: DropdownButtonFormField<int>(
                       decoration: const InputDecoration(
                         labelText: 'Año',
-                        icon: Icon(Icons.calendar_today),
+                        icon: Icon(
+                          Icons.calendar_today,
+                          semanticLabel: 'Seleccionar año',
+                        ),
                       ),
                       items: _yearsList.map((year) {
                         return DropdownMenuItem<int>(
@@ -144,7 +148,10 @@ class _BillsListPageState extends State<BillsListPage> {
                     child: DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
                         labelText: 'Mes',
-                        icon: Icon(Icons.calendar_today),
+                        icon: Icon(
+                          Icons.calendar_today,
+                          semanticLabel: 'Seleccionar mes',
+                        ),
                       ),
                       items: _monthsList.map((month) {
                         return DropdownMenuItem<String>(
@@ -177,7 +184,10 @@ class _BillsListPageState extends State<BillsListPage> {
                       _getBill();
                     }
                   },
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(
+                    Icons.search,
+                    semanticLabel: 'Consultar factura',
+                  ),
                   label: const Text('Consultar factura'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -192,7 +202,12 @@ class _BillsListPageState extends State<BillsListPage> {
               ),
               const SizedBox(height: 20),
               _bill == null || _bill!.isEmpty
-                  ? const Center(child: Text('No se ha encontrado factura'))
+                  ? const Center(
+                      child: Text(
+                        'No se ha encontrado factura',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -207,9 +222,11 @@ class _BillsListPageState extends State<BillsListPage> {
                               style: const TextStyle(
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline,
+                                fontSize: 16,
                               ),
                             ),
                           ),
+                        const SizedBox(height: 8),
                         if (_bill!['statusUrl'] != null &&
                             _bill!['statusUrl']!.isNotEmpty)
                           GestureDetector(
@@ -221,6 +238,7 @@ class _BillsListPageState extends State<BillsListPage> {
                               style: const TextStyle(
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline,
+                                fontSize: 16,
                               ),
                             ),
                           ),

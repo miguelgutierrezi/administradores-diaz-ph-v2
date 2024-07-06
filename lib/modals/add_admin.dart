@@ -179,6 +179,7 @@ class _AddAdminPageState extends State<AddAdminPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -196,7 +197,10 @@ class _AddAdminPageState extends State<AddAdminPage> {
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  icon: Icon(Icons.email),
+                  icon: Icon(
+                    Icons.email,
+                    semanticLabel: 'Correo electrónico',
+                  ),
                 ),
                 validator: _emailValidator,
               ),
@@ -204,7 +208,10 @@ class _AddAdminPageState extends State<AddAdminPage> {
                 controller: _passwordController,
                 decoration: const InputDecoration(
                   labelText: 'Password',
-                  icon: Icon(Icons.lock),
+                  icon: Icon(
+                    Icons.lock,
+                    semanticLabel: 'Contraseña',
+                  ),
                 ),
                 obscureText: true,
                 validator: (value) {
@@ -218,7 +225,10 @@ class _AddAdminPageState extends State<AddAdminPage> {
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: 'Nombres y apellidos',
-                  icon: Icon(Icons.person),
+                  icon: Icon(
+                    Icons.person,
+                    semanticLabel: 'Nombres y apellidos',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -230,7 +240,10 @@ class _AddAdminPageState extends State<AddAdminPage> {
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Edificio',
-                  icon: Icon(Icons.location_city),
+                  icon: Icon(
+                    Icons.location_city,
+                    semanticLabel: 'Seleccionar edificio',
+                  ),
                 ),
                 items: _edificios.map((building) {
                   return DropdownMenuItem<String>(
@@ -255,6 +268,10 @@ class _AddAdminPageState extends State<AddAdminPage> {
                 children: _selectedEdificios.map((edificio) {
                   return Chip(
                     label: Text(edificio),
+                    deleteIcon: const Icon(
+                      Icons.close,
+                      semanticLabel: 'Eliminar edificio',
+                    ),
                     onDeleted: () {
                       setState(() {
                         _selectedEdificios.remove(edificio);
@@ -277,7 +294,10 @@ class _AddAdminPageState extends State<AddAdminPage> {
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _isButtonDisabled ? null : _register,
-                icon: const Icon(Icons.login),
+                icon: const Icon(
+                  Icons.login,
+                  semanticLabel: 'Registrar administrador',
+                ),
                 label: const Text('Registrar administrador'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),

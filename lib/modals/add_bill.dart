@@ -58,7 +58,8 @@ class _AddBillPageState extends State<AddBillPage> {
   }
 
   Future<void> _loadBuildings() async {
-    List<Map<String, dynamic>> buildings = await _firestoreService.getCollection('buildings');
+    List<Map<String, dynamic>> buildings =
+        await _firestoreService.getCollection('buildings');
     UserRole? role = await _authService.getCurrentUserRole();
 
     if (role == UserRole.superadmin) {
@@ -66,10 +67,12 @@ class _AddBillPageState extends State<AddBillPage> {
         _buildings = buildings;
       });
     } else if (role == UserRole.admin) {
-      List<String>? adminBuildings = await _sharedPreferencesService.getDynamicList('edificio');
+      List<String>? adminBuildings =
+          await _sharedPreferencesService.getDynamicList('edificio');
       setState(() {
         _buildings = buildings
-            .where((building) => adminBuildings.contains(building['nombre'].toString()))
+            .where((building) =>
+                adminBuildings.contains(building['nombre'].toString()))
             .toList();
       });
     }
@@ -198,6 +201,7 @@ class _AddBillPageState extends State<AddBillPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -216,7 +220,10 @@ class _AddBillPageState extends State<AddBillPage> {
                     child: DropdownButtonFormField<int>(
                       decoration: const InputDecoration(
                         labelText: 'Año',
-                        icon: Icon(Icons.calendar_today),
+                        icon: Icon(
+                          Icons.calendar_today,
+                          semanticLabel: 'Seleccionar año',
+                        ),
                       ),
                       items: _yearsList.map((year) {
                         return DropdownMenuItem<int>(
@@ -243,7 +250,10 @@ class _AddBillPageState extends State<AddBillPage> {
                     child: DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
                         labelText: 'Mes',
-                        icon: Icon(Icons.calendar_today),
+                        icon: Icon(
+                          Icons.calendar_today,
+                          semanticLabel: 'Seleccionar mes',
+                        ),
                       ),
                       items: _monthsList.map((month) {
                         return DropdownMenuItem<String>(
@@ -271,7 +281,10 @@ class _AddBillPageState extends State<AddBillPage> {
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Edificio',
-                  icon: Icon(Icons.business),
+                  icon: Icon(
+                    Icons.business,
+                    semanticLabel: 'Seleccionar edificio',
+                  ),
                 ),
                 items: _buildings.map((building) {
                   return DropdownMenuItem<String>(
@@ -296,7 +309,10 @@ class _AddBillPageState extends State<AddBillPage> {
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Número apartamento',
-                  icon: Icon(Icons.home),
+                  icon: Icon(
+                    Icons.home,
+                    semanticLabel: 'Número de apartamento',
+                  ),
                 ),
                 onSaved: (value) {
                   _numeroApto = value;
@@ -311,7 +327,10 @@ class _AddBillPageState extends State<AddBillPage> {
               const SizedBox(height: 16.0),
               ElevatedButton.icon(
                 onPressed: _pickFile,
-                icon: const Icon(Icons.attach_file),
+                icon: const Icon(
+                  Icons.attach_file,
+                  semanticLabel: 'Seleccionar factura',
+                ),
                 label: const Text('Seleccionar factura'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -328,7 +347,10 @@ class _AddBillPageState extends State<AddBillPage> {
               const SizedBox(height: 16.0),
               ElevatedButton.icon(
                 onPressed: _pickFileAccountStatus,
-                icon: const Icon(Icons.attach_file),
+                icon: const Icon(
+                  Icons.attach_file,
+                  semanticLabel: 'Seleccionar estado de cuenta',
+                ),
                 label: const Text('Seleccionar estado de cuenta'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -356,6 +378,7 @@ class _AddBillPageState extends State<AddBillPage> {
                 icon: const Icon(
                   Icons.check,
                   color: Colors.white,
+                  semanticLabel: 'Agregar factura',
                 ),
                 label: const Text('Agregar factura'),
                 style: ElevatedButton.styleFrom(

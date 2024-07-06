@@ -160,6 +160,7 @@ class _AddZonePageState extends State<AddZonePage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -176,7 +177,10 @@ class _AddZonePageState extends State<AddZonePage> {
                 controller: _nombreController,
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
-                  icon: Icon(Icons.article),
+                  icon: Icon(
+                    Icons.article,
+                    semanticLabel: 'Nombre de la zona',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -189,7 +193,10 @@ class _AddZonePageState extends State<AddZonePage> {
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Edificio',
-                  icon: Icon(Icons.location_city),
+                  icon: Icon(
+                    Icons.location_city,
+                    semanticLabel: 'Seleccionar edificio',
+                  ),
                 ),
                 items: _buildings.map((building) {
                   return DropdownMenuItem<String>(
@@ -214,7 +221,10 @@ class _AddZonePageState extends State<AddZonePage> {
                 controller: _descripcionController,
                 decoration: const InputDecoration(
                   labelText: 'Descripción',
-                  icon: Icon(Icons.description),
+                  icon: Icon(
+                    Icons.description,
+                    semanticLabel: 'Descripción de la zona',
+                  ),
                 ),
                 maxLines: 5,
                 validator: (value) {
@@ -237,6 +247,7 @@ class _AddZonePageState extends State<AddZonePage> {
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: const EdgeInsets.all(0),
               ),
               CheckboxListTile(
                 title: const Text('¿Se pueden realizar reservas todo el día?'),
@@ -249,11 +260,15 @@ class _AddZonePageState extends State<AddZonePage> {
                       }
                     : null,
                 controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: const EdgeInsets.all(0),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton.icon(
                 onPressed: _pickFiles,
-                icon: const Icon(Icons.attach_file),
+                icon: const Icon(
+                  Icons.attach_file,
+                  semanticLabel: 'Seleccionar archivos',
+                ),
                 label: const Text('Seleccionar archivos'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -279,6 +294,7 @@ class _AddZonePageState extends State<AddZonePage> {
                 icon: const Icon(
                   Icons.check,
                   color: Colors.white,
+                  semanticLabel: 'Añadir zona',
                 ),
                 label: const Text('Añadir zona'),
                 style: ElevatedButton.styleFrom(

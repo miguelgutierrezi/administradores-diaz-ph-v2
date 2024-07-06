@@ -23,6 +23,12 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const SplashScreen(),
+      builder: (context, child) {
+        return Semantics(
+          label: 'Aplicación Administradores Diaz PH',
+          child: child!,
+        );
+      },
     );
   }
 }

@@ -107,13 +107,27 @@ class _DashboardPageState extends State<DashboardPage> {
         stream: _announcesStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(
+                semanticsLabel: 'Cargando anuncios...',
+              ),
+            );
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Error cargando anuncios'));
+            return const Center(
+              child: Text(
+                'Error cargando anuncios',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No hay anuncios disponibles'));
+            return const Center(
+              child: Text(
+                'No hay anuncios disponibles',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
           }
 
           _announces = snapshot.data!;
@@ -156,7 +170,11 @@ class _DashboardPageState extends State<DashboardPage> {
                         color: Colors.red,
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: const Icon(Icons.delete, color: Colors.white),
+                        child: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                          semanticLabel: 'Eliminar anuncio',
+                        ),
                       ),
                       child: Card(
                         margin: const EdgeInsets.all(10.0),
@@ -184,6 +202,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 width: MediaQuery.of(context)
                                                     .size
                                                     .width,
+                                                semanticLabel:
+                                                    'Imagen del anuncio',
                                               ),
                                             ),
                                           ))
@@ -191,11 +211,17 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                               ),
                             ListTile(
-                              title: Text(item['titulo']),
+                              title: Text(
+                                item['titulo'],
+                                style: const TextStyle(fontSize: 18),
+                              ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(item['descripcion']),
+                                  Text(
+                                    item['descripcion'],
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
                                   if (item['email'] != null)
                                     GestureDetector(
                                       onTap: () => launchUrl(
@@ -221,6 +247,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                               onPressed: () => _sendMessage(
                                                   'https://api.whatsapp.com/send/?phone=57',
                                                   item['celular']),
+                                              tooltip:
+                                                  'Enviar mensaje por WhatsApp',
                                             ),
                                           GestureDetector(
                                             onTap: () => launchUrl(Uri.parse(
@@ -264,6 +292,7 @@ class _DashboardPageState extends State<DashboardPage> {
               child: const Icon(
                 Icons.add,
                 color: Colors.white,
+                semanticLabel: 'Agregar anuncio',
               ),
             )
           : null,

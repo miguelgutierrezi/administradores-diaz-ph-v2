@@ -198,6 +198,7 @@ class _AddClientPageState extends State<AddClientPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -215,7 +216,10 @@ class _AddClientPageState extends State<AddClientPage> {
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  icon: Icon(Icons.email),
+                  icon: Icon(
+                    Icons.email,
+                    semanticLabel: 'Correo electrónico',
+                  ),
                 ),
                 validator: _emailValidator,
               ),
@@ -223,7 +227,10 @@ class _AddClientPageState extends State<AddClientPage> {
                 controller: _passwordController,
                 decoration: const InputDecoration(
                   labelText: 'Password',
-                  icon: Icon(Icons.lock),
+                  icon: Icon(
+                    Icons.lock,
+                    semanticLabel: 'Contraseña',
+                  ),
                 ),
                 obscureText: true,
                 validator: (value) {
@@ -237,7 +244,10 @@ class _AddClientPageState extends State<AddClientPage> {
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: 'Nombres y apellidos',
-                  icon: Icon(Icons.person),
+                  icon: Icon(
+                    Icons.person,
+                    semanticLabel: 'Nombres y apellidos',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -249,7 +259,10 @@ class _AddClientPageState extends State<AddClientPage> {
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Edificio',
-                  icon: Icon(Icons.location_city),
+                  icon: Icon(
+                    Icons.location_city,
+                    semanticLabel: 'Seleccionar edificio',
+                  ),
                 ),
                 items: _buildings
                     .map((building) => DropdownMenuItem(
@@ -273,7 +286,10 @@ class _AddClientPageState extends State<AddClientPage> {
                 controller: _apartmentController,
                 decoration: const InputDecoration(
                   labelText: 'Número apartamento',
-                  icon: Icon(Icons.home),
+                  icon: Icon(
+                    Icons.home,
+                    semanticLabel: 'Número de apartamento',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -285,13 +301,17 @@ class _AddClientPageState extends State<AddClientPage> {
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _isButtonDisabled ? null : _register,
-                icon: const Icon(Icons.login),
+                icon: const Icon(
+                  Icons.login,
+                  semanticLabel: 'Registrar cliente',
+                ),
                 label: const Text('Registrar cliente'),
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontSize: 18),
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ],
           ),

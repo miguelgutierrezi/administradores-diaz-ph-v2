@@ -114,10 +114,19 @@ class _MessagesPageState extends State<MessagesPage> {
               stream: _messagesStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Cargando mensajes...',
+                    ),
+                  );
                 }
                 if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(
+                    child: Text(
+                      'Error: ${snapshot.error}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  );
                 }
 
                 var data = snapshot.data ?? {};
@@ -156,7 +165,10 @@ class _MessagesPageState extends State<MessagesPage> {
                     ExpansionTile(
                       title: const Text(
                         'Mensajes no leídos',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       ),
                       initiallyExpanded: _childNoLeidos,
                       onExpansionChanged: (bool expanded) {
@@ -174,17 +186,27 @@ class _MessagesPageState extends State<MessagesPage> {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text('De: ${message['from']}'),
-                          leading: const CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/avatar-icon.png'),
+                          leading: Semantics(
+                            label: 'Avatar del remitente',
+                            child: const CircleAvatar(
+                              backgroundImage:
+                                  AssetImage('assets/avatar-icon.png'),
+                            ),
                           ),
                           trailing: Wrap(
                             spacing: 12,
                             children: <Widget>[
                               if (message['imageUrl'] != null &&
                                   message['imageUrl'] != '')
-                                const Icon(Icons.attach_file),
-                              const Icon(Icons.add_alert, color: Colors.red),
+                                const Icon(
+                                  Icons.attach_file,
+                                  semanticLabel: 'Archivo adjunto',
+                                ),
+                              const Icon(
+                                Icons.add_alert,
+                                color: Colors.red,
+                                semanticLabel: 'Mensaje no leído',
+                              ),
                             ],
                           ),
                           onTap: () {
@@ -197,11 +219,19 @@ class _MessagesPageState extends State<MessagesPage> {
                     if (receivedMessages
                         .where((message) => !message['read'])
                         .isEmpty)
-                      const Center(child: Text('No tienes mensajes no leídos')),
+                      const Center(
+                        child: Text(
+                          'No tienes mensajes no leídos',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
                     ExpansionTile(
                       title: const Text(
                         'Mensajes leídos',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       ),
                       initiallyExpanded: _childLeidos,
                       onExpansionChanged: (bool expanded) {
@@ -220,16 +250,22 @@ class _MessagesPageState extends State<MessagesPage> {
                                 const TextStyle(fontWeight: FontWeight.normal),
                           ),
                           subtitle: Text('De: ${message['from']}'),
-                          leading: const CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/avatar-icon.png'),
+                          leading: Semantics(
+                            label: 'Avatar del remitente',
+                            child: const CircleAvatar(
+                              backgroundImage:
+                                  AssetImage('assets/avatar-icon.png'),
+                            ),
                           ),
                           trailing: Wrap(
                             spacing: 12,
                             children: <Widget>[
                               if (message['imageUrl'] != null &&
                                   message['imageUrl'] != '')
-                                const Icon(Icons.attach_file),
+                                const Icon(
+                                  Icons.attach_file,
+                                  semanticLabel: 'Archivo adjunto',
+                                ),
                             ],
                           ),
                           onTap: () {
@@ -242,12 +278,20 @@ class _MessagesPageState extends State<MessagesPage> {
                     if (receivedMessages
                         .where((message) => message['read'])
                         .isEmpty)
-                      const Center(child: Text('No tienes mensajes leídos')),
+                      const Center(
+                        child: Text(
+                          'No tienes mensajes leídos',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
                     if (_userRole != UserRole.user)
                       ExpansionTile(
                         title: const Text(
                           'Mensajes enviados',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
                         initiallyExpanded: _childEnviados,
                         onExpansionChanged: (bool expanded) {
@@ -264,16 +308,22 @@ class _MessagesPageState extends State<MessagesPage> {
                                   fontWeight: FontWeight.normal),
                             ),
                             subtitle: Text('Para: ${message['to']}'),
-                            leading: const CircleAvatar(
-                              backgroundImage:
-                                  AssetImage('assets/avatar-icon.png'),
+                            leading: Semantics(
+                              label: 'Avatar del destinatario',
+                              child: const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage('assets/avatar-icon.png'),
+                              ),
                             ),
                             trailing: Wrap(
                               spacing: 12,
                               children: <Widget>[
                                 if (message['imageUrl'] != null &&
                                     message['imageUrl'] != '')
-                                  const Icon(Icons.attach_file),
+                                  const Icon(
+                                    Icons.attach_file,
+                                    semanticLabel: 'Archivo adjunto',
+                                  ),
                               ],
                             ),
                             onTap: () {
@@ -284,7 +334,12 @@ class _MessagesPageState extends State<MessagesPage> {
                         }).toList(),
                       ),
                     if (_userRole != UserRole.user && sentMessages.isEmpty)
-                      const Center(child: Text('No tienes mensajes enviados')),
+                      const Center(
+                        child: Text(
+                          'No tienes mensajes enviados',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
                   ],
                 );
               },
@@ -304,6 +359,7 @@ class _MessagesPageState extends State<MessagesPage> {
               child: const Icon(
                 Icons.add,
                 color: Colors.white,
+                semanticLabel: 'Agregar mensaje',
               ),
             )
           : null,

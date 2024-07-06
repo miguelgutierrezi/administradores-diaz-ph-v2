@@ -270,10 +270,16 @@ class _AddVisitPageState extends State<AddVisitPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Registrar visita',
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Registrar visita',
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            semanticLabel: 'Regresar',
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -292,7 +298,10 @@ class _AddVisitPageState extends State<AddVisitPage> {
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Edificio',
-                  icon: Icon(Icons.business),
+                  icon: Icon(
+                    Icons.business,
+                    semanticLabel: 'Seleccionar edificio',
+                  ),
                 ),
                 items: _buildings.map((building) {
                   return DropdownMenuItem<String>(
@@ -316,7 +325,10 @@ class _AddVisitPageState extends State<AddVisitPage> {
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _findZones,
-                icon: const Icon(Icons.search),
+                icon: const Icon(
+                  Icons.search,
+                  semanticLabel: 'Buscar zonas',
+                ),
                 label: const Text('Buscar zonas'),
                 style: ElevatedButton.styleFrom(
                   padding:
@@ -383,7 +395,10 @@ class _AddVisitPageState extends State<AddVisitPage> {
                     const SizedBox(height: 8),
                     ElevatedButton.icon(
                       onPressed: () => _pickFile(index),
-                      icon: const Icon(Icons.attach_file),
+                      icon: const Icon(
+                        Icons.attach_file,
+                        semanticLabel: 'Seleccionar archivo',
+                      ),
                       label: const Text('Seleccionar archivo'),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
@@ -410,7 +425,10 @@ class _AddVisitPageState extends State<AddVisitPage> {
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _saveVisit,
-                icon: const Icon(Icons.check),
+                icon: const Icon(
+                  Icons.check,
+                  semanticLabel: 'Registrar visita',
+                ),
                 label: const Text('Registrar visita'),
                 style: ElevatedButton.styleFrom(
                   padding:

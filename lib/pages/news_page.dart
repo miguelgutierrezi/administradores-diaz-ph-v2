@@ -154,14 +154,21 @@ class _NewsPageState extends State<NewsPage> {
                 stream: _newsStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        semanticsLabel: 'Cargando noticias',
+                      ),
+                    );
                   }
                   if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
                   }
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(
-                        child: Text('No hay noticias disponibles.'));
+                      child: Text('No hay noticias disponibles.'),
+                    );
                   }
 
                   _noticias = snapshot.data!;
@@ -202,7 +209,8 @@ class _NewsPageState extends State<NewsPage> {
                                 });
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text('Noticia eliminada')),
+                                    content: Text('Noticia eliminada'),
+                                  ),
                                 );
                               },
                               background: Container(
@@ -210,8 +218,10 @@ class _NewsPageState extends State<NewsPage> {
                                 alignment: Alignment.centerRight,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20.0),
-                                child: const Icon(Icons.delete,
-                                    color: Colors.white),
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
                               ),
                               child: _buildNewsCard(noticia),
                             )
@@ -238,6 +248,7 @@ class _NewsPageState extends State<NewsPage> {
               child: const Icon(
                 Icons.add,
                 color: Colors.white,
+                semanticLabel: 'Agregar noticia',
               ),
             )
           : null,
@@ -260,6 +271,7 @@ class _NewsPageState extends State<NewsPage> {
                   fontWeight: FontWeight.bold,
                   fontSize: 16.0,
                 ),
+                semanticsLabel: 'Edificio: ${noticia.edificio}',
               ),
               const SizedBox(height: 8.0),
               Text(
@@ -268,6 +280,7 @@ class _NewsPageState extends State<NewsPage> {
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
                 ),
+                semanticsLabel: 'Noticia: ${noticia.noticia}',
               ),
               const SizedBox(height: 8.0),
               Text(
@@ -275,15 +288,21 @@ class _NewsPageState extends State<NewsPage> {
                 style: const TextStyle(
                   fontSize: 16.0,
                 ),
+                semanticsLabel: 'Descripción: ${noticia.descripcion}',
               ),
               const SizedBox(height: 8.0),
               if (noticia.filesNames.isNotEmpty)
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children:
                       List.generate(noticia.filesNames.length, (fileIndex) {
                     return Row(
                       children: [
-                        const Icon(Icons.attach_file, size: 16.0),
+                        const Icon(
+                          Icons.attach_file,
+                          size: 16.0,
+                          semanticLabel: 'Archivo adjunto',
+                        ),
                         const SizedBox(width: 4.0),
                         GestureDetector(
                           onTap: () => _downloadFile(noticia, fileIndex),
@@ -293,6 +312,8 @@ class _NewsPageState extends State<NewsPage> {
                               color: Colors.blue,
                               decoration: TextDecoration.underline,
                             ),
+                            semanticsLabel:
+                                'Archivo adjunto: ${noticia.filesNames[fileIndex]}',
                           ),
                         ),
                       ],
@@ -306,6 +327,7 @@ class _NewsPageState extends State<NewsPage> {
                   fontSize: 14.0,
                   color: Colors.grey,
                 ),
+                semanticsLabel: 'Fecha de la noticia: ${noticia.fecha}',
               ),
             ],
           ),

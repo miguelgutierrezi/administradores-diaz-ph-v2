@@ -197,9 +197,9 @@ class _LoginPageState extends State<LoginPage> {
               Center(
                 child: Image.asset(
                   'assets/Logo_Diaz_Administradores.jpeg',
-                  // Asegúrate de tener tu logo en la carpeta assets
                   height: 100,
                   width: 100,
+                  semanticLabel: 'Logo de Administradores Diaz',
                 ),
               ),
               const SizedBox(height: 20),
@@ -217,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                   border: OutlineInputBorder(),
                 ),
                 validator: _emailValidator,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -228,6 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 obscureText: true,
                 validator: _passwordValidator,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(

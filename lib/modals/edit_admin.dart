@@ -112,24 +112,32 @@ class _EditAdminPageState extends State<EditAdminPage> {
             icon: const Icon(
               Icons.close,
               color: Colors.white,
+              semanticLabel: 'Cerrar',
             ),
             onPressed: _onCancel,
           ),
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(
+                semanticsLabel: 'Cargando...',
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
                 child: ListView(
                   children: <Widget>[
-                    const Center(
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: AssetImage('assets/avatar-icon.png'),
-                        backgroundColor: Colors.transparent,
+                    Center(
+                      child: Semantics(
+                        label: 'Avatar del administrador',
+                        child: const CircleAvatar(
+                          radius: 50,
+                          backgroundImage: AssetImage('assets/avatar-icon.png'),
+                          backgroundColor: Colors.transparent,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -137,7 +145,10 @@ class _EditAdminPageState extends State<EditAdminPage> {
                       initialValue: _updatedAdmin['nombre'],
                       decoration: const InputDecoration(
                         labelText: 'Nombre',
-                        icon: Icon(Icons.document_scanner),
+                        icon: Icon(
+                          Icons.document_scanner,
+                          semanticLabel: 'Nombre del administrador',
+                        ),
                       ),
                       onSaved: (value) {
                         _updatedAdmin['nombre'] = value!;
@@ -154,7 +165,10 @@ class _EditAdminPageState extends State<EditAdminPage> {
                       initialValue: _updatedAdmin['email'],
                       decoration: const InputDecoration(
                         labelText: 'Email',
-                        icon: Icon(Icons.email),
+                        icon: Icon(
+                          Icons.email,
+                          semanticLabel: 'Correo electrónico',
+                        ),
                       ),
                       enabled: false,
                     ),
@@ -169,8 +183,11 @@ class _EditAdminPageState extends State<EditAdminPage> {
                       return ListTile(
                         title: Text(building),
                         trailing: IconButton(
-                          icon: const Icon(Icons.remove_circle,
-                              color: Colors.red),
+                          icon: const Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                            semanticLabel: 'Eliminar edificio',
+                          ),
                           onPressed: () => _removeBuilding(index),
                         ),
                       );
@@ -179,7 +196,10 @@ class _EditAdminPageState extends State<EditAdminPage> {
                     DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
                         labelText: 'Agregar edificio',
-                        icon: Icon(Icons.add),
+                        icon: Icon(
+                          Icons.add,
+                          semanticLabel: 'Agregar edificio',
+                        ),
                       ),
                       items: _buildings.map((building) {
                         return DropdownMenuItem<String>(
@@ -197,7 +217,10 @@ class _EditAdminPageState extends State<EditAdminPage> {
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _onSave,
-                      icon: const Icon(Icons.check),
+                      icon: const Icon(
+                        Icons.check,
+                        semanticLabel: 'Guardar',
+                      ),
                       label: const Text('Guardar administrador'),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),

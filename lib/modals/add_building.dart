@@ -143,6 +143,7 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -159,7 +160,10 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
                 controller: _nombreController,
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
-                  icon: Icon(Icons.document_scanner),
+                  icon: Icon(
+                    Icons.document_scanner,
+                    semanticLabel: 'Nombre del edificio',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -173,7 +177,10 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
                 controller: _direccionController,
                 decoration: const InputDecoration(
                   labelText: 'Dirección',
-                  icon: Icon(Icons.location_on),
+                  icon: Icon(
+                    Icons.location_on,
+                    semanticLabel: 'Dirección del edificio',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -187,7 +194,10 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
                 controller: _descripcionController,
                 decoration: const InputDecoration(
                   labelText: 'Descripción',
-                  icon: Icon(Icons.description),
+                  icon: Icon(
+                    Icons.description,
+                    semanticLabel: 'Descripción del edificio',
+                  ),
                 ),
                 maxLines: 5,
                 validator: (value) {
@@ -201,7 +211,10 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Espacios de reporte',
-                  icon: Icon(Icons.business),
+                  icon: Icon(
+                    Icons.business,
+                    semanticLabel: 'Añadir espacios de reporte',
+                  ),
                 ),
                 onFieldSubmitted: (value) {
                   setState(() {
@@ -222,7 +235,10 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
               const SizedBox(height: 16.0),
               ElevatedButton.icon(
                 onPressed: _pickFile,
-                icon: const Icon(Icons.attach_file),
+                icon: const Icon(
+                  Icons.attach_file,
+                  semanticLabel: 'Seleccionar imagen',
+                ),
                 label: const Text('Seleccionar imagen'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -241,6 +257,7 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
                 icon: const Icon(
                   Icons.check,
                   color: Colors.white,
+                  semanticLabel: 'Añadir edificio',
                 ),
                 label: const Text('Añadir edificio'),
                 style: ElevatedButton.styleFrom(

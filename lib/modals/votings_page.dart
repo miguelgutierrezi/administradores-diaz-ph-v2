@@ -114,6 +114,7 @@ class _VotingsListPageState extends State<VotingsListPage> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -130,7 +131,7 @@ class _VotingsListPageState extends State<VotingsListPage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search, semanticLabel: 'Buscar'),
               ),
               onChanged: (value) {
                 setState(() {
@@ -144,10 +145,19 @@ class _VotingsListPageState extends State<VotingsListPage> {
               stream: _votingsStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Cargando votaciones...',
+                    ),
+                  );
                 }
                 if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(
+                    child: Text(
+                      'Error: ${snapshot.error}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  );
                 }
 
                 var votaciones = snapshot.data ?? [];
@@ -161,7 +171,10 @@ class _VotingsListPageState extends State<VotingsListPage> {
 
                 if (votaciones.isEmpty) {
                   return const Center(
-                    child: Text('No hay votaciones activas'),
+                    child: Text(
+                      'No hay votaciones activas',
+                      style: TextStyle(fontSize: 18),
+                    ),
                   );
                 }
 
@@ -171,7 +184,16 @@ class _VotingsListPageState extends State<VotingsListPage> {
                     var item = votaciones[index];
                     return Dismissible(
                       key: Key(item['id']),
-                      background: Container(color: Colors.red),
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                          semanticLabel: 'Eliminar votación',
+                        ),
+                      ),
                       onDismissed: (direction) {
                         if (_userRole == UserRole.admin ||
                             _userRole == UserRole.superadmin) {
@@ -186,12 +208,21 @@ class _VotingsListPageState extends State<VotingsListPage> {
                         margin: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 15),
                         child: ListTile(
-                          title: Text(item['titulo']),
+                          title: Text(
+                            item['titulo'],
+                            style: const TextStyle(fontSize: 18),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(item['edificio']),
-                              Text(item['descripcion']),
+                              Text(
+                                item['edificio'],
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                item['descripcion'],
+                                style: const TextStyle(fontSize: 16),
+                              ),
                             ],
                           ),
                           onTap: () => _downloadFile(item['link']),
@@ -218,6 +249,7 @@ class _VotingsListPageState extends State<VotingsListPage> {
               child: const Icon(
                 Icons.add,
                 color: Colors.white,
+                semanticLabel: 'Agregar votación',
               ),
             )
           : null,

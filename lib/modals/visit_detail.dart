@@ -61,10 +61,16 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Detalle de Visita',
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Detalle de Visita',
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            semanticLabel: 'Regresar',
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -75,11 +81,25 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               _isGeneratingPdf) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(
+                semanticsLabel: 'Cargando detalles de la visita...',
+              ),
+            );
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Error al cargar la visita'));
+            return const Center(
+              child: Text(
+                'Error al cargar la visita',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
           } else if (!snapshot.hasData || !snapshot.data!.exists) {
-            return const Center(child: Text('No se encontró la visita'));
+            return const Center(
+              child: Text(
+                'No se encontró la visita',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
           } else {
             var data = snapshot.data!.data() as Map<String, dynamic>;
             List<dynamic> zones = data['zones'] ?? [];
@@ -89,16 +109,27 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    title: Text('Edificio: ${data['edificio']}'),
-                    subtitle:
-                        Text('Fecha: ${(data['date'] as Timestamp).toDate()}'),
+                    title: Text(
+                      'Edificio: ${data['edificio']}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      'Fecha: ${(data['date'] as Timestamp).toDate()}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
                   ),
                   ListTile(
-                    title: Text('Autor: ${data['name']}'),
+                    title: Text(
+                      'Autor: ${data['name']}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                   if (data.containsKey('pdfName') && data.containsKey('pdfUrl'))
                     ListTile(
-                      title: const Text('Reporte:'),
+                      title: const Text(
+                        'Reporte:',
+                        style: TextStyle(fontSize: 18),
+                      ),
                       subtitle: GestureDetector(
                         onTap: () => launchUrl(Uri.parse(data['pdfUrl'])),
                         child: Text(
@@ -106,13 +137,16 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
                           style: const TextStyle(
                             color: Colors.blue,
                             decoration: TextDecoration.underline,
+                            fontSize: 16,
                           ),
                         ),
                       ),
                     ),
                   const SizedBox(height: 16),
-                  Text('Zonas:',
-                      style: Theme.of(context).textTheme.headlineSmall),
+                  Text(
+                    'Zonas:',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                   const SizedBox(height: 16),
                   ...zones.map((zone) {
                     List<dynamic> filesLinks = zone['filesLinks'] ?? [];
@@ -153,6 +187,8 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
                                       child: Image.network(
                                         fileLink.toString(),
                                         fit: BoxFit.cover,
+                                        semanticLabel:
+                                            'Imagen de la zona ${zone['nombre']}',
                                       ),
                                     ),
                                   );
@@ -161,12 +197,15 @@ class _VisitDetailPageState extends State<VisitDetailPage> {
                             }).toList(),
                           ),
                         const SizedBox(height: 8),
-                        Text('Observaciones: ${zone['observacion'] ?? ''}'),
+                        Text(
+                          'Observaciones: ${zone['observacion'] ?? ''}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
                         const Divider(),
                         const SizedBox(height: 16),
                       ],
                     );
-                  }),
+                  }).toList(),
                 ],
               ),
             );

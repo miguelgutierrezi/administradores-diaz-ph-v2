@@ -144,7 +144,11 @@ class _VisitsListPageState extends State<VisitsListPage> {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            semanticLabel: 'Regresar',
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -161,7 +165,10 @@ class _VisitsListPageState extends State<VisitsListPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    semanticLabel: 'Buscar',
+                  ),
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -181,13 +188,21 @@ class _VisitsListPageState extends State<VisitsListPage> {
                         margin: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 16),
                         child: ListTile(
-                          title: Text(visit['edificio']),
+                          title: Text(
+                            visit['edificio'],
+                            style: const TextStyle(fontSize: 18),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                  'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}'),
-                              Text('Autor: ${visit['name']}'),
+                                'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}',
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                'Autor: ${visit['name']}',
+                                style: const TextStyle(fontSize: 16),
+                              ),
                             ],
                           ),
                           onTap: () {
@@ -212,14 +227,21 @@ class _VisitsListPageState extends State<VisitsListPage> {
                         margin: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 16),
                         child: ListTile(
-                          title: Text(visit['edificio']),
+                          title: Text(
+                            visit['edificio'],
+                            style: const TextStyle(fontSize: 18),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                  'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}'),
+                                'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}',
+                                style: const TextStyle(fontSize: 16),
+                              ),
                               Text(
-                                  'Autor: ${_userRole == UserRole.superadmin ? visit['name'] : _userName}'),
+                                'Autor: ${_userRole == UserRole.superadmin ? visit['name'] : _userName}',
+                                style: const TextStyle(fontSize: 16),
+                              ),
                             ],
                           ),
                           onTap: () {
@@ -244,6 +266,7 @@ class _VisitsListPageState extends State<VisitsListPage> {
         child: const Icon(
           Icons.add,
           color: Colors.white,
+          semanticLabel: 'Agregar visita',
         ),
         onPressed: () {
           Navigator.of(context).pushReplacement(

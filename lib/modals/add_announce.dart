@@ -180,6 +180,7 @@ class _AddAnnounceState extends State<AddAnnounce> {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
+            semanticLabel: 'Regresar',
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -196,7 +197,10 @@ class _AddAnnounceState extends State<AddAnnounce> {
                 controller: _titleController,
                 decoration: const InputDecoration(
                   labelText: 'Titulo',
-                  icon: Icon(Icons.document_scanner),
+                  icon: Icon(
+                    Icons.document_scanner,
+                    semanticLabel: 'Título del anuncio',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -210,11 +214,14 @@ class _AddAnnounceState extends State<AddAnnounce> {
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  icon: Icon(Icons.mail),
+                  icon: Icon(
+                    Icons.mail,
+                    semanticLabel: 'Correo electrónico',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty || !value.contains('@')) {
-                    return 'Por favor provea una dirección de email valida';
+                    return 'Por favor provea una dirección de email válida';
                   }
                   return null;
                 },
@@ -223,7 +230,10 @@ class _AddAnnounceState extends State<AddAnnounce> {
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Edificio',
-                  icon: Icon(Icons.business),
+                  icon: Icon(
+                    Icons.business,
+                    semanticLabel: 'Seleccionar edificio',
+                  ),
                 ),
                 items: _buildings.map((building) {
                   return DropdownMenuItem<String>(
@@ -248,7 +258,10 @@ class _AddAnnounceState extends State<AddAnnounce> {
                 controller: _phoneController,
                 decoration: const InputDecoration(
                   labelText: 'Celular',
-                  icon: Icon(Icons.phone),
+                  icon: Icon(
+                    Icons.phone,
+                    semanticLabel: 'Número de celular',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null ||
@@ -262,15 +275,18 @@ class _AddAnnounceState extends State<AddAnnounce> {
               const SizedBox(height: 16.0),
               Row(
                 children: [
-                  Checkbox(
-                    value: _whatsapp,
-                    onChanged: (value) {
-                      setState(() {
-                        _whatsapp = value!;
-                      });
-                    },
+                  Semantics(
+                    label: 'Contactar por WhatsApp',
+                    child: Checkbox(
+                      value: _whatsapp,
+                      onChanged: (value) {
+                        setState(() {
+                          _whatsapp = value!;
+                        });
+                      },
+                    ),
                   ),
-                  const Text('¿Te pueden contactar por Whatsapp?'),
+                  const Text('¿Te pueden contactar por WhatsApp?'),
                 ],
               ),
               const SizedBox(height: 16.0),
@@ -279,7 +295,10 @@ class _AddAnnounceState extends State<AddAnnounce> {
                 maxLines: 5,
                 decoration: const InputDecoration(
                   labelText: 'Descripción',
-                  icon: Icon(Icons.description),
+                  icon: Icon(
+                    Icons.description,
+                    semanticLabel: 'Descripción del anuncio',
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -291,7 +310,10 @@ class _AddAnnounceState extends State<AddAnnounce> {
               const SizedBox(height: 16.0),
               ElevatedButton.icon(
                 onPressed: _pickFile,
-                icon: const Icon(Icons.attach_file),
+                icon: const Icon(
+                  Icons.attach_file,
+                  semanticLabel: 'Seleccionar archivo',
+                ),
                 label: const Text('Seleccionar archivo'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -317,6 +339,7 @@ class _AddAnnounceState extends State<AddAnnounce> {
                 icon: const Icon(
                   Icons.check,
                   color: Colors.white,
+                  semanticLabel: 'Añadir anuncio',
                 ),
                 label: const Text('Añadir anuncio'),
                 style: ElevatedButton.styleFrom(

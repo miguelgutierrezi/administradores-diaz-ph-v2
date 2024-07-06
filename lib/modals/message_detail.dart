@@ -21,7 +21,11 @@ class MessageDetailPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            semanticLabel: 'Regresar',
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -31,13 +35,18 @@ class MessageDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              leading: const CircleAvatar(
-                backgroundImage: AssetImage('assets/avatar-icon.png'),
+              leading: Semantics(
+                label: 'Avatar del remitente',
+                child: const CircleAvatar(
+                  backgroundImage: AssetImage('assets/avatar-icon.png'),
+                ),
               ),
               title: Text(
                 mensaje['asunto'],
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +60,10 @@ class MessageDetailPage extends StatelessWidget {
                         onTap: () => _downloadFile(mensaje['imageUrl']),
                         child: Row(
                           children: [
-                            const Icon(Icons.attach_file),
+                            const Icon(
+                              Icons.attach_file,
+                              semanticLabel: 'Archivo adjunto',
+                            ),
                             const SizedBox(width: 8.0),
                             Text(mensaje['imageName']),
                           ],
@@ -76,6 +88,7 @@ class MessageDetailPage extends StatelessWidget {
                   Image.asset(
                     'assets/Logo_Diaz_Administradores.jpeg',
                     width: 150,
+                    semanticLabel: 'Logo Diaz Administradores',
                   ),
                   const Text(
                     'Administradores Diaz PH SAS\nAdministración de Propiedad Horizontal\n2568677 | diazmartinezadmon@gmail.com\nCra 53#103B-42 Oficina 609',
