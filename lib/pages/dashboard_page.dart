@@ -143,7 +143,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    prefixIcon: const Icon(Icons.search),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      semanticLabel: 'Buscar',
+                    ),
                   ),
                   onChanged: (value) {
                     _setFilteredAnnounces(value);
@@ -178,98 +181,140 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                       child: Card(
                         margin: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (item['filesLinks'] != null &&
-                                item['filesLinks'].isNotEmpty)
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.3,
-                                child: CarouselSlider(
-                                  options: CarouselOptions(
-                                    autoPlay: true,
-                                    enlargeCenterPage: true,
-                                    aspectRatio: 2.0,
-                                  ),
-                                  items: item['filesLinks']
-                                      .map<Widget>((image) => GestureDetector(
-                                            onTap: () => _displayImage(image),
-                                            child: Center(
-                                              child: Image.network(
-                                                image,
-                                                fit: BoxFit.cover,
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
+                        child: Semantics(
+                          label: 'Anuncio',
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (item['filesLinks'] != null &&
+                                  item['filesLinks'].isNotEmpty)
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.3,
+                                  child: CarouselSlider(
+                                    options: CarouselOptions(
+                                      autoPlay: true,
+                                      enlargeCenterPage: true,
+                                      aspectRatio: 2.0,
+                                    ),
+                                    items: item['filesLinks']
+                                        .asMap()
+                                        .entries
+                                        .map<Widget>((entry) {
+                                      int index = entry.key;
+                                      String image = entry.value;
+                                      return GestureDetector(
+                                        onTap: () => _displayImage(image),
+                                        child: Center(
+                                          child: Image.network(
+                                            image,
+                                            fit: BoxFit.cover,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return const Icon(
+                                                Icons.broken_image,
+                                                color: Colors.red,
                                                 semanticLabel:
-                                                    'Imagen del anuncio',
+                                                    'Imagen no disponible',
+                                              );
+                                            },
+                                            semanticLabel:
+                                                'Imagen del anuncio ${index + 1}',
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ListTile(
+                                title: Text(
+                                  item['titulo'],
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item['descripcion'],
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                    if (item['email'] != null)
+                                      Container(
+                                        height: 48.0,
+                                        alignment: Alignment.centerLeft,
+                                        child: GestureDetector(
+                                            onTap: () => launchUrl(Uri.parse(
+                                                'mailto:${item['email']}')),
+                                            child: Container(
+                                              height: 48.0,
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                item['email'],
+                                                style: const TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 18,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                                semanticsLabel:
+                                                    '${item['email']}',
+                                              ),
+                                            )),
+                                      ),
+                                    if (item['celular'] != null)
+                                      Container(
+                                        height: 48.0,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: [
+                                            if (item['whatsapp'] == true)
+                                              Semantics(
+                                                button: true,
+                                                label:
+                                                    'Contactar por WhatsApp al ${item['celular']}',
+                                                child: IconButton(
+                                                  icon: Icon(
+                                                    FontAwesomeIcons.whatsapp,
+                                                    color: Colors.green,
+                                                    semanticLabel: 'Icono de whatsapp ${item['celular']}',
+                                                  ),
+                                                  onPressed: () => _sendMessage(
+                                                      'https://api.whatsapp.com/send/?phone=57${item['celular']}',
+                                                      item['celular']),
+                                                  tooltip:
+                                                      'Enviar mensaje por WhatsApp',
+                                                ),
+                                              ),
+                                            GestureDetector(
+                                              onTap: () => launchUrl(Uri.parse(
+                                                  'tel:+57${item['celular']}')),
+                                              child: Container(
+                                                height: 48.0,
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  item['celular'],
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.black,
+                                                    decoration: TextDecoration
+                                                        .underline,
+                                                  ),
+                                                  semanticsLabel:
+                                                      'Llamar al ${item['celular']}',
+                                                ),
                                               ),
                                             ),
-                                          ))
-                                      .toList(),
-                                ),
-                              ),
-                            ListTile(
-                              title: Text(
-                                item['titulo'],
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item['descripcion'],
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  if (item['email'] != null)
-                                    GestureDetector(
-                                      onTap: () => launchUrl(
-                                          Uri.parse('mailto:${item['email']}')),
-                                      child: Text(
-                                        item['email'],
-                                        style: const TextStyle(
-                                          color: Colors.blue,
-                                          decoration: TextDecoration.underline,
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                  if (item['celular'] != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Row(
-                                        children: [
-                                          if (item['whatsapp'] == true)
-                                            IconButton(
-                                              icon: const Icon(
-                                                  FontAwesomeIcons.whatsapp,
-                                                  color: Colors.green),
-                                              onPressed: () => _sendMessage(
-                                                  'https://api.whatsapp.com/send/?phone=57',
-                                                  item['celular']),
-                                              tooltip:
-                                                  'Enviar mensaje por WhatsApp',
-                                            ),
-                                          GestureDetector(
-                                            onTap: () => launchUrl(Uri.parse(
-                                                'tel:+57${item['celular']}')),
-                                            child: Text(
-                                              item['celular'],
-                                              style: const TextStyle(
-                                                fontSize: 16.0,
-                                                color: Colors.black,
-                                                decoration:
-                                                    TextDecoration.underline,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
