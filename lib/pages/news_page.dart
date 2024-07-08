@@ -321,13 +321,15 @@ class _NewsPageState extends State<NewsPage> {
                   }),
                 ),
               const SizedBox(height: 8.0),
-              Text(
-                'Fecha: ${noticia.fecha}',
-                style: const TextStyle(
-                  fontSize: 14.0,
-                  color: Colors.grey,
+              Semantics(
+                label: 'Fecha de la noticia: ${noticia.fecha}',
+                child: Text(
+                  'Fecha: ${noticia.fecha}',
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.grey,
+                  ),
                 ),
-                semanticsLabel: 'Fecha de la noticia: ${noticia.fecha}',
               ),
             ],
           ),

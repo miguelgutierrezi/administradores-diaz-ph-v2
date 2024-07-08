@@ -103,149 +103,153 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: StreamBuilder<List<Map<String, dynamic>>>(
-        stream: _announcesStream(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(
-                semanticsLabel: 'Cargando anuncios...',
-              ),
-            );
-          }
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text(
-                'Error cargando anuncios',
-                style: TextStyle(fontSize: 18),
-              ),
-            );
-          }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text(
-                'No hay anuncios disponibles',
-                style: TextStyle(fontSize: 18),
-              ),
-            );
-          }
-
-          _announces = snapshot.data!;
-          _filterAnnounces = _announces;
-
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Filtrar anuncios',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      semanticLabel: 'Buscar',
-                    ),
-                  ),
-                  onChanged: (value) {
-                    _setFilteredAnnounces(value);
-                  },
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Filtrar anuncios',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                hintText: 'Buscar anuncios',
+                prefixIcon: const Icon(
+                  Icons.search,
+                  semanticLabel: 'Buscar',
                 ),
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _filterAnnounces.length,
-                  itemBuilder: (context, index) {
-                    final item = _filterAnnounces[index];
-                    return Dismissible(
-                      key: Key(item['id']),
-                      direction: _isOwner(item['propietario'])
-                          ? DismissDirection.endToStart
-                          : DismissDirection.none,
-                      onDismissed: (direction) {
-                        _deleteAnnounce(item['id']);
-                        setState(() {
-                          _filterAnnounces.removeAt(index);
-                        });
-                      },
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                          semanticLabel: 'Eliminar anuncio',
+              onChanged: (value) {
+                _setFilteredAnnounces(value);
+              },
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<List<Map<String, dynamic>>>(
+              stream: _announcesStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Cargando anuncios...',
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(
+                    child: Text(
+                      'Error cargando anuncios',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No hay anuncios disponibles',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
+                } else {
+                  List<Map<String, dynamic>> announces = snapshot.data!;
+                  List<Map<String, dynamic>> filteredAnnounces =
+                      announces.where((announce) {
+                    return announce['titulo']
+                        .toLowerCase()
+                        .contains(_searchTerm.toLowerCase());
+                  }).toList();
+
+                  return ListView.builder(
+                    itemCount: filteredAnnounces.length,
+                    itemBuilder: (context, index) {
+                      final item = filteredAnnounces[index];
+                      return Dismissible(
+                        key: Key(item['id']),
+                        direction: _isOwner(item['propietario'])
+                            ? DismissDirection.endToStart
+                            : DismissDirection.none,
+                        onDismissed: (direction) {
+                          _deleteAnnounce(item['id']);
+                          setState(() {
+                            filteredAnnounces.removeAt(index);
+                          });
+                        },
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            semanticLabel: 'Eliminar anuncio',
+                          ),
                         ),
-                      ),
-                      child: Card(
-                        margin: const EdgeInsets.all(10.0),
-                        child: Semantics(
-                          label: 'Anuncio',
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (item['filesLinks'] != null &&
-                                  item['filesLinks'].isNotEmpty)
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.3,
-                                  child: CarouselSlider(
-                                    options: CarouselOptions(
-                                      autoPlay: true,
-                                      enlargeCenterPage: true,
-                                      aspectRatio: 2.0,
-                                    ),
-                                    items: item['filesLinks']
-                                        .asMap()
-                                        .entries
-                                        .map<Widget>((entry) {
-                                      int index = entry.key;
-                                      String image = entry.value;
-                                      return GestureDetector(
-                                        onTap: () => _displayImage(image),
-                                        child: Center(
-                                          child: Image.network(
-                                            image,
-                                            fit: BoxFit.cover,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return const Icon(
-                                                Icons.broken_image,
-                                                color: Colors.red,
-                                                semanticLabel:
-                                                    'Imagen no disponible',
-                                              );
-                                            },
-                                            semanticLabel:
-                                                'Imagen del anuncio ${index + 1}',
+                        child: Card(
+                          margin: const EdgeInsets.all(10.0),
+                          child: Semantics(
+                            label: 'Anuncio',
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (item['filesLinks'] != null &&
+                                    item['filesLinks'].isNotEmpty)
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.3,
+                                    child: CarouselSlider(
+                                      options: CarouselOptions(
+                                        autoPlay: true,
+                                        enlargeCenterPage: true,
+                                        aspectRatio: 2.0,
+                                      ),
+                                      items: item['filesLinks']
+                                          .asMap()
+                                          .entries
+                                          .map<Widget>((entry) {
+                                        int index = entry.key;
+                                        String image = entry.value;
+                                        return GestureDetector(
+                                          onTap: () => _displayImage(image),
+                                          child: Center(
+                                            child: Image.network(
+                                              image,
+                                              fit: BoxFit.cover,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return const Icon(
+                                                  Icons.broken_image,
+                                                  color: Colors.red,
+                                                  semanticLabel:
+                                                      'Imagen no disponible',
+                                                );
+                                              },
+                                              semanticLabel:
+                                                  'Imagen del anuncio ${index + 1}',
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ListTile(
-                                title: Text(
-                                  item['titulo'],
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item['descripcion'],
-                                      style: const TextStyle(fontSize: 18),
+                                        );
+                                      }).toList(),
                                     ),
-                                    if (item['email'] != null)
-                                      Container(
-                                        height: 48.0,
-                                        alignment: Alignment.centerLeft,
-                                        child: GestureDetector(
+                                  ),
+                                ListTile(
+                                  title: Text(
+                                    item['titulo'],
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item['descripcion'],
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                      if (item['email'] != null)
+                                        Container(
+                                          height: 48.0,
+                                          alignment: Alignment.centerLeft,
+                                          child: GestureDetector(
                                             onTap: () => launchUrl(Uri.parse(
                                                 'mailto:${item['email']}')),
                                             child: Container(
@@ -262,68 +266,72 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 semanticsLabel:
                                                     '${item['email']}',
                                               ),
-                                            )),
-                                      ),
-                                    if (item['celular'] != null)
-                                      Container(
-                                        height: 48.0,
-                                        alignment: Alignment.centerLeft,
-                                        child: Row(
-                                          children: [
-                                            if (item['whatsapp'] == true)
-                                              Semantics(
-                                                button: true,
-                                                label:
-                                                    'Contactar por WhatsApp al ${item['celular']}',
-                                                child: IconButton(
-                                                  icon: Icon(
-                                                    FontAwesomeIcons.whatsapp,
-                                                    color: Colors.green,
-                                                    semanticLabel: 'Icono de whatsapp ${item['celular']}',
-                                                  ),
-                                                  onPressed: () => _sendMessage(
-                                                      'https://api.whatsapp.com/send/?phone=57${item['celular']}',
-                                                      item['celular']),
-                                                  tooltip:
-                                                      'Enviar mensaje por WhatsApp',
-                                                ),
-                                              ),
-                                            GestureDetector(
-                                              onTap: () => launchUrl(Uri.parse(
-                                                  'tel:+57${item['celular']}')),
-                                              child: Container(
-                                                height: 48.0,
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  item['celular'],
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.black,
-                                                    decoration: TextDecoration
-                                                        .underline,
-                                                  ),
-                                                  semanticsLabel:
-                                                      'Llamar al ${item['celular']}',
-                                                ),
-                                              ),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                  ],
+                                      if (item['celular'] != null)
+                                        Container(
+                                          height: 48.0,
+                                          alignment: Alignment.centerLeft,
+                                          child: Row(
+                                            children: [
+                                              if (item['whatsapp'] == true)
+                                                Semantics(
+                                                  button: true,
+                                                  label:
+                                                      'Contactar por WhatsApp al ${item['celular']}',
+                                                  child: IconButton(
+                                                    icon: Icon(
+                                                      FontAwesomeIcons.whatsapp,
+                                                      color: Colors.green,
+                                                      semanticLabel:
+                                                          'Icono de whatsapp ${item['celular']}',
+                                                    ),
+                                                    onPressed: () => _sendMessage(
+                                                        'https://api.whatsapp.com/send/?phone=57${item['celular']}',
+                                                        item['celular']),
+                                                    tooltip:
+                                                        'Enviar mensaje por WhatsApp',
+                                                  ),
+                                                ),
+                                              GestureDetector(
+                                                onTap: () => launchUrl(Uri.parse(
+                                                    'tel:+57${item['celular']}')),
+                                                child: Container(
+                                                  height: 48.0,
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    item['celular'],
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.black,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ),
+                                                    semanticsLabel:
+                                                        'Llamar al ${item['celular']}',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: (PlatformService.isMobile())
           ? FloatingActionButton(

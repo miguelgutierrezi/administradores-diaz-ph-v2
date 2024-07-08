@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
               'Esta aplicación usa notificaciones y seguimiento para enviarle información importante y personalizada sobre su edificio, noticias relevantes, y mensajes importantes.'),
           actions: <Widget>[
             TextButton(
-              child: const Text('Aceptar'),
+              child: const Text('Continuar'),
               onPressed: () async {
                 Navigator.of(context).pop();
                 final TrackingStatus newStatus = await AppTrackingTransparency

@@ -53,15 +53,18 @@ class _WelcomePageState extends State<WelcomePage> {
         backgroundColor: Colors.black,
         actions: [
           IconButton(
-            icon: const Icon(Icons.login, color: Colors.white),
+            icon: const Icon(
+              Icons.login,
+              color: Colors.white,
+              semanticLabel: 'Iniciar sesión',
+            ),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             },
-            tooltip:
-                'Iniciar sesión', // Agregar etiqueta de herramienta para accesibilidad
+            tooltip: 'Iniciar sesión',
           ),
         ],
       ),
@@ -70,13 +73,14 @@ class _WelcomePageState extends State<WelcomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            Center(
-              child: Image.asset(
-                'assets/Logo_Diaz_Administradores.jpeg',
-                height: 200,
-                width: 200,
-                semanticLabel:
-                    'Logo de Administradores Diaz PH SAS', // Agregar descripción semántica
+            Semantics(
+              label: 'Logo de Administradores Diaz PH SAS',
+              child: Center(
+                child: Image.asset(
+                  'assets/Logo_Diaz_Administradores.jpeg',
+                  height: 200,
+                  width: 200,
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -112,20 +116,26 @@ class _WelcomePageState extends State<WelcomePage> {
                         builder: (BuildContext context) {
                           return Column(
                             children: [
-                              Image.network(
-                                doc['imageUrl'] ??
-                                    'https://cdn-icons-png.flaticon.com/512/85/85488.png',
-                                height: 200,
-                                width: 200,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/Logo_Diaz_Administradores.jpeg',
-                                    height: 200,
-                                    width: 200,
-                                  );
-                                },
-                                semanticLabel:
-                                    'Imagen del edificio ${doc['nombre'] ?? 'sin título'}', // Agregar descripción semántica
+                              Semantics(
+                                label:
+                                    'Imagen del edificio ${doc['nombre'] ?? 'sin título'}',
+                                child: Image.network(
+                                  doc['imageUrl'] ??
+                                      'https://cdn-icons-png.flaticon.com/512/85/85488.png',
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Semantics(
+                                      label:
+                                          'Logo de Administradores Diaz PH SAS',
+                                      child: Image.asset(
+                                        'assets/Logo_Diaz_Administradores.jpeg',
+                                        height: 200,
+                                        width: 200,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                               const SizedBox(height: 10),
                               Text(

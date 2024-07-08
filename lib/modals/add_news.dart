@@ -292,11 +292,16 @@ class _AddNewsPageState extends State<AddNewsPage> {
                 ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                _selectedDate != null
+              Semantics(
+                label: _selectedDate != null
                     ? "Fecha seleccionada: ${DateFormat('dd-MM-yyyy').format(_selectedDate!)}"
-                    : 'Ninguna fecha seleccionada',
-                style: const TextStyle(fontSize: 16.0),
+                    : 'Sin fecha',
+                child: Text(
+                  _selectedDate != null
+                      ? DateFormat('dd-MM-yyyy').format(_selectedDate!)
+                      : 'Sin fecha',
+                  style: const TextStyle(fontSize: 16.0),
+                ),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton.icon(

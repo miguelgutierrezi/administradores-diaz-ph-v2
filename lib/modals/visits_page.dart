@@ -137,6 +137,7 @@ class _VisitsListPageState extends State<VisitsListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: const Text(
@@ -188,20 +189,30 @@ class _VisitsListPageState extends State<VisitsListPage> {
                         margin: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 16),
                         child: ListTile(
-                          title: Text(
-                            visit['edificio'],
-                            style: const TextStyle(fontSize: 18),
+                          title: Semantics(
+                            label: 'Edificio: ${visit['edificio']}',
+                            child: Text(
+                              visit['edificio'],
+                              style: const TextStyle(fontSize: 18),
+                            ),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(
-                                'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}',
-                                style: const TextStyle(fontSize: 16),
+                              Semantics(
+                                label:
+                                    'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}',
+                                child: Text(
+                                  'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
                               ),
-                              Text(
-                                'Autor: ${visit['name']}',
-                                style: const TextStyle(fontSize: 16),
+                              Semantics(
+                                label: 'Autor: ${visit['name']}',
+                                child: Text(
+                                  'Autor: ${visit['name']}',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
                               ),
                             ],
                           ),
@@ -227,20 +238,31 @@ class _VisitsListPageState extends State<VisitsListPage> {
                         margin: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 16),
                         child: ListTile(
-                          title: Text(
-                            visit['edificio'],
-                            style: const TextStyle(fontSize: 18),
+                          title: Semantics(
+                            label: 'Edificio: ${visit['edificio']}',
+                            child: Text(
+                              visit['edificio'],
+                              style: const TextStyle(fontSize: 18),
+                            ),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(
-                                'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}',
-                                style: const TextStyle(fontSize: 16),
+                              Semantics(
+                                label:
+                                    'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}',
+                                child: Text(
+                                  'Fecha: ${DateTime.fromMillisecondsSinceEpoch(visit['date'].seconds * 1000)}',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
                               ),
-                              Text(
-                                'Autor: ${_userRole == UserRole.superadmin ? visit['name'] : _userName}',
-                                style: const TextStyle(fontSize: 16),
+                              Semantics(
+                                label:
+                                    'Autor: ${_userRole == UserRole.superadmin ? visit['name'] : _userName}',
+                                child: Text(
+                                  'Autor: ${_userRole == UserRole.superadmin ? visit['name'] : _userName}',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
                               ),
                             ],
                           ),

@@ -181,11 +181,18 @@ class _MessagesPageState extends State<MessagesPage> {
                           .map((message) {
                         int index = receivedMessages.indexOf(message);
                         return ListTile(
-                          title: Text(
-                            message['asunto'],
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          title: Semantics(
+                            label: 'Asunto del mensaje: ${message['asunto']}',
+                            child: Text(
+                              message['asunto'],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
-                          subtitle: Text('De: ${message['from']}'),
+                          subtitle: Semantics(
+                            label: 'De: ${message['from']}',
+                            child: Text('De: ${message['from']}'),
+                          ),
                           leading: Semantics(
                             label: 'Avatar del remitente',
                             child: const CircleAvatar(
@@ -244,12 +251,18 @@ class _MessagesPageState extends State<MessagesPage> {
                           .map((message) {
                         int index = receivedMessages.indexOf(message);
                         return ListTile(
-                          title: Text(
-                            message['asunto'],
-                            style:
-                                const TextStyle(fontWeight: FontWeight.normal),
+                          title: Semantics(
+                            label: 'Asunto: ${message['asunto']}',
+                            child: Text(
+                              message['asunto'],
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.normal),
+                            ),
                           ),
-                          subtitle: Text('De: ${message['from']}'),
+                          subtitle: Semantics(
+                            label: 'De: ${message['from']}',
+                            child: Text('De: ${message['from']}'),
+                          ),
                           leading: Semantics(
                             label: 'Avatar del remitente',
                             child: const CircleAvatar(
@@ -302,12 +315,18 @@ class _MessagesPageState extends State<MessagesPage> {
                         children: sentMessages.map((message) {
                           int index = sentMessages.indexOf(message);
                           return ListTile(
-                            title: Text(
-                              message['asunto'],
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.normal),
+                            title: Semantics(
+                              label: 'Asunto: ${message['asunto']}',
+                              child: Text(
+                                message['asunto'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.normal),
+                              ),
                             ),
-                            subtitle: Text('Para: ${message['to']}'),
+                            subtitle: Semantics(
+                              label: 'Para: ${message['to']}',
+                              child: Text('Para: ${message['to']}'),
+                            ),
                             leading: Semantics(
                               label: 'Avatar del destinatario',
                               child: const CircleAvatar(

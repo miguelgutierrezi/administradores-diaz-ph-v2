@@ -203,30 +203,35 @@ class _ZonesPageState extends State<ZonesPage> {
                                       onPageChanged: (index, reason) {},
                                     ),
                                     items: zona['filesLinks']
-                                        .map<Widget>((item) => GestureDetector(
-                                              onTap: () => _displayImage(item),
-                                              child: Center(
-                                                child: Image.network(
-                                                  item,
-                                                  fit: BoxFit.cover,
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return const Icon(
-                                                      Icons.broken_image,
-                                                      color: Colors.red,
-                                                      semanticLabel:
-                                                          'Imagen no disponible',
-                                                    );
-                                                  },
-                                                  semanticLabel:
-                                                      'Imagen de la zona',
-                                                ),
-                                              ),
-                                            ))
-                                        .toList(),
+                                        .asMap()
+                                        .entries
+                                        .map<Widget>((entry) {
+                                      int index = entry.key;
+                                      String item = entry.value;
+                                      return GestureDetector(
+                                        onTap: () => _displayImage(item),
+                                        child: Center(
+                                          child: Image.network(
+                                            item,
+                                            fit: BoxFit.cover,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return const Icon(
+                                                Icons.broken_image,
+                                                color: Colors.red,
+                                                semanticLabel:
+                                                    'Imagen no disponible',
+                                              );
+                                            },
+                                            semanticLabel:
+                                                'Imagen de la zona ${zona['nombre']} ${index + 1}',
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
                                   ),
                                 ),
                               ListTile(

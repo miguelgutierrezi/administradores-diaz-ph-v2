@@ -97,6 +97,7 @@ class _AdminsListPageState extends State<AdminsListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: const Text(
