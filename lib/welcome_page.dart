@@ -84,18 +84,28 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
             ),
             const SizedBox(height: 20),
-            const Divider(thickness: 2),
+            Semantics(
+              label: 'Separador de secciones',
+              child: const Divider(thickness: 2),
+            ),
             const SizedBox(height: 20),
-            const Text(
-              'NUESTROS EDIFICIOS',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Semantics(
+              label: 'Título de la sección de edificios',
+              child: const Text(
+                'NUESTROS EDIFICIOS',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
             ),
             const SizedBox(height: 20),
             FutureBuilder<List<Map<String, dynamic>>>(
               future: _buildingsData,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Cargando...',
+                    ),
+                  );
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -138,14 +148,21 @@ class _WelcomePageState extends State<WelcomePage> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Text(
-                                doc['nombre'] ?? 'Sin título',
-                                style: const TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              Semantics(
+                                label: 'Nombre del edificio',
+                                child: Text(
+                                  doc['nombre'] ?? 'Sin título',
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                              Text(
-                                doc['direccion'] ?? 'Sin dirección',
-                                style: const TextStyle(fontSize: 16),
+                              Semantics(
+                                label: 'Dirección del edificio',
+                                child: Text(
+                                  doc['direccion'] ?? 'Sin dirección',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
                               ),
                             ],
                           );

@@ -115,52 +115,96 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         final forgotPasswordEmailController = TextEditingController();
-        return AlertDialog(
-          title: const Text('¿Olvidaste tu contraseña?'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Ingresa tu email para restablecer tu contraseña.'),
-              TextField(
-                controller: forgotPasswordEmailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
+        final formKey = GlobalKey<FormState>();
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            bool isLoading = false;
+            String? errorMessage;
+
+            return AlertDialog(
+              title: const Text('¿Olvidaste tu contraseña?'),
+              content: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                        'Ingresa tu email para restablecer tu contraseña.'),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: forgotPasswordEmailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      autofocus: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingrese su email';
+                        }
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        if (!emailRegex.hasMatch(value)) {
+                          return 'Por favor ingrese un email válido';
+                        }
+                        return null;
+                      },
+                    ),
+                    if (errorMessage != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          errorMessage!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    if (isLoading)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: CircularProgressIndicator(),
+                      ),
+                  ],
                 ),
-                keyboardType: TextInputType.emailAddress,
-                autofocus: true,
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () async {
-                try {
-                  await _authService.sendPasswordResetEmail(
-                      forgotPasswordEmailController.text);
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text(
-                            'Correo de restablecimiento de contraseña enviado')),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text(
-                            'Error al enviar el correo de restablecimiento')),
-                  );
-                }
-              },
-              child: const Text('Confirmar'),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      setState(() {
+                        isLoading = true;
+                        errorMessage = null;
+                      });
+
+                      try {
+                        await _authService.sendPasswordResetEmail(
+                            forgotPasswordEmailController.text);
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'Correo de restablecimiento de contraseña enviado')),
+                        );
+                      } catch (e) {
+                        setState(() {
+                          errorMessage =
+                              'Error al enviar el correo de restablecimiento';
+                          isLoading = false;
+                        });
+                      }
+                    }
+                  },
+                  child: const Text('Confirmar'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -196,20 +240,24 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 40),
-              Center(
-                child: Image.asset(
-                  'assets/Logo_Diaz_Administradores.jpeg',
-                  height: 100,
-                  width: 100,
-                  semanticLabel: 'Logo de Administradores Diaz',
+              Semantics(
+                label: 'Logo de Administradores Diaz',
+                child: Center(
+                  child: Image.asset(
+                    'assets/Logo_Diaz_Administradores.jpeg',
+                    height: 100,
+                    width: 100,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Iniciar sesión',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-                semanticsLabel: 'Encabezado de Iniciar sesión',
+              Semantics(
+                label: 'Encabezado de Iniciar sesión',
+                child: const Text(
+                  'Iniciar sesión',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
               ),
               const SizedBox(height: 20),
               Semantics(
@@ -247,28 +295,40 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _isButtonEnabled ? _signIn : null,
-                icon: const Icon(Icons.login),
-                label: const Text('Entrar'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón de iniciar sesión',
+                hint: 'Presione para iniciar sesión',
+                child: ElevatedButton.icon(
+                  onPressed: _isButtonEnabled ? _signIn : null,
+                  icon: const Icon(Icons.login),
+                  label: const Text('Entrar'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const RegisterPage()));
-                },
-                child: const Text('¿No tienes cuenta? Regístrate'),
+              Semantics(
+                label: 'Botón de registro',
+                hint: 'Presione para registrarse',
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const RegisterPage()));
+                  },
+                  child: const Text('¿No tienes cuenta? Regístrate'),
+                ),
               ),
-              TextButton(
-                onPressed: _showForgotPasswordDialog,
-                child: const Text('He olvidado mi contraseña'),
+              Semantics(
+                label: 'Botón de recuperar contraseña',
+                hint: 'Presione para recuperar contraseña',
+                child: TextButton(
+                  onPressed: _showForgotPasswordDialog,
+                  child: const Text('He olvidado mi contraseña'),
+                ),
               ),
             ],
           ),
