@@ -151,14 +151,6 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
-                    if (errorMessage != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Text(
-                          errorMessage!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ),
                     if (isLoading)
                       const Padding(
                         padding: EdgeInsets.only(top: 10),
@@ -260,38 +252,60 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              Semantics(
-                label: 'Campo de texto de email',
-                hint: 'Ingrese su email',
-                child: TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.email),
-                    labelText: 'Email',
-                    hintText: 'Ingrese su email',
-                    border: OutlineInputBorder(),
+              Focus(
+                onFocusChange: (hasFocus) {
+                  if (hasFocus) {
+                    // Lógica adicional cuando el campo recibe el enfoque
+                    Utils.debugPrint('Campo de email enfocado');
+                  }
+                },
+                child: Semantics(
+                  label: 'Campo de texto de email',
+                  hint: 'Ingrese su email',
+                  child: TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.email),
+                      labelText: 'Email',
+                      hintText: 'Ingrese su email',
+                      border: const OutlineInputBorder(),
+                      helperText: 'Por favor ingrese su dirección de email.',
+                      errorText: _formKey.currentState?.validate() ?? false
+                          ? _emailValidator(_emailController.text)
+                          : null,
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    keyboardType: TextInputType.emailAddress,
                   ),
-                  validator: _emailValidator,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  keyboardType: TextInputType.emailAddress,
                 ),
               ),
               const SizedBox(height: 20),
-              Semantics(
-                label: 'Campo de texto de contraseña',
-                hint: 'Ingrese su contraseña',
-                child: TextFormField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.lock),
-                    labelText: 'Contraseña',
-                    hintText: 'Ingrese su contraseña',
-                    border: OutlineInputBorder(),
+              Focus(
+                onFocusChange: (hasFocus) {
+                  if (hasFocus) {
+                    // Lógica adicional cuando el campo recibe el enfoque
+                    Utils.debugPrint('Campo de contraseña enfocado');
+                  }
+                },
+                child: Semantics(
+                  label: 'Campo de texto de contraseña',
+                  hint: 'Ingrese su contraseña',
+                  child: TextFormField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.lock),
+                      labelText: 'Contraseña',
+                      hintText: 'Ingrese su contraseña',
+                      border: const OutlineInputBorder(),
+                      helperText: 'Por favor ingrese su contraseña.',
+                      errorText: _formKey.currentState?.validate() ?? false
+                          ? _passwordValidator(_passwordController.text)
+                          : null,
+                    ),
+                    obscureText: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    keyboardType: TextInputType.visiblePassword,
                   ),
-                  obscureText: true,
-                  validator: _passwordValidator,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  keyboardType: TextInputType.visiblePassword,
                 ),
               ),
               const SizedBox(height: 20),

@@ -49,6 +49,7 @@ class _WelcomePageState extends State<WelcomePage> {
         title: const Text(
           'Administradores Diaz PH SAS',
           style: TextStyle(color: Colors.white),
+          semanticsLabel: 'Título de la aplicación',
         ),
         backgroundColor: Colors.black,
         actions: [
@@ -56,7 +57,7 @@ class _WelcomePageState extends State<WelcomePage> {
             icon: const Icon(
               Icons.login,
               color: Colors.white,
-              semanticLabel: 'Iniciar sesión',
+              semanticLabel: 'Icono de iniciar sesión',
             ),
             onPressed: () {
               Navigator.push(
@@ -103,13 +104,23 @@ class _WelcomePageState extends State<WelcomePage> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(
-                      semanticsLabel: 'Cargando...',
+                      semanticsLabel: 'Cargando datos...',
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(
+                    child: Semantics(
+                      label: 'Error al cargar datos',
+                      child: Text('Error: ${snapshot.error}'),
+                    ),
+                  );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No se encontraron datos'));
+                  return Center(
+                    child: Semantics(
+                      label: 'No se encontraron datos',
+                      child: const Text('No se encontraron datos'),
+                    ),
+                  );
                 } else {
                   return CarouselSlider(
                     options: CarouselOptions(
