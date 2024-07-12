@@ -173,135 +173,168 @@ class _AddZonePageState extends State<AddZonePage> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              TextFormField(
-                controller: _nombreController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre',
-                  icon: Icon(
-                    Icons.article,
-                    semanticLabel: 'Nombre de la zona',
+              Semantics(
+                label: 'Campo de texto para el nombre de la zona',
+                hint: 'Ingrese el nombre de la zona',
+                child: TextFormField(
+                  controller: _nombreController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre',
+                    icon: Icon(
+                      Icons.article,
+                      semanticLabel: 'Nombre de la zona',
+                    ),
                   ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese el nombre de la zona';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Edificio',
-                  icon: Icon(
-                    Icons.location_city,
-                    semanticLabel: 'Seleccionar edificio',
-                  ),
-                ),
-                items: _buildings.map((building) {
-                  return DropdownMenuItem<String>(
-                    value: building,
-                    child: Text(building, overflow: TextOverflow.ellipsis),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedBuilding = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                  icon: Icon(
-                    Icons.description,
-                    semanticLabel: 'Descripción de la zona',
-                  ),
-                ),
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese una descripción';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              CheckboxListTile(
-                title: const Text('¿Se pueden realizar reservas?'),
-                value: _reservasTrue,
-                onChanged: (bool? value) {
-                  setState(() {
-                    _reservasTrue = value!;
-                    if (!_reservasTrue) {
-                      _reservasTodoElDia = false;
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese el nombre de la zona';
                     }
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: const EdgeInsets.all(0),
-              ),
-              CheckboxListTile(
-                title: const Text('¿Se pueden realizar reservas todo el día?'),
-                value: _reservasTodoElDia,
-                onChanged: _reservasTrue
-                    ? (bool? value) {
-                        setState(() {
-                          _reservasTodoElDia = value!;
-                        });
-                      }
-                    : null,
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: const EdgeInsets.all(0),
+                    return null;
+                  },
+                ),
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                onPressed: _pickFiles,
-                icon: const Icon(
-                  Icons.attach_file,
-                  semanticLabel: 'Seleccionar archivos',
+              Semantics(
+                label: 'Selector de edificio',
+                hint: 'Seleccione el edificio',
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Edificio',
+                    icon: Icon(
+                      Icons.location_city,
+                      semanticLabel: 'Seleccionar edificio',
+                    ),
+                  ),
+                  items: _buildings.map((building) {
+                    return DropdownMenuItem<String>(
+                      value: building,
+                      child: Text(building, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBuilding = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                label: const Text('Seleccionar archivos'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              ),
+              const SizedBox(height: 16.0),
+              Semantics(
+                label: 'Campo de texto para la descripción de la zona',
+                hint: 'Ingrese la descripción de la zona',
+                child: TextFormField(
+                  controller: _descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción',
+                    icon: Icon(
+                      Icons.description,
+                      semanticLabel: 'Descripción de la zona',
+                    ),
+                  ),
+                  maxLines: 5,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese una descripción';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Semantics(
+                label: 'Checkbox para permitir reservas',
+                hint: 'Marque si se pueden realizar reservas',
+                child: CheckboxListTile(
+                  title: const Text('¿Se pueden realizar reservas?'),
+                  value: _reservasTrue,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _reservasTrue = value!;
+                      if (!_reservasTrue) {
+                        _reservasTodoElDia = false;
+                      }
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: const EdgeInsets.all(0),
+                ),
+              ),
+              Semantics(
+                label: 'Checkbox para permitir reservas todo el día',
+                hint: 'Marque si se pueden realizar reservas todo el día',
+                child: CheckboxListTile(
+                  title:
+                      const Text('¿Se pueden realizar reservas todo el día?'),
+                  value: _reservasTodoElDia,
+                  onChanged: _reservasTrue
+                      ? (bool? value) {
+                          setState(() {
+                            _reservasTodoElDia = value!;
+                          });
+                        }
+                      : null,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: const EdgeInsets.all(0),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Semantics(
+                label: 'Botón para seleccionar archivos',
+                hint: 'Presione para seleccionar archivos adjuntos',
+                child: ElevatedButton.icon(
+                  onPressed: _pickFiles,
+                  icon: const Icon(
+                    Icons.attach_file,
+                    semanticLabel: 'Seleccionar archivos',
+                  ),
+                  label: const Text('Seleccionar archivos'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              Wrap(
-                children: _fileNames.map((fileName) {
-                  int index = _fileNames.indexOf(fileName);
-                  return Chip(
-                    label: Text(fileName),
-                    deleteIcon: const Icon(Icons.close),
-                    onDeleted: () => _removeFile(index),
-                  );
-                }).toList(),
+              Semantics(
+                label: 'Lista de archivos seleccionados',
+                hint: 'Lista de archivos seleccionados para esta zona',
+                child: Wrap(
+                  children: _fileNames.map((fileName) {
+                    int index = _fileNames.indexOf(fileName);
+                    return Chip(
+                      label: Text(fileName),
+                      deleteIcon: const Icon(Icons.close),
+                      onDeleted: () => _removeFile(index),
+                    );
+                  }).toList(),
+                ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  semanticLabel: 'Añadir zona',
-                ),
-                label: const Text('Añadir zona'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para añadir zona',
+                hint: 'Presione para añadir la zona',
+                child: ElevatedButton.icon(
+                  onPressed: _submitForm,
+                  icon: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    semanticLabel: 'Añadir zona',
+                  ),
+                  label: const Text('Añadir zona'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

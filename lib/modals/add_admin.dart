@@ -193,93 +193,120 @@ class _AddAdminPageState extends State<AddAdminPage> {
           onChanged: _validateForm,
           child: ListView(
             children: <Widget>[
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  icon: Icon(
-                    Icons.email,
-                    semanticLabel: 'Correo electrónico',
+              Semantics(
+                label: 'Campo de texto de email',
+                hint: 'Ingrese su email',
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    icon: Icon(
+                      Icons.email,
+                      semanticLabel: 'Correo electrónico',
+                    ),
                   ),
+                  validator: _emailValidator,
+                  keyboardType: TextInputType.emailAddress,
                 ),
-                validator: _emailValidator,
               ),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  icon: Icon(
-                    Icons.lock,
-                    semanticLabel: 'Contraseña',
+              const SizedBox(height: 10),
+              Semantics(
+                label: 'Campo de texto de contraseña',
+                hint: 'Ingrese su contraseña',
+                child: TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    icon: Icon(
+                      Icons.lock,
+                      semanticLabel: 'Contraseña',
+                    ),
                   ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.visiblePassword,
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombres y apellidos',
-                  icon: Icon(
-                    Icons.person,
-                    semanticLabel: 'Nombres y apellidos',
+              const SizedBox(height: 10),
+              Semantics(
+                label: 'Campo de texto de nombres y apellidos',
+                hint: 'Ingrese sus nombres y apellidos',
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombres y apellidos',
+                    icon: Icon(
+                      Icons.person,
+                      semanticLabel: 'Nombres y apellidos',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Edificio',
-                  icon: Icon(
-                    Icons.location_city,
-                    semanticLabel: 'Seleccionar edificio',
+              const SizedBox(height: 10),
+              Semantics(
+                label: 'Selector de edificio',
+                hint: 'Seleccione su edificio',
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Edificio',
+                    icon: Icon(
+                      Icons.location_city,
+                      semanticLabel: 'Seleccionar edificio',
+                    ),
                   ),
+                  items: _edificios.map((building) {
+                    return DropdownMenuItem<String>(
+                      value: building,
+                      child: Text(building),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedEdificio = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                items: _edificios.map((building) {
-                  return DropdownMenuItem<String>(
-                    value: building,
-                    child: Text(building),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedEdificio = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
+              const SizedBox(height: 10),
               Wrap(
                 spacing: 8.0,
                 children: _selectedEdificios.map((edificio) {
-                  return Chip(
-                    label: Text(edificio),
-                    deleteIcon: const Icon(
-                      Icons.close,
-                      semanticLabel: 'Eliminar edificio',
+                  return Semantics(
+                    label: 'Edificio seleccionado $edificio',
+                    hint: 'Toque dos veces para eliminar este edificio',
+                    child: Chip(
+                      label: Text(edificio),
+                      deleteIcon: const Icon(
+                        Icons.close,
+                        semanticLabel: 'Eliminar edificio',
+                      ),
+                      onDeleted: () {
+                        setState(() {
+                          _selectedEdificios.remove(edificio);
+                        });
+                      },
                     ),
-                    onDeleted: () {
-                      setState(() {
-                        _selectedEdificios.remove(edificio);
-                      });
-                    },
                   );
                 }).toList(),
               ),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   if (_selectedEdificio.isNotEmpty &&
@@ -292,20 +319,24 @@ class _AddAdminPageState extends State<AddAdminPage> {
                 child: const Text('Añadir edificio'),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _isButtonDisabled ? null : _register,
-                icon: const Icon(
-                  Icons.login,
-                  semanticLabel: 'Registrar administrador',
-                ),
-                label: const Text('Registrar administrador'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+              Semantics(
+                label: 'Botón de registro',
+                hint: 'Presione para registrar al administrador',
+                child: ElevatedButton.icon(
+                  onPressed: _isButtonDisabled ? null : _register,
+                  icon: const Icon(
+                    Icons.login,
+                    semanticLabel: 'Registrar administrador',
+                  ),
+                  label: const Text('Registrar administrador'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
                   ),
                 ),
               ),

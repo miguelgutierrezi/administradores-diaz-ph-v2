@@ -212,105 +212,131 @@ class _AddClientPageState extends State<AddClientPage> {
           onChanged: _validateForm,
           child: ListView(
             children: <Widget>[
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  icon: Icon(
-                    Icons.email,
-                    semanticLabel: 'Correo electrónico',
+              Semantics(
+                label: 'Campo de texto para correo electrónico',
+                hint: 'Ingrese su correo electrónico',
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    icon: Icon(
+                      Icons.email,
+                      semanticLabel: 'Correo electrónico',
+                    ),
                   ),
+                  validator: _emailValidator,
+                  keyboardType: TextInputType.emailAddress,
                 ),
-                validator: _emailValidator,
               ),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  icon: Icon(
-                    Icons.lock,
-                    semanticLabel: 'Contraseña',
+              Semantics(
+                label: 'Campo de texto para contraseña',
+                hint: 'Ingrese su contraseña',
+                child: TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    icon: Icon(
+                      Icons.lock,
+                      semanticLabel: 'Contraseña',
+                    ),
                   ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.visiblePassword,
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombres y apellidos',
-                  icon: Icon(
-                    Icons.person,
-                    semanticLabel: 'Nombres y apellidos',
+              Semantics(
+                label: 'Campo de texto para nombres y apellidos',
+                hint: 'Ingrese sus nombres y apellidos',
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombres y apellidos',
+                    icon: Icon(
+                      Icons.person,
+                      semanticLabel: 'Nombres y apellidos',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Edificio',
-                  icon: Icon(
-                    Icons.location_city,
-                    semanticLabel: 'Seleccionar edificio',
+              Semantics(
+                label: 'Selector de edificio',
+                hint: 'Seleccione el edificio',
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Edificio',
+                    icon: Icon(
+                      Icons.location_city,
+                      semanticLabel: 'Seleccionar edificio',
+                    ),
                   ),
+                  items: _buildings.map((building) {
+                    return DropdownMenuItem<String>(
+                      value: building,
+                      child: Text(building),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBuilding = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                items: _buildings
-                    .map((building) => DropdownMenuItem(
-                          value: building,
-                          child: Text(building),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedBuilding = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
-              TextFormField(
-                controller: _apartmentController,
-                decoration: const InputDecoration(
-                  labelText: 'Número apartamento',
-                  icon: Icon(
-                    Icons.home,
-                    semanticLabel: 'Número de apartamento',
+              Semantics(
+                label: 'Campo de texto para número de apartamento',
+                hint: 'Ingrese su número de apartamento',
+                child: TextFormField(
+                  controller: _apartmentController,
+                  decoration: const InputDecoration(
+                    labelText: 'Número apartamento',
+                    icon: Icon(
+                      Icons.home,
+                      semanticLabel: 'Número de apartamento',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _isButtonDisabled ? null : _register,
-                icon: const Icon(
-                  Icons.login,
-                  semanticLabel: 'Registrar cliente',
-                ),
-                label: const Text('Registrar cliente'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para registrar cliente',
+                hint: 'Presione para registrar el cliente',
+                child: ElevatedButton.icon(
+                  onPressed: _isButtonDisabled ? null : _register,
+                  icon: const Icon(
+                    Icons.login,
+                    semanticLabel: 'Registrar cliente',
+                  ),
+                  label: const Text('Registrar cliente'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

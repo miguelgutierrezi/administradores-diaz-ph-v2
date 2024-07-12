@@ -140,99 +140,119 @@ class _AddVotingPageState extends State<AddVotingPage> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              TextFormField(
-                controller: _tituloController,
-                decoration: const InputDecoration(
-                  labelText: 'Título',
-                  icon: Icon(
-                    Icons.article,
-                    semanticLabel: 'Título de la votación',
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese el título';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              if (_role != UserRole.user)
-                DropdownButtonFormField<String>(
+              Semantics(
+                label: 'Campo de texto para el título de la votación',
+                hint: 'Ingrese el título de la votación',
+                child: TextFormField(
+                  controller: _tituloController,
                   decoration: const InputDecoration(
-                    labelText: 'Edificio',
+                    labelText: 'Título',
                     icon: Icon(
-                      Icons.location_city,
-                      semanticLabel: 'Seleccionar edificio',
+                      Icons.article,
+                      semanticLabel: 'Título de la votación',
                     ),
                   ),
-                  items: _buildings.map((building) {
-                    return DropdownMenuItem<String>(
-                      value: building,
-                      child: Text(building, overflow: TextOverflow.ellipsis),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedBuilding = value!;
-                    });
-                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Campo requerido';
+                      return 'Por favor ingrese el título';
                     }
                     return null;
                   },
                 ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _linkController,
-                decoration: const InputDecoration(
-                  labelText: 'Enlace',
-                  icon: Icon(
-                    Icons.link,
-                    semanticLabel: 'Enlace de la votación',
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese el enlace';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                  icon: Icon(
-                    Icons.description,
-                    semanticLabel: 'Descripción de la votación',
+              if (_role != UserRole.user)
+                Semantics(
+                  label: 'Selector de edificio',
+                  hint: 'Seleccione el edificio',
+                  child: DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      labelText: 'Edificio',
+                      icon: Icon(
+                        Icons.location_city,
+                        semanticLabel: 'Seleccionar edificio',
+                      ),
+                    ),
+                    items: _buildings.map((building) {
+                      return DropdownMenuItem<String>(
+                        value: building,
+                        child: Text(building, overflow: TextOverflow.ellipsis),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedBuilding = value!;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Campo requerido';
+                      }
+                      return null;
+                    },
                   ),
                 ),
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese una descripción';
-                  }
-                  return null;
-                },
+              const SizedBox(height: 16.0),
+              Semantics(
+                label: 'Campo de texto para el enlace de la votación',
+                hint: 'Ingrese el enlace de la votación',
+                child: TextFormField(
+                  controller: _linkController,
+                  decoration: const InputDecoration(
+                    labelText: 'Enlace',
+                    icon: Icon(
+                      Icons.link,
+                      semanticLabel: 'Enlace de la votación',
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese el enlace';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Semantics(
+                label: 'Campo de texto para la descripción de la votación',
+                hint: 'Ingrese la descripción de la votación',
+                child: TextFormField(
+                  controller: _descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción',
+                    icon: Icon(
+                      Icons.description,
+                      semanticLabel: 'Descripción de la votación',
+                    ),
+                  ),
+                  maxLines: 5,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese una descripción';
+                    }
+                    return null;
+                  },
+                ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  semanticLabel: 'Añadir votación',
-                ),
-                label: const Text('Añadir votación'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para añadir votación',
+                hint: 'Presione para añadir la votación',
+                child: ElevatedButton.icon(
+                  onPressed: _submitForm,
+                  icon: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    semanticLabel: 'Añadir votación',
+                  ),
+                  label: const Text('Añadir votación'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

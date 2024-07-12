@@ -141,36 +141,44 @@ class _EditAdminPageState extends State<EditAdminPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: _updatedAdmin['nombre'],
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre',
-                        icon: Icon(
-                          Icons.document_scanner,
-                          semanticLabel: 'Nombre del administrador',
+                    Semantics(
+                      label: 'Campo de texto para el nombre del administrador',
+                      hint: 'Ingrese el nombre del administrador',
+                      child: TextFormField(
+                        initialValue: _updatedAdmin['nombre'],
+                        decoration: const InputDecoration(
+                          labelText: 'Nombre',
+                          icon: Icon(
+                            Icons.document_scanner,
+                            semanticLabel: 'Nombre del administrador',
+                          ),
                         ),
+                        onSaved: (value) {
+                          _updatedAdmin['nombre'] = value!;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo requerido';
+                          }
+                          return null;
+                        },
                       ),
-                      onSaved: (value) {
-                        _updatedAdmin['nombre'] = value!;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo requerido';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: _updatedAdmin['email'],
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        icon: Icon(
-                          Icons.email,
-                          semanticLabel: 'Correo electrónico',
+                    Semantics(
+                      label: 'Campo de texto para el correo electrónico',
+                      hint: 'Correo electrónico del administrador',
+                      child: TextFormField(
+                        initialValue: _updatedAdmin['email'],
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          icon: Icon(
+                            Icons.email,
+                            semanticLabel: 'Correo electrónico',
+                          ),
                         ),
+                        enabled: false,
                       ),
-                      enabled: false,
                     ),
                     const SizedBox(height: 16),
                     const Text(
@@ -193,40 +201,48 @@ class _EditAdminPageState extends State<EditAdminPage> {
                       );
                     }).toList(),
                     const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Agregar edificio',
-                        icon: Icon(
-                          Icons.add,
-                          semanticLabel: 'Agregar edificio',
+                    Semantics(
+                      label: 'Selector de edificio',
+                      hint: 'Seleccione un edificio para agregar',
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Agregar edificio',
+                          icon: Icon(
+                            Icons.add,
+                            semanticLabel: 'Agregar edificio',
+                          ),
                         ),
+                        items: _buildings.map((building) {
+                          return DropdownMenuItem<String>(
+                            value: building,
+                            child: Text(building),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null &&
+                              !_updatedAdmin['edificio'].contains(value)) {
+                            _addBuilding(value);
+                          }
+                        },
                       ),
-                      items: _buildings.map((building) {
-                        return DropdownMenuItem<String>(
-                          value: building,
-                          child: Text(building),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        if (value != null &&
-                            !_updatedAdmin['edificio'].contains(value)) {
-                          _addBuilding(value);
-                        }
-                      },
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: _onSave,
-                      icon: const Icon(
-                        Icons.check,
-                        semanticLabel: 'Guardar',
-                      ),
-                      label: const Text('Guardar administrador'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        textStyle: const TextStyle(fontSize: 18),
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
+                    Semantics(
+                      label: 'Botón para guardar administrador',
+                      hint: 'Presione para guardar el administrador',
+                      child: ElevatedButton.icon(
+                        onPressed: _onSave,
+                        icon: const Icon(
+                          Icons.check,
+                          semanticLabel: 'Guardar',
+                        ),
+                        label: const Text('Guardar administrador'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          textStyle: const TextStyle(fontSize: 18),
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                        ),
                       ),
                     ),
                   ],

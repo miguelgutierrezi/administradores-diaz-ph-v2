@@ -124,43 +124,54 @@ class _AddComplaintPageState extends State<AddComplaintPage> {
           child: ListView(
             children: <Widget>[
               if (_nombre != null)
-                Text(
-                  'Hola $_nombre',
-                  style: const TextStyle(fontSize: 24),
-                  textAlign: TextAlign.center,
-                ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                  icon: Icon(
-                    Icons.description,
-                    semanticLabel: 'Descripción de la queja',
+                Semantics(
+                  label: 'Saludo',
+                  child: Text(
+                    'Hola $_nombre',
+                    style: const TextStyle(fontSize: 24),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese una descripción';
-                  }
-                  return null;
-                },
+              const SizedBox(height: 16.0),
+              Semantics(
+                label: 'Campo de texto para la descripción de la queja',
+                hint: 'Ingrese la descripción de la queja',
+                child: TextFormField(
+                  controller: _descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción',
+                    icon: Icon(
+                      Icons.description,
+                      semanticLabel: 'Descripción de la queja',
+                    ),
+                  ),
+                  maxLines: 5,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese una descripción';
+                    }
+                    return null;
+                  },
+                ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  semanticLabel: 'Añadir queja',
-                ),
-                label: const Text('Añadir queja'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para añadir queja',
+                hint: 'Presione para añadir la queja',
+                child: ElevatedButton.icon(
+                  onPressed: _submitForm,
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    semanticLabel: 'Añadir queja',
+                  ),
+                  label: const Text('Añadir queja'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

@@ -51,7 +51,6 @@ class _LoginPageState extends State<LoginPage> {
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese su email';
     }
-    // Validación simple de correo electrónico
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
     if (!emailRegex.hasMatch(value)) {
       return 'Por favor ingrese un email válido';
@@ -128,6 +127,8 @@ class _LoginPageState extends State<LoginPage> {
                   labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
+                keyboardType: TextInputType.emailAddress,
+                autofocus: true,
               ),
             ],
           ),
@@ -136,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () async {
@@ -208,29 +209,42 @@ class _LoginPageState extends State<LoginPage> {
                 'Iniciar sesión',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
+                semanticsLabel: 'Encabezado de Iniciar sesión',
               ),
               const SizedBox(height: 20),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.email),
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
+              Semantics(
+                label: 'Campo de texto de email',
+                hint: 'Ingrese su email',
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.email),
+                    labelText: 'Email',
+                    hintText: 'Ingrese su email',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: _emailValidator,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  keyboardType: TextInputType.emailAddress,
                 ),
-                validator: _emailValidator,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
               const SizedBox(height: 20),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.lock),
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
+              Semantics(
+                label: 'Campo de texto de contraseña',
+                hint: 'Ingrese su contraseña',
+                child: TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.lock),
+                    labelText: 'Contraseña',
+                    hintText: 'Ingrese su contraseña',
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  validator: _passwordValidator,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  keyboardType: TextInputType.visiblePassword,
                 ),
-                obscureText: true,
-                validator: _passwordValidator,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
@@ -238,10 +252,11 @@ class _LoginPageState extends State<LoginPage> {
                 icon: const Icon(Icons.login),
                 label: const Text('Entrar'),
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontSize: 18),
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                ),
               ),
               const SizedBox(height: 20),
               TextButton(

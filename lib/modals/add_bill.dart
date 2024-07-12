@@ -217,126 +217,146 @@ class _AddBillPageState extends State<AddBillPage> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: DropdownButtonFormField<int>(
-                      decoration: const InputDecoration(
-                        labelText: 'Año',
-                        icon: Icon(
-                          Icons.calendar_today,
-                          semanticLabel: 'Seleccionar año',
+                    child: Semantics(
+                      label: 'Selector de año',
+                      hint: 'Seleccione el año de la factura',
+                      child: DropdownButtonFormField<int>(
+                        decoration: const InputDecoration(
+                          labelText: 'Año',
+                          icon: Icon(
+                            Icons.calendar_today,
+                            semanticLabel: 'Seleccionar año',
+                          ),
                         ),
+                        items: _yearsList.map((year) {
+                          return DropdownMenuItem<int>(
+                            value: year,
+                            child: Text(year.toString()),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedYear = value;
+                          });
+                        },
+                        value: _selectedYear,
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Seleccione un año';
+                          }
+                          return null;
+                        },
                       ),
-                      items: _yearsList.map((year) {
-                        return DropdownMenuItem<int>(
-                          value: year,
-                          child: Text(year.toString()),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedYear = value;
-                        });
-                      },
-                      value: _selectedYear,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Seleccione un año';
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   const SizedBox(width: 16.0),
                   Expanded(
-                    child: DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Mes',
-                        icon: Icon(
-                          Icons.calendar_today,
-                          semanticLabel: 'Seleccionar mes',
+                    child: Semantics(
+                      label: 'Selector de mes',
+                      hint: 'Seleccione el mes de la factura',
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Mes',
+                          icon: Icon(
+                            Icons.calendar_today,
+                            semanticLabel: 'Seleccionar mes',
+                          ),
                         ),
+                        items: _monthsList.map((month) {
+                          return DropdownMenuItem<String>(
+                            value: month,
+                            child: Text(month),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedMonth = value;
+                          });
+                        },
+                        value: _selectedMonth,
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Seleccione un mes';
+                          }
+                          return null;
+                        },
                       ),
-                      items: _monthsList.map((month) {
-                        return DropdownMenuItem<String>(
-                          value: month,
-                          child: Text(month),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedMonth = value;
-                        });
-                      },
-                      value: _selectedMonth,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Seleccione un mes';
-                        }
-                        return null;
-                      },
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Edificio',
-                  icon: Icon(
-                    Icons.business,
-                    semanticLabel: 'Seleccionar edificio',
+              Semantics(
+                label: 'Selector de edificio',
+                hint: 'Seleccione el edificio',
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Edificio',
+                    icon: Icon(
+                      Icons.business,
+                      semanticLabel: 'Seleccionar edificio',
+                    ),
                   ),
+                  items: _buildings.map((building) {
+                    return DropdownMenuItem<String>(
+                      value: building['nombre'],
+                      child: Text(building['nombre']),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBuilding = value;
+                    });
+                  },
+                  value: _selectedBuilding,
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Seleccione un edificio';
+                    }
+                    return null;
+                  },
                 ),
-                items: _buildings.map((building) {
-                  return DropdownMenuItem<String>(
-                    value: building['nombre'],
-                    child: Text(building['nombre']),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedBuilding = value;
-                  });
-                },
-                value: _selectedBuilding,
-                validator: (value) {
-                  if (value == null) {
-                    return 'Seleccione un edificio';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Número apartamento',
-                  icon: Icon(
-                    Icons.home,
-                    semanticLabel: 'Número de apartamento',
+              Semantics(
+                label: 'Campo de texto para el número de apartamento',
+                hint: 'Ingrese el número de apartamento',
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Número apartamento',
+                    icon: Icon(
+                      Icons.home,
+                      semanticLabel: 'Número de apartamento',
+                    ),
                   ),
+                  onSaved: (value) {
+                    _numeroApto = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                onSaved: (value) {
-                  _numeroApto = value;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                onPressed: _pickFile,
-                icon: const Icon(
-                  Icons.attach_file,
-                  semanticLabel: 'Seleccionar factura',
-                ),
-                label: const Text('Seleccionar factura'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para seleccionar archivo de factura',
+                hint: 'Presione para seleccionar un archivo de factura',
+                child: ElevatedButton.icon(
+                  onPressed: _pickFile,
+                  icon: const Icon(
+                    Icons.attach_file,
+                    semanticLabel: 'Seleccionar factura',
+                  ),
+                  label: const Text('Seleccionar factura'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
@@ -345,18 +365,23 @@ class _AddBillPageState extends State<AddBillPage> {
                 style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                onPressed: _pickFileAccountStatus,
-                icon: const Icon(
-                  Icons.attach_file,
-                  semanticLabel: 'Seleccionar estado de cuenta',
-                ),
-                label: const Text('Seleccionar estado de cuenta'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para seleccionar archivo de estado de cuenta',
+                hint:
+                    'Presione para seleccionar un archivo de estado de cuenta',
+                child: ElevatedButton.icon(
+                  onPressed: _pickFileAccountStatus,
+                  icon: const Icon(
+                    Icons.attach_file,
+                    semanticLabel: 'Seleccionar estado de cuenta',
+                  ),
+                  label: const Text('Seleccionar estado de cuenta'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
@@ -367,25 +392,29 @@ class _AddBillPageState extends State<AddBillPage> {
                 style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: () {
-                  if (_formKey.currentState!.validate() &&
-                      _file != null &&
-                      _file!.path != null) {
-                    _submitForm();
-                  }
-                },
-                icon: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  semanticLabel: 'Agregar factura',
-                ),
-                label: const Text('Agregar factura'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para agregar factura',
+                hint: 'Presione para agregar la factura',
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate() &&
+                        _file != null &&
+                        _file!.path != null) {
+                      _submitForm();
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    semanticLabel: 'Agregar factura',
+                  ),
+                  label: const Text('Agregar factura'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

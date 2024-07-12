@@ -295,47 +295,56 @@ class _AddVisitPageState extends State<AddVisitPage> {
                 title:
                     Text('Fecha de visita: ${_dateFormat.format(_visitDate)}'),
               ),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Edificio',
-                  icon: Icon(
-                    Icons.business,
-                    semanticLabel: 'Seleccionar edificio',
+              Semantics(
+                label: 'Selector de edificio',
+                hint: 'Seleccione el edificio',
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Edificio',
+                    icon: Icon(
+                      Icons.business,
+                      semanticLabel: 'Seleccionar edificio',
+                    ),
                   ),
+                  items: _buildings.map((building) {
+                    return DropdownMenuItem<String>(
+                      value: building,
+                      child: Text(building),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBuilding = value;
+                      _findZones();
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Seleccione un edificio';
+                    }
+                    return null;
+                  },
                 ),
-                items: _buildings.map((building) {
-                  return DropdownMenuItem<String>(
-                    value: building,
-                    child: Text(building),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedBuilding = value;
-                    _findZones();
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Seleccione un edificio';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _findZones,
-                icon: const Icon(
-                  Icons.search,
-                  semanticLabel: 'Buscar zonas',
-                ),
-                label: const Text('Buscar zonas'),
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para buscar zonas',
+                hint:
+                    'Presione para buscar las zonas del edificio seleccionado',
+                child: ElevatedButton.icon(
+                  onPressed: _findZones,
+                  icon: const Icon(
+                    Icons.search,
+                    semanticLabel: 'Buscar zonas',
+                  ),
+                  label: const Text('Buscar zonas'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 24),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -381,40 +390,52 @@ class _AddVisitPageState extends State<AddVisitPage> {
                     if (zone['novedad'] == 'con novedad')
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: TextField(
-                          maxLines: 5,
-                          decoration: const InputDecoration(
-                            labelText: 'Observaciones',
-                            border: OutlineInputBorder(),
+                        child: Semantics(
+                          label: 'Campo de texto para observaciones',
+                          hint: 'Ingrese observaciones sobre la novedad',
+                          child: TextField(
+                            maxLines: 5,
+                            decoration: const InputDecoration(
+                              labelText: 'Observaciones',
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (value) {
+                              _addObservation(value, index);
+                            },
                           ),
-                          onChanged: (value) {
-                            _addObservation(value, index);
-                          },
                         ),
                       ),
                     const SizedBox(height: 8),
-                    ElevatedButton.icon(
-                      onPressed: () => _pickFile(index),
-                      icon: const Icon(
-                        Icons.attach_file,
-                        semanticLabel: 'Seleccionar archivo',
-                      ),
-                      label: const Text('Seleccionar archivo'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16, horizontal: 24),
-                        textStyle: const TextStyle(fontSize: 18),
+                    Semantics(
+                      label: 'Botón para seleccionar archivo',
+                      hint: 'Presione para seleccionar un archivo adjunto',
+                      child: ElevatedButton.icon(
+                        onPressed: () => _pickFile(index),
+                        icon: const Icon(
+                          Icons.attach_file,
+                          semanticLabel: 'Seleccionar archivo',
+                        ),
+                        label: const Text('Seleccionar archivo'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 24),
+                          textStyle: const TextStyle(fontSize: 18),
+                        ),
                       ),
                     ),
                     ...zone['filesNames'].map<Widget>((fileName) {
                       int fileIndex = zone['filesNames'].indexOf(fileName);
                       return ListTile(
                         title: Text(fileName),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () {
-                            _removeFile(fileIndex, index);
-                          },
+                        trailing: Semantics(
+                          label: 'Botón para eliminar archivo',
+                          hint: 'Presione para eliminar este archivo',
+                          child: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              _removeFile(fileIndex, index);
+                            },
+                          ),
                         ),
                       );
                     }),
@@ -423,19 +444,23 @@ class _AddVisitPageState extends State<AddVisitPage> {
                 );
               }),
               const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _saveVisit,
-                icon: const Icon(
-                  Icons.check,
-                  semanticLabel: 'Registrar visita',
-                ),
-                label: const Text('Registrar visita'),
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para registrar visita',
+                hint: 'Presione para registrar la visita',
+                child: ElevatedButton.icon(
+                  onPressed: _saveVisit,
+                  icon: const Icon(
+                    Icons.check,
+                    semanticLabel: 'Registrar visita',
+                  ),
+                  label: const Text('Registrar visita'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 24),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

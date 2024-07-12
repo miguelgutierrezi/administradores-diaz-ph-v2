@@ -193,84 +193,104 @@ class _AddAnnounceState extends State<AddAnnounce> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Titulo',
-                  icon: Icon(
-                    Icons.document_scanner,
-                    semanticLabel: 'Título del anuncio',
+              Semantics(
+                label: 'Campo de texto para título del anuncio',
+                hint: 'Ingrese el título del anuncio',
+                child: TextFormField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Título',
+                    icon: Icon(
+                      Icons.document_scanner,
+                      semanticLabel: 'Título del anuncio',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  icon: Icon(
-                    Icons.mail,
-                    semanticLabel: 'Correo electrónico',
+              Semantics(
+                label: 'Campo de texto para correo electrónico',
+                hint: 'Ingrese su correo electrónico',
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    icon: Icon(
+                      Icons.mail,
+                      semanticLabel: 'Correo electrónico',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        !value.contains('@')) {
+                      return 'Por favor provea una dirección de email válida';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.emailAddress,
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty || !value.contains('@')) {
-                    return 'Por favor provea una dirección de email válida';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Edificio',
-                  icon: Icon(
-                    Icons.business,
-                    semanticLabel: 'Seleccionar edificio',
+              Semantics(
+                label: 'Selector de edificio',
+                hint: 'Seleccione el edificio',
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Edificio',
+                    icon: Icon(
+                      Icons.business,
+                      semanticLabel: 'Seleccionar edificio',
+                    ),
                   ),
+                  items: _buildings.map((building) {
+                    return DropdownMenuItem<String>(
+                      value: building,
+                      child: Text(building),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBuilding = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                items: _buildings.map((building) {
-                  return DropdownMenuItem<String>(
-                    value: building,
-                    child: Text(building),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedBuilding = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Celular',
-                  icon: Icon(
-                    Icons.phone,
-                    semanticLabel: 'Número de celular',
+              Semantics(
+                label: 'Campo de texto para número de celular',
+                hint: 'Ingrese su número de celular',
+                child: TextFormField(
+                  controller: _phoneController,
+                  decoration: const InputDecoration(
+                    labelText: 'Celular',
+                    icon: Icon(
+                      Icons.phone,
+                      semanticLabel: 'Número de celular',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        !RegExp(r'^[0-9]*$').hasMatch(value)) {
+                      return 'Por favor provea un número válido';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.phone,
                 ),
-                validator: (value) {
-                  if (value == null ||
-                      value.isEmpty ||
-                      !RegExp(r'^[0-9]*$').hasMatch(value)) {
-                    return 'Por favor provea un número válido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
               Row(
@@ -290,63 +310,83 @@ class _AddAnnounceState extends State<AddAnnounce> {
                 ],
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _descriptionController,
-                maxLines: 5,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                  icon: Icon(
-                    Icons.description,
-                    semanticLabel: 'Descripción del anuncio',
+              Semantics(
+                label: 'Campo de texto para descripción del anuncio',
+                hint: 'Ingrese la descripción del anuncio',
+                child: TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción',
+                    icon: Icon(
+                      Icons.description,
+                      semanticLabel: 'Descripción del anuncio',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                onPressed: _pickFile,
-                icon: const Icon(
-                  Icons.attach_file,
-                  semanticLabel: 'Seleccionar archivo',
-                ),
-                label: const Text('Seleccionar archivo'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para seleccionar archivo',
+                hint: 'Presione para seleccionar un archivo adjunto',
+                child: ElevatedButton.icon(
+                  onPressed: _pickFile,
+                  icon: const Icon(
+                    Icons.attach_file,
+                    semanticLabel: 'Seleccionar archivo',
+                  ),
+                  label: const Text('Seleccionar archivo'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              Wrap(
-                children: _fileNames.map((fileName) {
-                  int index = _fileNames.indexOf(fileName);
-                  return Chip(
-                    label: Text(fileName),
-                    deleteIcon: const Icon(Icons.close),
-                    onDeleted: () => _removeFile(index),
-                  );
-                }).toList(),
+              Semantics(
+                label: 'Archivos adjuntos',
+                hint: 'Lista de archivos adjuntos seleccionados',
+                child: Wrap(
+                  children: _fileNames.map((fileName) {
+                    int index = _fileNames.indexOf(fileName);
+                    return Semantics(
+                      label: 'Archivo adjunto: $fileName',
+                      hint: 'Toque dos veces para eliminar este archivo',
+                      child: Chip(
+                        label: Text(fileName),
+                        deleteIcon: const Icon(Icons.close),
+                        onDeleted: () => _removeFile(index),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _save,
-                icon: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  semanticLabel: 'Añadir anuncio',
-                ),
-                label: const Text('Añadir anuncio'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para añadir anuncio',
+                hint: 'Presione para añadir el anuncio',
+                child: ElevatedButton.icon(
+                  onPressed: _save,
+                  icon: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    semanticLabel: 'Añadir anuncio',
+                  ),
+                  label: const Text('Añadir anuncio'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

@@ -130,65 +130,77 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: _updatedBuilding['nombre'],
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre',
-                        icon: Icon(
-                          Icons.document_scanner,
-                          semanticLabel: 'Nombre del edificio',
+                    Semantics(
+                      label: 'Campo de texto para el nombre del edificio',
+                      hint: 'Ingrese el nombre del edificio',
+                      child: TextFormField(
+                        initialValue: _updatedBuilding['nombre'],
+                        decoration: const InputDecoration(
+                          labelText: 'Nombre',
+                          icon: Icon(
+                            Icons.document_scanner,
+                            semanticLabel: 'Nombre del edificio',
+                          ),
                         ),
+                        onSaved: (value) {
+                          _updatedBuilding['nombre'] = value!;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo requerido';
+                          }
+                          return null;
+                        },
                       ),
-                      onSaved: (value) {
-                        _updatedBuilding['nombre'] = value!;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo requerido';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: _updatedBuilding['direccion'],
-                      decoration: const InputDecoration(
-                        labelText: 'Dirección',
-                        icon: Icon(
-                          Icons.location_on,
-                          semanticLabel: 'Dirección del edificio',
+                    Semantics(
+                      label: 'Campo de texto para la dirección del edificio',
+                      hint: 'Ingrese la dirección del edificio',
+                      child: TextFormField(
+                        initialValue: _updatedBuilding['direccion'],
+                        decoration: const InputDecoration(
+                          labelText: 'Dirección',
+                          icon: Icon(
+                            Icons.location_on,
+                            semanticLabel: 'Dirección del edificio',
+                          ),
                         ),
+                        onSaved: (value) {
+                          _updatedBuilding['direccion'] = value!;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo requerido';
+                          }
+                          return null;
+                        },
                       ),
-                      onSaved: (value) {
-                        _updatedBuilding['direccion'] = value!;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo requerido';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: _updatedBuilding['descripcion'],
-                      decoration: const InputDecoration(
-                        labelText: 'Descripción',
-                        icon: Icon(
-                          Icons.description,
-                          semanticLabel: 'Descripción del edificio',
+                    Semantics(
+                      label: 'Campo de texto para la descripción del edificio',
+                      hint: 'Ingrese la descripción del edificio',
+                      child: TextFormField(
+                        initialValue: _updatedBuilding['descripcion'],
+                        decoration: const InputDecoration(
+                          labelText: 'Descripción',
+                          icon: Icon(
+                            Icons.description,
+                            semanticLabel: 'Descripción del edificio',
+                          ),
                         ),
+                        maxLines: 3,
+                        onSaved: (value) {
+                          _updatedBuilding['descripcion'] = value!;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo requerido';
+                          }
+                          return null;
+                        },
                       ),
-                      maxLines: 3,
-                      onSaved: (value) {
-                        _updatedBuilding['descripcion'] = value!;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo requerido';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
                     const Text(
@@ -214,40 +226,52 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: TextFormField(
-                            controller: _zoneController,
-                            decoration: const InputDecoration(
-                              labelText: 'Añadir zona',
-                              icon: Icon(
-                                Icons.add,
-                                semanticLabel: 'Añadir zona',
+                          child: Semantics(
+                            label: 'Campo de texto para añadir una zona',
+                            hint: 'Ingrese el nombre de la zona a añadir',
+                            child: TextFormField(
+                              controller: _zoneController,
+                              decoration: const InputDecoration(
+                                labelText: 'Añadir zona',
+                                icon: Icon(
+                                  Icons.add,
+                                  semanticLabel: 'Añadir zona',
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.add_circle,
-                            color: Colors.black,
-                            semanticLabel: 'Añadir zona',
+                        Semantics(
+                          label: 'Botón para añadir una zona',
+                          hint: 'Presione para añadir la zona',
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.add_circle,
+                              color: Colors.black,
+                              semanticLabel: 'Añadir zona',
+                            ),
+                            onPressed: _addZone,
                           ),
-                          onPressed: _addZone,
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: _onSave,
-                      icon: const Icon(
-                        Icons.check,
-                        semanticLabel: 'Guardar',
-                      ),
-                      label: const Text('Guardar edificio'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        textStyle: const TextStyle(fontSize: 18),
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
+                    Semantics(
+                      label: 'Botón para guardar edificio',
+                      hint: 'Presione para guardar los cambios del edificio',
+                      child: ElevatedButton.icon(
+                        onPressed: _onSave,
+                        icon: const Icon(
+                          Icons.check,
+                          semanticLabel: 'Guardar',
+                        ),
+                        label: const Text('Guardar edificio'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          textStyle: const TextStyle(fontSize: 18),
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                        ),
                       ),
                     ),
                   ],

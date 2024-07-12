@@ -130,86 +130,102 @@ class _EditClientPageState extends State<EditClientPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: _updatedClient['nombre'],
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre',
-                        icon: Icon(
-                          Icons.document_scanner,
-                          semanticLabel: 'Nombre del cliente',
+                    Semantics(
+                      label: 'Campo de texto para el nombre del cliente',
+                      hint: 'Ingrese el nombre del cliente',
+                      child: TextFormField(
+                        initialValue: _updatedClient['nombre'],
+                        decoration: const InputDecoration(
+                          labelText: 'Nombre',
+                          icon: Icon(
+                            Icons.document_scanner,
+                            semanticLabel: 'Nombre del cliente',
+                          ),
                         ),
+                        onSaved: (value) {
+                          _updatedClient['nombre'] = value!;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo requerido';
+                          }
+                          return null;
+                        },
                       ),
-                      onSaved: (value) {
-                        _updatedClient['nombre'] = value!;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo requerido';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Edificio',
-                        icon: Icon(
-                          Icons.business,
-                          semanticLabel: 'Edificio del cliente',
+                    Semantics(
+                      label: 'Selector de edificio',
+                      hint: 'Seleccione el edificio del cliente',
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Edificio',
+                          icon: Icon(
+                            Icons.business,
+                            semanticLabel: 'Edificio del cliente',
+                          ),
                         ),
+                        items: _buildings.map((building) {
+                          return DropdownMenuItem<String>(
+                            value: building,
+                            child: Text(building),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _updatedClient['edificio'] = value!;
+                          });
+                        },
+                        value: _updatedClient['edificio'],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Seleccione un edificio';
+                          }
+                          return null;
+                        },
                       ),
-                      items: _buildings.map((building) {
-                        return DropdownMenuItem<String>(
-                          value: building,
-                          child: Text(building),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _updatedClient['edificio'] = value!;
-                        });
-                      },
-                      value: _updatedClient['edificio'],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Seleccione un edificio';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: _updatedClient['numeroApto'],
-                      decoration: const InputDecoration(
-                        labelText: 'Número apartamento',
-                        icon: Icon(
-                          Icons.home,
-                          semanticLabel: 'Número de apartamento',
+                    Semantics(
+                      label: 'Campo de texto para el número de apartamento',
+                      hint: 'Ingrese el número de apartamento del cliente',
+                      child: TextFormField(
+                        initialValue: _updatedClient['numeroApto'],
+                        decoration: const InputDecoration(
+                          labelText: 'Número apartamento',
+                          icon: Icon(
+                            Icons.home,
+                            semanticLabel: 'Número de apartamento',
+                          ),
                         ),
+                        onSaved: (value) {
+                          _updatedClient['numeroApto'] = value!;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo requerido';
+                          }
+                          return null;
+                        },
                       ),
-                      onSaved: (value) {
-                        _updatedClient['numeroApto'] = value!;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo requerido';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: _onSave,
-                      icon: const Icon(
-                        Icons.check,
-                        semanticLabel: 'Guardar',
-                      ),
-                      label: const Text('Guardar cliente'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        textStyle: const TextStyle(fontSize: 18),
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
+                    Semantics(
+                      label: 'Botón para guardar cliente',
+                      hint: 'Presione para guardar los cambios del cliente',
+                      child: ElevatedButton.icon(
+                        onPressed: _onSave,
+                        icon: const Icon(
+                          Icons.check,
+                          semanticLabel: 'Guardar',
+                        ),
+                        label: const Text('Guardar cliente'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          textStyle: const TextStyle(fontSize: 18),
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                        ),
                       ),
                     ),
                   ],

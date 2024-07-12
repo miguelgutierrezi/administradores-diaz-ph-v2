@@ -215,80 +215,96 @@ class _AddNewsPageState extends State<AddNewsPage> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              TextFormField(
-                controller: _noticiaController,
-                decoration: const InputDecoration(
-                  labelText: 'Noticia',
-                  icon: Icon(
-                    Icons.article,
-                    semanticLabel: 'Título de la noticia',
+              Semantics(
+                label: 'Campo de texto para la noticia',
+                hint: 'Ingrese el título de la noticia',
+                child: TextFormField(
+                  controller: _noticiaController,
+                  decoration: const InputDecoration(
+                    labelText: 'Noticia',
+                    icon: Icon(
+                      Icons.article,
+                      semanticLabel: 'Título de la noticia',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese la noticia';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese la noticia';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Edificio',
-                  icon: Icon(
-                    Icons.location_city,
-                    semanticLabel: 'Seleccionar edificio',
+              Semantics(
+                label: 'Selector de edificio',
+                hint: 'Seleccione el edificio',
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Edificio',
+                    icon: Icon(
+                      Icons.location_city,
+                      semanticLabel: 'Seleccionar edificio',
+                    ),
                   ),
+                  items: _buildings.map((building) {
+                    return DropdownMenuItem<String>(
+                      value: building,
+                      child: Text(building, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBuilding = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                items: _buildings.map((building) {
-                  return DropdownMenuItem<String>(
-                    value: building,
-                    child: Text(building, overflow: TextOverflow.ellipsis),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedBuilding = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                  icon: Icon(
-                    Icons.description,
-                    semanticLabel: 'Descripción de la noticia',
+              Semantics(
+                label: 'Campo de texto para la descripción de la noticia',
+                hint: 'Ingrese la descripción de la noticia',
+                child: TextFormField(
+                  controller: _descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción',
+                    icon: Icon(
+                      Icons.description,
+                      semanticLabel: 'Descripción de la noticia',
+                    ),
                   ),
+                  maxLines: 5,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese una descripción';
+                    }
+                    return null;
+                  },
                 ),
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese una descripción';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                onPressed: () => _selectDate(context),
-                icon: const Icon(
-                  Icons.calendar_today,
-                  semanticLabel: 'Seleccionar fecha',
-                ),
-                label: const Text('Seleccionar fecha'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para seleccionar fecha',
+                hint: 'Presione para seleccionar una fecha',
+                child: ElevatedButton.icon(
+                  onPressed: () => _selectDate(context),
+                  icon: const Icon(
+                    Icons.calendar_today,
+                    semanticLabel: 'Seleccionar fecha',
+                  ),
+                  label: const Text('Seleccionar fecha'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
@@ -304,41 +320,52 @@ class _AddNewsPageState extends State<AddNewsPage> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                onPressed: _pickFile,
-                icon: const Icon(
-                  Icons.attach_file,
-                  semanticLabel: 'Seleccionar archivo',
-                ),
-                label: const Text('Seleccionar archivo'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para seleccionar archivo',
+                hint: 'Presione para seleccionar un archivo adjunto',
+                child: ElevatedButton.icon(
+                  onPressed: _pickFile,
+                  icon: const Icon(
+                    Icons.attach_file,
+                    semanticLabel: 'Seleccionar archivo',
+                  ),
+                  label: const Text('Seleccionar archivo'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                _pickedFile != null
-                    ? _pickedFile!.name
-                    : 'Ningún archivo seleccionado',
-                style: const TextStyle(fontSize: 16.0),
+              Semantics(
+                label: 'Nombre del archivo seleccionado',
+                child: Text(
+                  _pickedFile != null
+                      ? _pickedFile!.name
+                      : 'Ningún archivo seleccionado',
+                  style: const TextStyle(fontSize: 16.0),
+                ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  semanticLabel: 'Añadir noticia',
-                ),
-                label: const Text('Añadir noticia'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para añadir noticia',
+                hint: 'Presione para añadir la noticia',
+                child: ElevatedButton.icon(
+                  onPressed: _submitForm,
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    semanticLabel: 'Añadir noticia',
+                  ),
+                  label: const Text('Añadir noticia'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

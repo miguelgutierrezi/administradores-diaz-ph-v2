@@ -197,73 +197,89 @@ class _AddBookingPageState extends State<AddBookingPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: ListTile(
-                            title: const Text('Hora inicio'),
-                            subtitle: Text(_startTime == null
-                                ? 'Seleccione la hora de inicio'
-                                : _startTime!.format(context)),
-                            onTap: _allDay
-                                ? null
-                                : () async {
-                                    var time = await showTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                    );
-                                    setState(() {
-                                      _startTime = time;
-                                    });
-                                  },
+                          child: Semantics(
+                            label: 'Hora de inicio',
+                            hint: 'Seleccione la hora de inicio',
+                            child: ListTile(
+                              title: const Text('Hora inicio'),
+                              subtitle: Text(_startTime == null
+                                  ? 'Seleccione la hora de inicio'
+                                  : _startTime!.format(context)),
+                              onTap: _allDay
+                                  ? null
+                                  : () async {
+                                      var time = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.now(),
+                                      );
+                                      setState(() {
+                                        _startTime = time;
+                                      });
+                                    },
+                            ),
                           ),
                         ),
                         Expanded(
-                          child: ListTile(
-                            title: const Text('Hora fin'),
-                            subtitle: Text(_endTime == null
-                                ? 'Seleccione la hora de fin'
-                                : _endTime!.format(context)),
-                            onTap: _allDay
-                                ? null
-                                : () async {
-                                    var time = await showTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                    );
-                                    setState(() {
-                                      _endTime = time;
-                                    });
-                                  },
+                          child: Semantics(
+                            label: 'Hora de fin',
+                            hint: 'Seleccione la hora de fin',
+                            child: ListTile(
+                              title: const Text('Hora fin'),
+                              subtitle: Text(_endTime == null
+                                  ? 'Seleccione la hora de fin'
+                                  : _endTime!.format(context)),
+                              onTap: _allDay
+                                  ? null
+                                  : () async {
+                                      var time = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.now(),
+                                      );
+                                      setState(() {
+                                        _endTime = time;
+                                      });
+                                    },
+                            ),
                           ),
                         ),
                       ],
                     ),
                     if (_wholeDay)
-                      ListTile(
-                        title: const Text('Reservar todo el día'),
-                        trailing: Switch(
-                          value: _allDay,
-                          onChanged: (value) {
-                            setState(() {
-                              _allDay = value;
-                            });
-                          },
+                      Semantics(
+                        label: 'Reservar todo el día',
+                        hint: 'Activar o desactivar reserva todo el día',
+                        child: ListTile(
+                          title: const Text('Reservar todo el día'),
+                          trailing: Switch(
+                            value: _allDay,
+                            onChanged: (value) {
+                              setState(() {
+                                _allDay = value;
+                              });
+                            },
+                          ),
                         ),
                       ),
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ElevatedButton.icon(
-                        onPressed: _saveBooking,
-                        icon: const Icon(
-                          Icons.check,
-                          semanticLabel: 'Realizar reserva',
-                        ),
-                        label: const Text('Realizar reserva'),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 16),
-                          textStyle: const TextStyle(fontSize: 18),
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
+                      child: Semantics(
+                        label: 'Botón para realizar reserva',
+                        hint: 'Presione para realizar la reserva',
+                        child: ElevatedButton.icon(
+                          onPressed: _saveBooking,
+                          icon: const Icon(
+                            Icons.check,
+                            semanticLabel: 'Realizar reserva',
+                          ),
+                          label: const Text('Realizar reserva'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 16),
+                            textStyle: const TextStyle(fontSize: 18),
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
+                          ),
                         ),
                       ),
                     ),

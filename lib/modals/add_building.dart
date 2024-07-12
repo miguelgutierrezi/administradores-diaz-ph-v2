@@ -156,95 +156,121 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              TextFormField(
-                controller: _nombreController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre',
-                  icon: Icon(
-                    Icons.document_scanner,
-                    semanticLabel: 'Nombre del edificio',
+              Semantics(
+                label: 'Campo de texto para el nombre del edificio',
+                hint: 'Ingrese el nombre del edificio',
+                child: TextFormField(
+                  controller: _nombreController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre',
+                    icon: Icon(
+                      Icons.document_scanner,
+                      semanticLabel: 'Nombre del edificio',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _direccionController,
-                decoration: const InputDecoration(
-                  labelText: 'Dirección',
-                  icon: Icon(
-                    Icons.location_on,
-                    semanticLabel: 'Dirección del edificio',
+              Semantics(
+                label: 'Campo de texto para la dirección del edificio',
+                hint: 'Ingrese la dirección del edificio',
+                child: TextFormField(
+                  controller: _direccionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Dirección',
+                    icon: Icon(
+                      Icons.location_on,
+                      semanticLabel: 'Dirección del edificio',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                  icon: Icon(
-                    Icons.description,
-                    semanticLabel: 'Descripción del edificio',
+              Semantics(
+                label: 'Campo de texto para la descripción del edificio',
+                hint: 'Ingrese la descripción del edificio',
+                child: TextFormField(
+                  controller: _descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción',
+                    icon: Icon(
+                      Icons.description,
+                      semanticLabel: 'Descripción del edificio',
+                    ),
                   ),
+                  maxLines: 5,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Espacios de reporte',
-                  icon: Icon(
-                    Icons.business,
-                    semanticLabel: 'Añadir espacios de reporte',
+              Semantics(
+                label: 'Campo de texto para añadir espacios de reporte',
+                hint:
+                    'Ingrese el nombre del espacio de reporte y presione enter',
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Espacios de reporte',
+                    icon: Icon(
+                      Icons.business,
+                      semanticLabel: 'Añadir espacios de reporte',
+                    ),
                   ),
+                  onFieldSubmitted: (value) {
+                    setState(() {
+                      _zones.add(value);
+                    });
+                  },
                 ),
-                onFieldSubmitted: (value) {
-                  setState(() {
-                    _zones.add(value);
-                  });
-                },
               ),
               Wrap(
                 children: _zones.map((zone) {
                   int index = _zones.indexOf(zone);
-                  return Chip(
-                    label: Text(zone),
-                    deleteIcon: const Icon(Icons.close),
-                    onDeleted: () => _removeZone(index),
+                  return Semantics(
+                    label: 'Zona: $zone',
+                    hint:
+                        'Toque dos veces para eliminar este espacio de reporte',
+                    child: Chip(
+                      label: Text(zone),
+                      deleteIcon: const Icon(Icons.close),
+                      onDeleted: () => _removeZone(index),
+                    ),
                   );
                 }).toList(),
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                onPressed: _pickFile,
-                icon: const Icon(
-                  Icons.attach_file,
-                  semanticLabel: 'Seleccionar imagen',
-                ),
-                label: const Text('Seleccionar imagen'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para seleccionar una imagen',
+                hint: 'Presione para seleccionar una imagen',
+                child: ElevatedButton.icon(
+                  onPressed: _pickFile,
+                  icon: const Icon(
+                    Icons.attach_file,
+                    semanticLabel: 'Seleccionar imagen',
+                  ),
+                  label: const Text('Seleccionar imagen'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               if (_selectedFileName != null) ...[
@@ -252,19 +278,23 @@ class _AddBuildingPageState extends State<AddBuildingPage> {
                 Text('Archivo seleccionado: $_selectedFileName'),
               ],
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  semanticLabel: 'Añadir edificio',
-                ),
-                label: const Text('Añadir edificio'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para añadir edificio',
+                hint: 'Presione para añadir el edificio',
+                child: ElevatedButton.icon(
+                  onPressed: _submitForm,
+                  icon: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    semanticLabel: 'Añadir edificio',
+                  ),
+                  label: const Text('Añadir edificio'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],

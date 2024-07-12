@@ -203,106 +203,129 @@ class _SendMessagePageState extends State<SendMessagePage> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              DropdownButtonFormField<Map<String, String>>(
-                decoration: const InputDecoration(
-                  labelText: 'Para',
-                  icon: Icon(
-                    Icons.person_outline,
-                    semanticLabel: 'Seleccionar destinatario',
-                  ),
-                ),
-                items: _recipients.map((recipient) {
-                  return DropdownMenuItem<Map<String, String>>(
-                    value: recipient,
-                    child: Text(
-                      recipient['nombre']!,
-                      overflow: TextOverflow.ellipsis,
+              Semantics(
+                label: 'Selector de destinatario',
+                hint: 'Seleccione el destinatario del mensaje',
+                child: DropdownButtonFormField<Map<String, String>>(
+                  decoration: const InputDecoration(
+                    labelText: 'Para',
+                    icon: Icon(
+                      Icons.person_outline,
+                      semanticLabel: 'Seleccionar destinatario',
                     ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedRecipient = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Campo requerido';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _asuntoController,
-                decoration: const InputDecoration(
-                  labelText: 'Asunto',
-                  icon: Icon(
-                    Icons.send,
-                    semanticLabel: 'Asunto del mensaje',
                   ),
+                  items: _recipients.map((recipient) {
+                    return DropdownMenuItem<Map<String, String>>(
+                      value: recipient,
+                      child: Text(
+                        recipient['nombre']!,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedRecipient = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo requerido';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese el asunto';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _messageController,
-                decoration: const InputDecoration(
-                  labelText: 'Mensaje',
-                  icon: Icon(
-                    Icons.message,
-                    semanticLabel: 'Cuerpo del mensaje',
+              Semantics(
+                label: 'Campo de texto para el asunto del mensaje',
+                hint: 'Ingrese el asunto del mensaje',
+                child: TextFormField(
+                  controller: _asuntoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Asunto',
+                    icon: Icon(
+                      Icons.send,
+                      semanticLabel: 'Asunto del mensaje',
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese el asunto';
+                    }
+                    return null;
+                  },
                 ),
-                maxLines: 5, // Aumenta el número de líneas visibles
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese el mensaje';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                onPressed: _pickFile,
-                icon: const Icon(
-                  Icons.attach_file,
-                  semanticLabel: 'Seleccionar archivo adjunto',
+              Semantics(
+                label: 'Campo de texto para el cuerpo del mensaje',
+                hint: 'Ingrese el mensaje',
+                child: TextFormField(
+                  controller: _messageController,
+                  decoration: const InputDecoration(
+                    labelText: 'Mensaje',
+                    icon: Icon(
+                      Icons.message,
+                      semanticLabel: 'Cuerpo del mensaje',
+                    ),
+                  ),
+                  maxLines: 5, // Aumenta el número de líneas visibles
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese el mensaje';
+                    }
+                    return null;
+                  },
                 ),
-                label: const Text('Seleccionar archivo'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              ),
+              const SizedBox(height: 16.0),
+              Semantics(
+                label: 'Botón para seleccionar archivo adjunto',
+                hint: 'Presione para seleccionar un archivo adjunto',
+                child: ElevatedButton.icon(
+                  onPressed: _pickFile,
+                  icon: const Icon(
+                    Icons.attach_file,
+                    semanticLabel: 'Seleccionar archivo adjunto',
+                  ),
+                  label: const Text('Seleccionar archivo'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                _pickedFile != null
-                    ? _pickedFile!.name
-                    : 'Ningún archivo seleccionado',
-                style: const TextStyle(fontSize: 16.0),
+              Semantics(
+                label: 'Nombre del archivo adjunto seleccionado',
+                child: Text(
+                  _pickedFile != null
+                      ? _pickedFile!.name
+                      : 'Ningún archivo seleccionado',
+                  style: const TextStyle(fontSize: 16.0),
+                ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: const Icon(
-                  Icons.send,
-                  color: Colors.white,
-                  semanticLabel: 'Enviar mensaje',
-                ),
-                label: const Text('Enviar mensaje'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
+              Semantics(
+                label: 'Botón para enviar mensaje',
+                hint: 'Presione para enviar el mensaje',
+                child: ElevatedButton.icon(
+                  onPressed: _submitForm,
+                  icon: const Icon(
+                    Icons.send,
+                    color: Colors.white,
+                    semanticLabel: 'Enviar mensaje',
+                  ),
+                  label: const Text('Enviar mensaje'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ],
