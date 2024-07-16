@@ -4,6 +4,7 @@ import 'package:administradores_diaz_ph/utils/utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
+import 'global_variables.dart';
 import 'handlers/alarm_permission_handler.dart';
 import 'login_page.dart';
 
@@ -46,9 +47,9 @@ class _WelcomePageState extends State<WelcomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Administradores Diaz PH SAS',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          Globals.mainName,
+          style: const TextStyle(color: Colors.white),
           semanticsLabel: 'Título de la aplicación',
         ),
         backgroundColor: Colors.black,

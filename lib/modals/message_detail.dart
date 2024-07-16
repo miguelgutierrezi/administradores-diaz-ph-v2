@@ -1,3 +1,4 @@
+import 'package:administradores_diaz_ph/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,6 +19,7 @@ class MessageDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
@@ -90,9 +92,9 @@ class MessageDetailPage extends StatelessWidget {
                     width: 150,
                     semanticLabel: 'Logo Diaz Administradores',
                   ),
-                  const Text(
-                    'Administradores Diaz PH SAS\nAdministración de Propiedad Horizontal\n2568677 | diazmartinezadmon@gmail.com\nCra 53#103B-42 Oficina 609',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  Text(
+                    '${Globals.mainName}\n${Globals.mainSlogan}\n${Globals.phoneNumber} | ${Globals.mainEmail}\n${Globals.mainAddress}',
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
                     textAlign: TextAlign.center,
                   ),
                 ],

@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../global_variables.dart';
 import '../utils/utils.dart';
 
 class PdfService {
@@ -65,14 +66,12 @@ class PdfService {
       crossAxisAlignment: pw.CrossAxisAlignment.center,
       children: [
         pw.Image(pw.MemoryImage(logoBytes), width: 150),
-        pw.Text('Administradores Diaz PH SAS',
+        pw.Text(Globals.mainName,
             style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
-        pw.Text('Administración de Propiedad Horizontal',
-            style: pw.TextStyle(fontSize: 12)),
-        pw.Text('2568677 | diazmartinezadmon@gmail.com',
-            style: pw.TextStyle(fontSize: 12)),
-        pw.Text('Cra 53#103B-42 Oficina 609',
-            style: pw.TextStyle(fontSize: 12)),
+        pw.Text(Globals.mainSlogan, style: const pw.TextStyle(fontSize: 12)),
+        pw.Text('${Globals.phoneNumber} | ${Globals.mainEmail}',
+            style: const pw.TextStyle(fontSize: 12)),
+        pw.Text(Globals.mainAddress, style: const pw.TextStyle(fontSize: 12)),
         pw.Divider(),
       ],
     );
