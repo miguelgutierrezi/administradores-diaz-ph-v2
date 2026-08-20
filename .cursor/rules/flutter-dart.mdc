@@ -1,0 +1,15 @@
+---
+description: Flutter/Dart conventions when editing lib/
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# Flutter / Dart
+
+- Package: `package:administradores_diaz_ph/...`. SDK `>=3.4.3 <4.0.0`.
+- Dominant pattern: `StatefulWidget` + `setState`; services created in State. Do not introduce Riverpod/Bloc in a single file without a migration plan.
+- New entities: prefer a typed class in `models/` (`fromJson`/`toJson`/`copyWith`) over more `Map<String, dynamic>`.
+- End-user UI in Spanish. Reuse loaders/alerts/validators from sibling screens in `modals/` instead of copying large blocks when the change allows.
+- Avoid new raw Firestore queries in widgets if `FirestoreService` already has a method; as code grows, encapsulate in a per-entity repository (see `docs/02-architecture-plan.md`).
+- Do not extend `Globals` with more brand fields; branding should move toward per-tenant config.
+- Building filter today: `edificio` (name). New code should ease migration to `buildingId` / `tenantId`.

@@ -1,0 +1,15 @@
+---
+description: Data model, buildings, and multi-tenant direction
+globs: lib/models/**/*.dart,lib/services/firestore_service.dart,lib/global_variables.dart
+alwaysApply: false
+---
+
+# Data and multi-tenant
+
+- Today: multi-building by name string `edificio`. Target: `buildingId` + `tenantId` (`docs/03-multi-tenant-plan.md`).
+- Collections: `users`, `buildings`, `news`, `dashboard`, `zonas`(+`events`), `visits`, `bills`, `complaints`, `votings`.
+- Firestore roles: `CLIENTE`, `ADMINISTRADOR`, `SUPERADMINISTRADOR`.
+- When typing models: include stable ID fields; building name only as denormalized display if needed.
+- Do not assume isolation between buildings/tenants from client-side filters alone.
+- `Globals` / asset logo = single-tenant debt; replacement = `tenants/{tenantId}` + centralized session.
+- Current FCM topics depend on name; target = stable ID (`buildingId`).

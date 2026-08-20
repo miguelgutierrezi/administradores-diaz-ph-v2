@@ -1,0 +1,14 @@
+---
+description: Firebase security, secrets, and authorization
+globs: lib/services/**/*.dart,firestore.rules,storage.rules,firebase.json,android/**/*,ios/**/*,key/**
+alwaysApply: false
+---
+
+# Security
+
+- Priority: `docs/01-security-plan.md`. Do not widen debt.
+- Forbidden: add keystores, `key.properties`, or secrets to the repo; do not reverse ignores for `key/`, `*.jks`.
+- Role/building in SharedPreferences = UI cache, not source of truth. New design → Custom Claims + server-side rules.
+- If creating `firestore.rules` / `storage.rules`: require `request.auth != null`; restrict by role and building/tenant membership; never `allow read, write: if true`.
+- Storage: future paths partitioned by tenant/building when multi-tenant lands.
+- Do not log tokens, passwords, or personal data via `debugPrint` in new code.

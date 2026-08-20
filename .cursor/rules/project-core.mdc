@@ -1,0 +1,14 @@
+---
+description: Global project context and constraints for Diaz PH v2
+alwaysApply: true
+---
+
+# Project — Administradores Diaz PH v2
+
+- Flutter + Firebase (Auth, Firestore, Storage, FCM). Repo is **pre-production**; goal = **multi-tenant** platform.
+- Read `AGENTS.md` and `docs/architecture.md` before structural changes.
+- Plans: `docs/01` security → `02` architecture → `03` multi-tenant → `04` testing → `05` roadmap.
+- `lib/modals/` = full-screen CRUD screens, not dialogs.
+- **Do not** commit keystores/secrets. **Do not** hardcode more branding (`Globals`). **Do not** treat SharedPreferences as real authorization.
+- Minimal changes; no mass refactor unless explicitly requested.
+- Reply to the user in Spanish.
